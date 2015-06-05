@@ -354,8 +354,9 @@ fieldset {
     background-color: #eeeeee;
     background-image: none;	
     border: none;
-    margin-top: 70px;
+    margin-top: 40px;
     text-align: center;
+	min-height:0px;
 }
 .angular-ui-tree-empty:before{
 	content: "Click Add New Block to build a template";
@@ -367,7 +368,34 @@ fieldset {
 	border: none;
 }
 
+.min-height-235{
+	min-height:235px;
+}
+.min-height-150{
+	min-height:150px;
+}
 
+.margin-bottom-20{
+	margin-bottom:20px;
+}
+
+fieldset.group-border {
+    border: 1px groove #F7F7F7 !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+legend.group-border {
+	font-size: 15px !important;
+	font-weight: bold !important;
+	text-align: left !important;
+	width:auto;
+	padding:0 10px;
+	border-bottom:none;
+}
+	
 .ui-resizable-s{
 	height: 4px;
 	background: rgba(173, 173, 223, 0.54);

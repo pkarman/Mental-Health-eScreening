@@ -56,8 +56,7 @@ $(document).ready(function(e) {
 			logout);
 	});
 	
-    $('#nextBtn').click(function(){
-    	
+    $('#nextBtn').click(function(){    	
     	if (surveyValidation.pageIsValid()){
 			var request = buildReqAdvBack('next', buildJSONFromForm('next'));
 			

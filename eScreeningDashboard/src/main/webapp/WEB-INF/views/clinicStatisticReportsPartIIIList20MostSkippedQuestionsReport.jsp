@@ -6,7 +6,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Reports | Clinic Statistic Reports: Top 20 Most Skipped Questions Report</title>
+	<title>Reports | Clinic Statistic Reports: Top 20 Most Skipped Questions Report</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 		
 	<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
@@ -71,7 +72,7 @@
 						<div class="border-radius-main-form gray-lighter">
 							<input type="text" class="form-control" id="clinics-list-table-filter" data-action="filter" data-filters="#clinics-list-table" placeholder="Filter by Clinic" />
 														
-							<!-- Program Evaluator Role only 602 / 603
+							<!-- Program Evaluator Role only 602 / 603 -->
 							<div>
 								<div class="checkbox">
 									<input type="checkbox" class="selectAllClinic" id="selectAllClinic" name="selectAllClinic" ng-change="selectAllClinic()" ng-model="report.selectAllClinic" data-cbgroup="checkbox_group_clinic" />
@@ -79,7 +80,7 @@
 								</div>
 							</div>
 							<hr class="hr_margin_5">
-							-->
+							
 							
 			
 							

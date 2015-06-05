@@ -3,6 +3,7 @@ package gov.va.escreening.expressionevaluator;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.formula.AvMapTypeEnum;
 import gov.va.escreening.formula.FormulaHandler;
+import gov.va.escreening.variableresolver.AssessmentVariableDto;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ public interface ExpressionEvaluatorService {
 
     String evaluateFormula(FormulaDto formulaDto) throws NoSuchMethodException, SecurityException;
 
-    String evaluateFormula(String formulaAsStr);
+    String evaluateFormula(String formulaAsStr, Map<Integer, AssessmentVariableDto> variableMap);
 
     AssessmentVariable findAvById(Integer avId);
 

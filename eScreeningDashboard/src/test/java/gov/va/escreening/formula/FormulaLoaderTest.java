@@ -57,13 +57,7 @@ public class FormulaLoaderTest {
 
             Assert.isTrue(origTemplate.equals(templateFromTokens));
 
-            //Map<String, Object> asMap = Maps.newHashMap();
-            //asMap.put("av", formulaVar.getAsFormulaVar());
-            //asMap.put("tokens", tokensFromTemplate);
-
             addFormulaTokensAsDbInserts(inserts, formulaVar, formulaTokensAsMin);
-
-            //expressionEvaluator.updateFormula(asMap);
         }
 
         saveDbInserts(inserts);

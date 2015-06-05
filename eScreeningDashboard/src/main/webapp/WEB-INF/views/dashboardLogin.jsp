@@ -8,23 +8,22 @@
 <!doctype html>
 <html>
 	<head>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Admin Login</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
     
-      <!-- FAVICON -->
-      <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
-      <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />    
-      <link rel="apple-touch-icon" sizes="114x114" href="resources/images/favico_va_touch_114x114.png" />
-      <link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
-      <link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
-      <meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
+		<!-- FAVICON -->
+		<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
+		<link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />    
+		<link rel="apple-touch-icon" sizes="114x114" href="resources/images/favico_va_touch_114x114.png" />
+		<link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
+		<link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
+		<meta name="msapplication-square310x310logo" content="resources/images/favico_va_310x310.png" />
     
-      <title>Admin Login</title>
-      <link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
-      <link href="resources/css/login.css" rel="stylesheet" type="text/css"/>
-      <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
-      <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css"/>
+		<link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
+		<link href="resources/css/login.css" rel="stylesheet" type="text/css"/>
+		<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
+		<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css"/>
       
 	  <script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.js"></script>
       <script type="text/javascript">

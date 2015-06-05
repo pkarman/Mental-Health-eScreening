@@ -63,6 +63,8 @@ public class Template implements Serializable {
     private TemplateType templateType;
     @Column(name = "is_graphical")
     private boolean isGraphical;
+    @Column(name = "graph_params")
+    private String graphParams;
     @Column(name="date_modified")
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
@@ -160,7 +162,15 @@ public class Template implements Serializable {
 		this.modifiedDate = modifiedDate;
 	}
 	
-	@Override
+	public String getGraphParams() {
+        return graphParams;
+    }
+
+    public void setGraphParams(String graphParams) {
+        this.graphParams = graphParams;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (templateId != null ? templateId.hashCode() : 0);

@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import gov.va.escreening.controller.RestController;
-import gov.va.escreening.delegate.EditorsViewDelegate;
+import gov.va.escreening.delegate.EditorsDelegate;
 import gov.va.escreening.dto.MeasureAnswerDTO;
 import gov.va.escreening.dto.MeasureValidationSimpleDTO;
 import gov.va.escreening.dto.ae.Measure;
@@ -39,7 +39,7 @@ public class QuestionRestController extends RestController{
 
 	private static final Logger logger = LoggerFactory.getLogger(QuestionRestController.class);
 
-	private final EditorsViewDelegate editorsViewDelegate;
+	private final EditorsDelegate editorsViewDelegate;
 	private final MeasureService measureService;
 	private final MeasureRepository measureRepo;
 	private final AssessmentVariableService assessmentVariableService;
@@ -47,7 +47,7 @@ public class QuestionRestController extends RestController{
 	@Autowired
 	QuestionRestController(MeasureRepository measureRepo, 
 			MeasureService measureService,
-			EditorsViewDelegate editorsViewDelegate,
+			EditorsDelegate editorsViewDelegate,
 			AssessmentVariableService assessmentVariableService){
 		this.measureRepo = checkNotNull(measureRepo);
 		this.measureService = checkNotNull(measureService);

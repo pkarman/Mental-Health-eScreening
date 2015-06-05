@@ -26,6 +26,7 @@ var Editors = angular.module('Editors', [
 	'EscreeningDashboardApp.services.question',
 	'EscreeningDashboardApp.services.templateBlock',
 	'EscreeningDashboardApp.services.eventBus',
+	'EscreeningDashboardApp.services.core',
 	'EscreeningDashboardApp.filters.messages',
 	'EscreeningDashboardApp.filters.freemarkerWhiteSpace',
 	'EscreeningDashboardApp.filters.limitToWithEllipsis'
@@ -40,19 +41,35 @@ Editors.value('Template', new EScreeningDashboardApp.models.Template());
 Editors.value('TemplateType', new EScreeningDashboardApp.models.TemplateType());
 Editors.value('Survey', EScreeningDashboardApp.models.Survey);
 Editors.value('SurveyPage', EScreeningDashboardApp.models.SurveyPage);
+Editors.value('Rule', EScreeningDashboardApp.models.Rule);
+Editors.value('Event', EScreeningDashboardApp.models.Event);
+Editors.value('TemplateCondition', EScreeningDashboardApp.models.TemplateCondition);
+Editors.value('TemplateBlock', EScreeningDashboardApp.models.TemplateBlock);
 
 Editors.config(function(RestangularProvider, $provide) {
-
+	
     RestangularProvider.setBaseUrl('services/');
     RestangularProvider.setRequestSuffix('.json');
     // Explicitly setting cache to false because requests were becoming stale
     RestangularProvider.setDefaultHttpFields({cache: false});
 
+    /**
+     * Work around for a very strange default Restangular behavior: 
+     * https://github.com/mgonto/restangular/issues/78#issuecomment-18687759
+     */
+    RestangularProvider.setRequestInterceptor(function(elem, operation) {
+        if (operation === 'remove'){
+            return null;
+        }
+
+        return elem;
+    });
+    
     RestangularProvider.addResponseInterceptor(function(data, operation, what) {
 
         var newResponse;
         // List of array collection endpoints that do not conform to response.payload[resource]
-        var listExceptions = ['validations', 'templateTypes', 'sections', 'assessmentVariables', 'answers', 'formulas', 'avs2MngFormulas'];
+        var listExceptions = ['validations', 'templateTypes', 'sections', 'assessmentVariables', 'answers', 'formulas', 'avs2MngFormulas', 'events'];
         var saveExceptions = ['template', 'answers'];
 
         if (operation === 'getList' && !_.contains(listExceptions, what)) {
@@ -180,21 +197,28 @@ Editors.config(function(RestangularProvider, $provide) {
 
 				var modalInstance = $modal.open({
 					templateUrl: 'resources/editors/views/templates/assessmentvariablemodal.html',
-					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', function($scope, $modalInstance) {
+					controller: ['$scope', '$modalInstance', 'AssessmentVariableService', 
+					             function($scope, $modalInstance, AssessmentVariableService) {
 
-						$scope.selections = {
-							show: true
-						};
-
-						$scope.assessmentVariable = {};
-
-							$scope.$on('assessmentVariableSelected', function(event, insertedVariable) {
-								console.debug("emit happend");
-								if (insertedVariable) {
-									var embed = TemplateBlockService.createAVElement(insertedVariable);
-									$modalInstance.close(embed);
-								}
-							});
+						$scope.assessmentVariable = new EScreeningDashboardApp.models.AssessmentVariable();
+						$scope.block = {};
+						$scope.allowTransformations = true;
+						$scope.selections = {show:true};
+						$scope.editorType = "text";
+						$scope.assessmentVariables = [];
+						
+						AssessmentVariableService.getLastCachedResults()
+							.then(function(avs){
+								$scope.assessmentVariables = avs;
+						});
+						
+						//as soon as the modal should close the variable is used to create the modal result
+						$scope.$watch('selections.show',function(newVar, oldVar){
+							if (!newVar) {
+								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable);
+								$modalInstance.close(embed);
+							}
+						}, true);
 
 						$scope.cancel = function() {
 						    $modalInstance.close("");

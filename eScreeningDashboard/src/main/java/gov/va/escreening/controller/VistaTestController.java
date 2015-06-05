@@ -1,5 +1,6 @@
 package gov.va.escreening.controller;
 
+import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.delegate.VistaDelegate;
 import gov.va.escreening.domain.MentalHealthAssessment;
 import gov.va.escreening.domain.VeteranDto;
@@ -7,6 +8,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.VistaTestFormBean;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
+import gov.va.escreening.service.AssessmentEngineService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.service.VistaService;
 import gov.va.escreening.vista.DuzVistaLinkClientStrategy;
@@ -69,6 +71,9 @@ public class VistaTestController {
     private VistaLinkManagedConnectionFactory vistaLinkManagedConnectionFactory;
     @Autowired
     private VistaDelegate vistaDelegate;
+
+    @Resource(type=AssessmentEngineService.class)
+    private AssessmentEngineService assessmentEngineService;
 
     private String appProxyName = "XOBVTESTER,APPLICATION PROXY";
     private String rpcContextOrCprs = "OR CPRS GUI CHART";
@@ -140,7 +145,7 @@ public class VistaTestController {
 
     @RequestMapping(value = "/vista", method = RequestMethod.POST, params = "testRpcButton")
     public String testProcess(@ModelAttribute VistaTestFormBean vistaTestFormBean, Model model,
-            @CurrentUser EscreenUser escreenUser) {
+                              @CurrentUser EscreenUser escreenUser) {
 
         logger.debug(vistaTestFormBean.getSelectedRpcId());
 
@@ -394,19 +399,19 @@ public class VistaTestController {
             String vistaVisitDate = VistaUtils.convertToVistaDateString(new Date(), VistaDateFormat.MMddHHmmss);
 
             String visitString = clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.getCode(); // Required to
-                                                                                                        // create
-                                                                                                        // Progress
-                                                                                                        // Note.
+            // create
+            // Progress
+            // Note.
             Long patientIEN = 100003L; // Required to create Progress Note.
             Long titleIEN = progressNoteTitle.getNoteTitleIen(); // Required to create Progress Note.
             Date vistaVisitDateTime = null; // Optional when creating Progress Note.
             Long locationIEN = Long.parseLong(VistaUtils.getClinicIEN(visitString).trim()); // Optional when creating Progress Note.
             Long visitIEN = null; // Optional when creating Progress Note.
             Object[] identifiers = { // Required to create Progress Note.
-                clinician.getIEN(), // Author IEN - Required to create Progress Note.
-                VistaUtils.convertVistaDate(visitString), // Required to create Progress Note.
-                locationIEN, // Required to create Progress Note.
-                ""
+                    clinician.getIEN(), // Author IEN - Required to create Progress Note.
+                    VistaUtils.convertVistaDate(visitString), // Required to create Progress Note.
+                    locationIEN, // Required to create Progress Note.
+                    ""
             };
             boolean suppressCommitPostLogic = false; // Required to create Progress Note.
             boolean saveCrossReference = false; // Required to create Progress Note.
@@ -678,7 +683,7 @@ public class VistaTestController {
     }
 
     public String getClinicalReminderDialogElementRaw(String dialogElementIen, String isHistorical,
-            String findingType) {
+                                                      String findingType) {
 
         logger.debug("vistaTestPage::getClinicalReminderDialogElementRaw called");
 
@@ -753,7 +758,7 @@ public class VistaTestController {
     }
 
     public String getClinicalReminderDialogElement(String dialogElementIen, Boolean isHistorical,
-            String findingType) {
+                                                   String findingType) {
 
         logger.debug("vistaTestPage::getClinicalReminderDialogElement called");
 
@@ -1057,7 +1062,8 @@ public class VistaTestController {
         int veteranAssessmentId = 55;
 
         try {
-            vistaDelegate.saveVeteranAssessmentToVista(veteranAssessmentId, escreenUser);
+            SaveToVistaContext response = new SaveToVistaContext(veteranAssessmentId, escreenUser, assessmentEngineService);
+            vistaDelegate.saveVeteranAssessmentToVista(response);
         }
         catch (Exception e) {
             return "Exception calling testSaveHealthFactorToVista: " + e.toString();

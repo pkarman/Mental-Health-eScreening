@@ -18,6 +18,7 @@ public class TemplateFileDTO implements Serializable{
 	private TemplateTypeDTO type;
 	private String name;
 	private String json;
+	private GraphParamsDto graph;
 	
 	private List<INode> blocks = new ArrayList<>();
 	
@@ -48,7 +49,6 @@ public class TemplateFileDTO implements Serializable{
 	public boolean getIsGraphical() {
 		return isGraphical;
 	}
-	
 	public void setIsGraphical(Boolean isGraphical2) {
 		this.isGraphical = isGraphical2;		
 	}
@@ -58,7 +58,10 @@ public class TemplateFileDTO implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-	
+	public GraphParamsDto getGraph() {
+        return graph;
+    }
+    public void setGraph(GraphParamsDto graph) {
+        this.graph = graph;
+    }
 }

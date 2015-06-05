@@ -401,11 +401,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 				if (veteranAssessment.getDashboardAlerts() != null && veteranAssessment.getDashboardAlerts().size() > 0) {
 					for (DashboardAlert dashboardAlert : veteranAssessment.getDashboardAlerts()) {
-						AlertDto alertDto = new AlertDto();
-						alertDto.setAlertId(dashboardAlert.getDashboardAlertId());
-						alertDto.setAlertName(dashboardAlert.getName());
-
-						assessmentSearchResult.getAlerts().add(alertDto);
+						assessmentSearchResult.getAlerts().add(new AlertDto(dashboardAlert));
 					}
 				}
 
@@ -1164,8 +1160,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		//if this variable is a measure (question) then add all answers' variables
 		if(dbVariable.getMeasure() != null && dbVariable.getMeasure().getMeasureAnswerList() != null){
 		    for(MeasureAnswer answer : dbVariable.getMeasure().getMeasureAnswerList()){
-		        if(answer.getAssessmentVariable() != null){
-		            dbVariables.add(answer.getAssessmentVariable());
+		        if(answer.assessmentVariable() != null){
+		            dbVariables.add(answer.assessmentVariable());
 		        }
 		        else{
 		            logger.error("Answer with ID {} does not have an associated assessment variable. This should never happen.", 
@@ -1416,7 +1412,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate) {
         Integer measureId = 23;
 
-        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  23);
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate, 23);
     }
 
     @Override
@@ -1432,7 +1428,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
     @Override
     public int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate) {
-        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  24);
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate, 24);
     }
 
     @Override
@@ -1455,4 +1451,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
         return veteranAssessmentRepository.findAlertsCount(fromDate, toDate, clinicIds);
     }
+	@Override
+	public int getMissingEthnicityCount(List cList, String fromDate, String toDate) {
+		return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  21);
+	}
 }

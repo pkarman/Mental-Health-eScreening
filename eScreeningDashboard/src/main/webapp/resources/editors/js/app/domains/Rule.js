@@ -4,54 +4,30 @@
  *
  * @type {EScreeningDashboardApp|*|EScreeningDashboardApp|*|{}|{}}
  */
-var EScreeningDashboardApp = EScreeningDashboardApp || {};
-/**
- * Represents the application static variable. Use existing static variable, if one already exists,
- * otherwise create a new one.
- *
- * @static
- * @type {*|EScreeningDashboardApp.models|*|EScreeningDashboardApp.models|Object|*|Object|*}
- */
-EScreeningDashboardApp.models = EScreeningDashboardApp.models || EScreeningDashboardApp.namespace("gov.va.escreening.models");
+var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashboardApp.models || EScreeningDashboardApp.namespace('gov.va.escreening.models') };
 
-/**
- * Constructor method for the Rule class.  The properties of this class can be initialized with
- * the jsonUserObject.
- * @class
- * @classdesc   This class is a domain model class; which means it has both behavior and state
- *              information about the user.
- * @param {String}  jsonRuleObject  Represents the JSON representation of a Rule object.
- * @constructor
- * @author Bryan Henderson
- */
-EScreeningDashboardApp.models.Rule = function (jsonRuleObject) {
-    var that = this,
-        id = (Object.isDefined(jsonRuleObject) && Object.isDefined(jsonRuleObject.id))? jsonRuleObject.id : -1,
-        name = (Object.isDefined(jsonRuleObject) && Object.isDefined(jsonRuleObject.name))? jsonRuleObject.name : null,
-        expression = (Object.isDefined(jsonRuleObject) && Object.isDefined(jsonRuleObject.expression))? jsonRuleObject.expression : null,
-        createdDate = (Object.isDefined(jsonRuleObject) && Object.isDefined(jsonRuleObject.createdDate))? (Object.isDate(jsonRuleObject.createdDate)) ? jsonRuleObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonRuleObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null;
+(function () {
+	'use strict';
 
-    this.getId = function(){
-        return id;
-    };
-    
-    this.getName = function(){
-    	return name;
-    };
-    
-    this.getExpression = function(){
-    	return expression;
-    };
+	function Rule(obj, AssessmentVariable) {
+		this.id = obj.id || null;
+		this.name = obj.name || '';
+		this.condition = obj.condition || {
+			type: 'if',
+			summary: '',
+			name: '',
+			section: '',
+			children: [],
+		};
 
-    this.getCreatedDate= function() {
-        return createdDate;
-    };
+		this.condition.getTypeOf = function() {
+			return 'Rule';
+		};
 
-    this.toString = function () {
-        return "Rule [id: " + id + ", name: " + name + ", expression: " + expression + ", createdDate: " + createdDate + "]";
-    };
+		// Initialize condition operands and operators
+		angular.extend(this.condition, new EScreeningDashboardApp.models.TemplateCondition(this.condition));
+	}
 
-    this.toJSON = function () {
-        return "{\"id\": " + id + ",\"name\": \"" + name + "\",\"expression\": \"" + expression + ",\"createdDate\": \"" + (createdDate != null) ? createdDate.isISOString() : null + "\"}";
-    };
-};
+	EScreeningDashboardApp.models.Rule = Rule;
+
+})();

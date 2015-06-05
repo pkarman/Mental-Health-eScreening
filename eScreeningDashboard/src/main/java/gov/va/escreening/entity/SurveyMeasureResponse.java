@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,21 +60,21 @@ public class SurveyMeasureResponse implements Serializable {
     @Column(name = "date_modified")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateModified;
-	
-	
-	
+
     @JoinColumn(name = "survey_id", referencedColumnName = "survey_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private Survey survey;
+    
 	@JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
 	@ManyToOne(optional = false)
 	private Measure measure;
+	
 	@JoinColumn(name = "veteran_assessment_id", referencedColumnName = "veteran_assessment_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private VeteranAssessment veteranAssessment;
 	
 	@JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false) //fetch is not lazy to increase performance in ResolverParameters
 	private MeasureAnswer measureAnswer;
 	
 	@JoinColumn(name = "copiedFromAssessment", referencedColumnName = "veteran_assessment_id")
@@ -231,10 +232,14 @@ public class SurveyMeasureResponse implements Serializable {
 
 	@Override
 	public String toString() {
-		return "gov.va.escreening.entity.SurveyMeasureResponse[ surveyMeasureResponseId="
-				+ surveyMeasureResponseId + ", answerId=" 
-				+ (measureAnswer != null ? measureAnswer.getMeasureAnswerId() : null) 
-				+ ", row=" + tabularRow + " ]";
+		return "SurveyMeasureResponse[ Id=" + surveyMeasureResponseId 
+				+ ", surveyId=" + (survey != null ? survey.getSurveyId() : null)
+				+ ", measureAnswerId=" + (measureAnswer != null ? measureAnswer.getMeasureAnswerId() : null)
+				+ ", row=" + tabularRow 
+				+ (booleanValue != null ? ", value=" + booleanValue : "")
+				+ (textValue != null ? ", value=" + textValue : "")
+				+ (numberValue != null ? ", value=" + numberValue : "")
+				+ " ]";
 	}
 
 }

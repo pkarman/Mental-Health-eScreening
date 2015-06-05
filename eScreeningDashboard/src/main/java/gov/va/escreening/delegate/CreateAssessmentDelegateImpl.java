@@ -409,6 +409,11 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 	public List<SurveyDto> getSurveyList() {
 		return surveyService.getSurveyList();
 	}
+	
+	@Override
+    public List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId) {
+        return surveyService.getSurveyListUnionAssessment(veteranAssessmentId);
+    }
 
 	@Override
 	public List<SurveyDto> getVeteranAssessmentSurveyList(

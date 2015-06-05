@@ -127,6 +127,9 @@ h2 {
 .gray-lighter{
 	background-color:#eee;
 }
+.lighter-white{
+  background-color:#fff;
+}
 .txt_lable_lg {
 	font-size: 22px;
 	font-weight: bold;
@@ -761,6 +764,43 @@ span.countdown {
   font-weight:bold;
   color:#949494;
 }
+
+/* Template Editor */
+.border-radius-ul ul,  .border-radius-ul li{
+	margin:0px;
+	padding:0px;
+	list-style:none;
+}
+.border-radius-ul {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #bbb;
+  padding: 20px 10px 0px 10px;
+  background-color: #fff;
+  margin:0px;
+}
+.border-radius-ul li{
+	list-style:none;
+	border-bottom:1px solid #B1B1B1;
+	margin-bottom:10px;
+}
+.hr-legend{
+	margin:8px 0px;
+}
+.padding-box-align{
+	padding:20px 0px 0px 0px;
+}
+/* Condition Editor */
+.condition-editor-block-children{
+	margin-left: 2%;
+}
+.condition-editor-block{
+	background:white;
+	padding-top:14px;
+}
+ 
+
 @media only screen
 and (min-device-width : 768px)
 and (max-device-width : 1024px)

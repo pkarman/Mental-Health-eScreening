@@ -16,9 +16,13 @@ import java.util.Calendar;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AssessmentTestBase {
 	protected static final int TEST_USER_ID = 5;
 	protected static final int TEST_VET_ID = 18;
+	Logger logger = LoggerFactory.getLogger(AssessmentTestBase.class);
 
 	@Resource
 	protected VeteranAssessmentRepository vetAssessmentRepo;
@@ -31,6 +35,8 @@ public abstract class AssessmentTestBase {
 		res.setMeasureAnswer(new MeasureAnswer(measureAnswerId));
 		res.setVeteranAssessment(new VeteranAssessment(assessmentId));
 		res.setSurvey(new Survey(surveyId));
+		
+		logger.debug("created SurveyMeasureResponse: {}", res);
 		return res;
 	}
 
@@ -42,6 +48,8 @@ public abstract class AssessmentTestBase {
 		res.setMeasureAnswer(new MeasureAnswer(measureAnswerId));
 		res.setVeteranAssessment(new VeteranAssessment(assessmentId));
 		res.setSurvey(new Survey(surveyId));
+		
+		logger.debug("created SurveyMeasureResponse: {}", res);
 		return res;
 	}
 
@@ -53,6 +61,8 @@ public abstract class AssessmentTestBase {
 		res.setMeasureAnswer(new MeasureAnswer(measureAnswerId));
 		res.setVeteranAssessment(new VeteranAssessment(assessmentId));
 		res.setSurvey(new Survey(surveyId));
+		
+		logger.debug("created SurveyMeasureResponse: {}", res);
 		return res;
 	}
 

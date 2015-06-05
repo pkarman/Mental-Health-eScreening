@@ -123,7 +123,7 @@ module.factory('ReportsService', ['$http', function ($http) {
         a.click();
     };
     var generateSvgObjects = function (chartableData) {
-        var svgObjects = [];
+        var svgObjectMap = new Object();
         var verifiedData = _.filter(chartableData, function (data) {
             return data.dataFormat != undefined && data.dataFormat != null && !_.isEmpty(data.dataFormat) && data.dataSet != undefined && data.dataSet != null && !_.isEmpty(data.dataSet);
         })
@@ -134,9 +134,10 @@ module.factory('ReportsService', ['$http', function ($http) {
             // function to use d3.js which create a svg object by manipulating the DOM
             graphGenerator(df, ds); // library function in chart.js
             var svgData = svgObj(); // library function in chart.js
-            svgObjects.push(svgData);
+
+            svgObjectMap[dataMap.dataFormat.chartId] = svgData;
         });
-        return svgObjects;
+        return svgObjectMap;
     };
 
     var runGraphReport = function (formData, graphRestEndPoint) {
@@ -351,6 +352,17 @@ module.controller('eScreeningBatteriesCtrl', ['$scope', '$http', 'ReportsService
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -384,6 +396,17 @@ module.controller('demographicsReportCtrl', ['$scope', '$http', 'ReportsService'
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -415,6 +438,15 @@ module.controller('avgTimePerModuleCtrl', ['$scope', '$http', 'ReportsService', 
                 console.log('clinicStatisticReportsPartIVAverageTimePerModuleReport report generated successfully');
             });
             $scope.reset();
+        }
+    }
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
         }
     }
     $scope.reset = function () {
@@ -449,6 +481,17 @@ module.controller('mostSkippedQuestionsCtrl', ['$scope', '$http', 'ReportsServic
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -481,6 +524,17 @@ module.controller('mostCommonTypesOfAlertsPercentagesCtrl', ['$scope', '$http', 
             $scope.reset();
         }
     }
+
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
+        }
+    }
+
     $scope.reset = function () {
         $scope.$broadcast('show-errors-reset');
         //$scope.report = {};
@@ -511,6 +565,15 @@ module.controller('positiveScreensCtrl', ['$scope', '$http', 'ReportsService', f
                 console.log('clinicStatisticReportsPartVIPositiveScreensReport report generated successfully');
             });
             $scope.reset();
+        }
+    }
+    $scope.selectAllClinic = function () {
+        if ($scope.report.selectAllClinic) {
+            $scope.report.clinicsList = $scope.clinicsList.map(function (item) {
+                return item.clinicId;
+            });
+        } else {
+            $scope.report.clinicsList = [];
         }
     }
     $scope.reset = function () {

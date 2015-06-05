@@ -10,7 +10,6 @@ import gov.va.escreening.repository.ValidationRepository;
 import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -147,9 +146,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
             // bind the survey (or module with its sheet)
             dataDictionary.put(s.getName(), sheet);
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.format("sheet data for Survey=%s =>> %s", s.getName(), sheet));
-            }
+            //logger.debug("sheet data for Survey={} =>> {}", s.getName(), sheet);
         }
 
         if (logger.isDebugEnabled()) {
@@ -198,5 +195,20 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     @Override
     public String createTableResponseVarName(String exportName) {
         return ddh.createTableResponseVarName(exportName);
+    }
+
+    @Override
+    public List<String> findAllFormulas(String surveyName, Map<String, Table<String, String, String>> dd) {
+        final Table<String, String, String> surveySheet = dd.get(surveyName);
+        final Map<String, Map<String, String>> rowMap = surveySheet.rowMap();
+        List<String> formulaNames = Lists.newArrayList();
+
+        for (String rowKey : rowMap.keySet()) {
+            if (rowKey.startsWith(ddh.FORMULA_KEY_PREFIX)) {
+                final Map<String, String> row = rowMap.get(rowKey);
+                formulaNames.add(row.get(ddh.msg("var.name")));
+            }
+        }
+        return formulaNames;
     }
 }

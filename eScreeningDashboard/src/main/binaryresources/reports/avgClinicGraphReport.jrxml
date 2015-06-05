@@ -2,8 +2,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avgClinicGraphReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.7715610000000013"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="536"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="noData" class="java.lang.Boolean"/>
 	<field name="clinicName" class="java.lang.String"/>
 	<field name="graphReport" class="java.util.Collection"/>
 	<background>
@@ -41,6 +42,7 @@
 	</title>
 	<detail>
 		<band height="256" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="1" width="572" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
 				<textElement verticalAlignment="Middle">
@@ -55,4 +57,13 @@
 			</subreport>
 		</band>
 	</detail>
+	<summary>
+		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="224" y="21" width="100" height="20" uuid="09cc55fb-ae62-4a7e-b0b8-c62231e6e85c"/>
+				<text><![CDATA[No Data Found]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>

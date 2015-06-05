@@ -7,13 +7,7 @@ import java.util.List;
 public interface SurveyRepository extends RepositoryInterface<Survey> {
 
     /**
-     * Retrieves all survey that are optional (not mandatory by the system).
-     * @return
-     */
-    List<Survey> getAssignableSurveys();
-
-    /**
-     * Retrieves all surveys that are mandatory by the system (deomographics).
+     * Retrieves all published surveys that are mandatory by the system (deomographics).
      * @return
      */
     List<Survey> getRequiredSurveys();

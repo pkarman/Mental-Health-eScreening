@@ -458,7 +458,9 @@ public class XportDataTest {
 
         // now we also need to make sure all smr entered by user in the json file were tested and found correct
         for (TestSurvey ts : atd.testSurveys) {
-            assertTrue(String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap), ts.smrMap.isEmpty());
+            assertTrue(
+                    String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap), 
+                    ts.smrMap.isEmpty());
         }
 
         return true;
@@ -595,13 +597,13 @@ public class XportDataTest {
     @Test
     public void testExportLogs() throws Exception {
         List<ExportLog> elList = elr.findAll();
-        Assert.assertNotNull(elList);
+        assertNotNull(elList);
     }
 
     @Test
     public void testExportLogsForDays() throws Exception {
         List<ExportLog> elList = elr.findAllForDays(1);
-        Assert.assertNotNull(elList);
+        assertNotNull(elList);
     }
 
     // @Rollback(value = false)

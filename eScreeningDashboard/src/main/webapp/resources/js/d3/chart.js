@@ -341,8 +341,8 @@ function graphGenerator(dataStructure, dataDataset){
 				left: 30,
 				right: 140
 			},
-			xRangeStart = 25,		// Move the x axis to right
-			yStartPoint = 0; 		// Start Point for y axis
+			xRangeStart = 25;		// Move the x axis to right
+			//yStartPoint = 0; 		// Start Point for y axis
 			
 		colors.reverse();
 		
@@ -383,7 +383,7 @@ function graphGenerator(dataStructure, dataDataset){
 		var x = d3.scale.linear().domain([0, ticks.length]).range([xRangeStart, width]);
 
 		var y = d3.scale.linear()
-			.domain([yStartPoint, d3.max(ticks, function (d) {
+			.domain([graphParams.graphStart, d3.max(ticks, function (d) {
 			return graphParams.maxXPoint;
 			//return +d.value;
 		})])
@@ -477,17 +477,62 @@ function graphGenerator(dataStructure, dataDataset){
 				.text( function (d) { return +d.value; });
 	
 
-	    	 this.append('text')
+			/* Add BG for graphMaxValue*/
+			this.append("rect")
+				.attr('fill', "#fff")
+				.attr('width', "14px")
+				.attr('height', "9px")
+				.attr('x', -22)
+				.attr('y', -6)
+
+				 this.append('text')
+					.style("text-anchor", "right")
+					.attr('x',-14)
+					.attr('y', 3)
+					.attr('fill', 'black')
+					.attr('font-size', '11')
+					.attr('font-weight', 'bold')
+					.style("text-anchor", "middle")
+					.attr('font-family', 'arial')
+					.attr("stroke", "black")
+					.text(graphMaxValue);
+
+
+			/* Add BG for graphMaxValue*/
+			this.append("rect")
+				.attr('fill', "#fff")
+				.attr('width', "14px")
+				.attr('height', "9px")
+				.attr('x', -21)
+				.attr('y', height -5)
+
+				 this.append('text')
+					.style("text-anchor", "right")
+					.attr('x',-14)
+					.attr('y', height + 3)
+					.attr('fill', 'black')
+					.attr('font-size', '11')
+					.attr('font-weight', 'bold')
+					.style("text-anchor", "middle")
+					.attr('font-family', 'arial')
+					.attr("stroke", "black")
+					.text(graphParams.graphStart);
+			 
+
+			/* y start point 
+			this.append('text')
 				.style("text-anchor", "middle")
-				.attr('x',-14)
-				.attr('y', 5)
+				.attr('x',-12)
+				.attr('y', 209)
 				.attr('fill', 'black')
 				.attr('font-size', '11')
 				.attr('font-weight', 'bold')
 				.style("text-anchor", "middle")
 				.attr('font-family', 'arial')
-				.attr("stroke", "black")
-				.text(graphMaxValue);
+				.attr("stroke", "#000")
+				.text(yStartPoint);		
+			*/		
+
 
 
 			// Update Plot Started Here
@@ -584,7 +629,7 @@ function graphGenerator(dataStructure, dataDataset){
 	
 			//Create Y Scale for bar graph
 			var yScale = d3.scale.linear()
-				 .domain([yStartPoint, d3.max(ticks, function (d) {
+				 .domain([graphParams.graphStart, d3.max(ticks, function (d) {
 				 // return +d.value;
 				 return graphParams.maxXPoint;
 			})])
@@ -677,6 +722,7 @@ function wrap(text) {
 		}
 	});
 }
+
 				
 function hasMoreThanOne(obj) {
 		if (Object.keys) { 

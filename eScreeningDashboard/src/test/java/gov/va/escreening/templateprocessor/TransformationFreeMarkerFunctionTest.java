@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import java.util.List;
 
+import gov.va.escreening.constants.AssessmentConstants;
+import static gov.va.escreening.constants.AssessmentConstants.STANDARD_DATE_FORMAT;
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAvBuilder;
 import gov.va.escreening.variableresolver.CustomAssessmentVariableResolver;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -29,13 +29,12 @@ import com.google.common.collect.Lists;
  */
 @RunWith(JUnit4.class)
 public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest{
-    private static DateTimeFormatter STANDARD_DATE_FORMAT = DateTimeFormat.forPattern("MM/dd/yyyy");
-
+    
     @Test
     public void testGetResponseForFreeText() throws Exception{
         assertEquals("Bill", 
                 render("${getResponse(var1, 1)}",
-                        avBuilder.addFreeTextAV(1, "name", "Bill")));
+                        avBuilder.addFreeTextAv(1, "name", "Bill")));
     }
 
     @Test
@@ -48,7 +47,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
 
                 render("${delimit(var6,\"*\",\"**\",\"-\",true,\"defaultVal\")}",
                         avBuilder
-                        .addCustomAV(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)
                             .addAppointment("Clinic 1", firstApptTime, "active")
                             .addAppointment("Clinic 2", secondApptTime, "active")));
     }
@@ -59,7 +58,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("defaultVaLL", 
                 render("${delimit(var6,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
-                        .addCustomAV(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)));
+                        .addCustomAv(CustomAssessmentVariableResolver.CUSTOM_VETERAN_APPOINTMENTS)));
     }
 
     @Test
@@ -67,7 +66,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("*first-*third-**fourth-", 
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
-                        .addSelectMultiAV(1, null)
+                        .addSelectMultiAv(1, null)
                             .addAnswer("first", true, null)
                             .addAnswer("second", false, null)
                             .addAnswer("third", true, null)
@@ -81,7 +80,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("*first-*"+ otherResponse + "-**fourth-", 
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
-                        .addSelectMultiAV(1, null)
+                        .addSelectMultiAv(1, null)
                             .addAnswer("first", true, null)
                             .addAnswer("second", false, null)
                             .addAnswer("third", true, otherResponse)
@@ -94,7 +93,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("defaultVaLL", 
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
-                        .addSelectMultiAV(1, null)
+                        .addSelectMultiAv(1, null)
                             .addAnswer("first", null, null)
                             .addAnswer("second", null, null)
                             .addAnswer("third", null, null)
@@ -107,7 +106,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("third", 
                 render("${delimit(var1,\"*\",\"**\",\"-\",true,\"defaultVaLL\")}",
                         avBuilder
-                        .addSelectMultiAV(1, null)
+                        .addSelectMultiAv(1, null)
                             .addAnswer("first", false, null)
                             .addAnswer("second", false, null)
                             .addAnswer("third", true, null)
@@ -119,7 +118,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("*first-**second", 
                 render("${delimit(var1,\"*\",\"**\",\"-\",false,\"defaultVaLL\")}",
                         avBuilder
-                        .addSelectMultiAV(1, null)
+                        .addSelectMultiAv(1, null)
                             .addAnswer("first", true, null)
                             .addAnswer("second",true, null)));
     }
@@ -135,7 +134,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("3", 
                 render("${yearsFromDate(var1)}",
                         avBuilder
-                        .addFreeTextAV(1, "dob", STANDARD_DATE_FORMAT.print(date))
+                        .addFreeTextAv(1, "dob", AssessmentConstants.STANDARD_DATE_FORMAT.print(date))
                             .setDataTypeValidation("date")));
     }
 
@@ -147,7 +146,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("3", 
                 render("${yearsFromDate(var1)}",
                         avBuilder
-                        .addFreeTextAV(1, "dob", STANDARD_DATE_FORMAT.print(date))
+                        .addFreeTextAv(1, "dob", STANDARD_DATE_FORMAT.print(date))
                             .setDataTypeValidation("date")));
     }
 
@@ -159,7 +158,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("2", 
                 render("${yearsFromDate(var1)}", 
                         avBuilder
-                        .addFreeTextAV(1, "dob", STANDARD_DATE_FORMAT.print(date))
+                        .addFreeTextAv(1, "dob", STANDARD_DATE_FORMAT.print(date))
                             .setDataTypeValidation("date")));
     }
 
@@ -169,7 +168,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
                 render("${yearsFromDate(var1)}",
                         avBuilder
-                        .addFreeTextAV(1, "dob", null)
+                        .addFreeTextAv(1, "dob", null)
                             .setDataTypeValidation("date")));
     }
 
@@ -178,7 +177,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix() throws Exception{
         List<Integer> columnAvList = avBuilder
-                .addSelectOneMatrixAV(123, "test matrix question")
+                .addSelectOneMatrixAv(123, "test matrix question")
                     .addChildWithMeasureId(111, "q1")
                     .addChildWithMeasureId(222, "q2")
                     .addChildWithMeasureId(333, "q3")
@@ -198,7 +197,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrixTestSkippingOfUnselectedAnswers() throws Exception{
         List<Integer> columnAvList = avBuilder
-                .addSelectOneMatrixAV(123, "test matrix question")
+                .addSelectOneMatrixAv(123, "test matrix question")
                     .addChildWithMeasureId(111, "q1")
                     .addChildWithMeasureId(222, "q2")
                     .addChildWithMeasureId(333, "q3")
@@ -218,7 +217,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix() throws Exception{
         List<Integer> columnAnswerIdList = avBuilder
-                .addSelectMultiMatrixAV(123, "test matrix question")
+                .addSelectMultiMatrixAv(123, "test matrix question")
                     .addChildWithMeasureId(111, "q1")
                     .addChildWithMeasureId(222, "q2")
                     .addChildWithMeasureId(333, "q3")
@@ -237,7 +236,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix_SingleValueOutputCase() throws Exception{
         List<Integer> columnAvList = avBuilder
-                .addSelectOneMatrixAV(123, "test matrix question")
+                .addSelectOneMatrixAv(123, "test matrix question")
                     .addChildWithMeasureId(111, "q1")
                     .addChildWithMeasureId(222, "q2")
                     .addChildWithMeasureId(333, "q3")
@@ -257,13 +256,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix_SingleValueOutputCase() throws Exception{
         List<Integer> columnAvList = avBuilder
-                .addSelectMultiMatrixAV(123, "test matrix question")
+                .addSelectMultiMatrixAv(123, "test matrix question")
                     .addChildWithMeasureId(111, "q1")
                     .addChildWithMeasureId(222, "q2")
                     .addChildWithMeasureId(333, "q3")
-                    .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
-                    .addColumn(null, null, null, ImmutableList.of(false, true, false), null)
-                    .addColumn(null, null, null, ImmutableList.of(false, false, false), null)
+                    .addColumn("col1", null, null, ImmutableList.of(false, false, false), null)
+                    .addColumn("col2", null, null, ImmutableList.of(false, true, false), null)
+                    .addColumn("col3", null, null, ImmutableList.of(false, false, false), null)
                     .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -278,7 +277,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
     public void testDelimitedMatrixQuestionsTranslationForSelectOneMatrix_NoResponseGiven() throws Exception{
         //test that transformation still works when no veteran response is available
         List<Integer> columnAvList = avBuilder
-                .addSelectOneMatrixAV(123, "test matrix question")
+                .addSelectOneMatrixAv(123, "test matrix question")
                     .addChildWithAvId(111, "q1")
                     .addChildWithAvId(222, "q2")
                     .addChildWithAvId(333, "q3")
@@ -292,14 +291,14 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
         templateText.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
 
-        assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, render(templateText.toString(), avBuilder));
+        assertEquals("", render(templateText.toString(), avBuilder));
     }
 
     @Test
     public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix_NoResponseGiven() throws Exception{
         //test that transformation still works when no veteran response is available
         List<Integer> columnAvList = avBuilder
-                .addSelectMultiMatrixAV(123, "test matrix question")
+                .addSelectMultiMatrixAv(123, "test matrix question")
                     .addChildWithAvId(111, "q1")
                     .addChildWithAvId(222, "q2")
                     .addChildWithAvId(333, "q3")
@@ -313,7 +312,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"second question\"},[");
         templateText.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
 
-        assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, render(templateText.toString(), avBuilder));
+        assertEquals("", render(templateText.toString(), avBuilder));
     }
 
     /** TESTS for numberOfEntries translation for table questions  **/
@@ -484,7 +483,7 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         assertEquals("fourth", 
                 render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",3))}",
                         avBuilder));
-        //test when it doesn't exis
+        //test when it doesn't exist
         assertEquals(TestAssessmentVariableBuilder.DEFAULT_VALUE, 
                 render("<#assign tableHash = createTableHash(var1)>${getResponse(getTableVariable(tableHash,var" + freeTextChildAvId + ",4))}",
                         avBuilder));

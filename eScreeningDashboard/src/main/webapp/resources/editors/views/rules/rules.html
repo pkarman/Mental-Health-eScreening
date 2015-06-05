@@ -1,0 +1,56 @@
+<div style="min-height:400px;">
+    <div class="ui-view-container container-fluid">
+        <div style="min-height:650px;" ui-view>
+
+	        <button ui-sref="rules.detail" class="btn btn-primary pull-right" type="button">Create Rule</button>
+
+            <h1>Manage Rules</h1>
+            
+            <!-- Alerts and Messages -->
+            <alert ng-repeat="alert in alerts track by $index" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <!--- ngTable Begin --->
+                    <table ng-table="tableParams"
+                            show-filter="true"
+                            class="table table-hover"
+                            summary="Rule Selection Table">
+                        <tr ng-repeat="rule in $data" ng-class-odd="'odd'" ng-class-even="'even'">
+                            <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }">
+                                {{rule.name}}
+                            </td>
+
+                            <td data-title="Actions" class="col-md-2">
+                                <div class="pull-right">
+                                    <button class="btn btn-default btn-xs"
+                                            ng-click="editRule(rule);"
+                                            title="Edit {{rule.name}}"
+                                            name="Edit {{rule.name}}"><span class="glyphicon glyphicon-edit"></span> Edit
+                                    </button>
+                                    &nbsp;
+                                    <button class="btn btn-default btn-xs"
+                                            ng-really-click="deleteRule(rule)" ng-really-message="Are you sure you want to delete this rule?"
+                                            title="Delete {{rule.name}}"
+                                            name="Delete {{rule.name}}">
+								<span class="glyphicon glyphicon-remove-circle color-red"
+                                        style="color:red;"></span> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--- /ngTable --->
+                    <hr>
+                    <div class="row pull-right">
+                        <div class="col-md-12">
+                            <a href="javascript:void(0);" class="btn btn-default" ng-click="cancel();">Back</a>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

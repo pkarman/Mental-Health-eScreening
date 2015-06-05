@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="595Report" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
 	<property name="ireport.zoom" value="1.8150000000000024"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="130"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="noData" class="java.lang.Boolean"/>
@@ -10,9 +10,6 @@
 	<field name="variableName" class="java.lang.String"/>
 	<field name="questions" class="java.lang.String"/>
 	<field name="percentage" class="java.lang.String"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
 	<title>
 		<band height="151" splitType="Stretch">
 			<image>
@@ -61,6 +58,7 @@
 	</title>
 	<columnHeader>
 		<band height="25">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="5" width="51" height="20" backcolor="#CCCCCC" uuid="81a67b3b-140f-4a1e-b6cc-ca70ceab9d9f"/>
 				<box>
@@ -122,6 +120,7 @@
 	</columnHeader>
 	<detail>
 		<band height="24" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<frame>
 				<reportElement x="0" y="0" width="572" height="24" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
 				<box>
@@ -196,4 +195,13 @@
 			</frame>
 		</band>
 	</detail>
+	<summary>
+		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="234" y="20" width="100" height="20" uuid="176909d4-264c-4c36-b14a-8d7c8052b8cd"/>
+				<text><![CDATA[No results found.]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>

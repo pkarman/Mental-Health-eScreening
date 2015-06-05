@@ -39,6 +39,8 @@ public class Survey implements Serializable, SurveyBaseProperties{
     private String name;
     @Column(name = "description")
     private String description;
+    @Column(name = "is_published")
+    private Boolean isPublished;
     @Column(name = "version")
     private Integer version;
     @Basic(optional = false)
@@ -126,6 +128,20 @@ public class Survey implements Serializable, SurveyBaseProperties{
     @Override
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    @Override
+    public Boolean getIsPublished() {
+        return this.isPublished;
+    }
+    
+    public Boolean isPublished() {
+        return this.isPublished;
+    }
+    
+    @Override
+    public void setIsPublished(Boolean isPublished) {
+        this.isPublished = isPublished;
     }
 
     @Override
