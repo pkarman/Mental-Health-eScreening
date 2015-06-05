@@ -132,14 +132,14 @@
                         <div class="col-md-6">
                           <div class="form-group">
                             <label for="cprsAccessCode">Access Code:</label>
-                            <input type="password" id="cprsAccessCode" class="form-control" placeholder="Enter Access Code" maxlength="30"  required="required" pattern="[^'\u005E\u003B\u003A]+" />
+                            <input type="password" id="cprsAccessCode" class="form-control" placeholder="Enter Access Code" maxlength="30"  required="required" pattern="[^\u005E\u003B\u003A]+" />
                             <div id="cprsVerifyCodeError" style="padding-left:231px;display:none;"></div>
                           </div>
                         </div>
                         <div class="col-md-6">
                           <div class="form-group">
                             <label for="cprsVerifyCode">Verify Code:</label>
-                            <input type="password" id="cprsVerifyCode" class="form-control" placeholder="Enter Verify Code"  maxlength="30" required  pattern="[^'\u005E\u003B\u003A]+"/>
+                            <input type="password" id="cprsVerifyCode" class="form-control" placeholder="Enter Verify Code"  maxlength="30" required  pattern="[^\u005E\u003B\u003A]+"/>
                             <div id="errorDiv" align="center" style="color:red;"></div>
                           </div>
                         </div>
