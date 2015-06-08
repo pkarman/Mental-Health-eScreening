@@ -81,7 +81,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(VeteranAssessmentServiceImpl.class);
-
+	private static final int MAX_ASSESSMENT_HISTORY_COUNT = 15;
+	
 	@Autowired
 	private AssessmentStatusRepository assessmentStatusRepository;
 	@Autowired
@@ -1134,7 +1135,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	@Override
-	public Map<String, String> getVeteranAssessmentVariableSeries(
+	public Map<String, Double> getVeteranAssessmentVariableSeries(
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
@@ -1185,10 +1186,11 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			
 		});
 		
-		LinkedHashMap<String, String> timeSeries = new LinkedHashMap<String, String>();
-		int total = 0;
-		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
-		{
+		//This map should be updated in history date order
+		LinkedHashMap<String, Double> timeSeries = new LinkedHashMap<>();
+		for(int i=assessmentList.size()-Math.min(assessmentList.size(), MAX_ASSESSMENT_HISTORY_COUNT); 
+		        i < assessmentList.size(); i++){
+		    
 			VeteranAssessment va = assessmentList.get(i);
 			try {
 				Date d = va.getDateUpdated();
@@ -1206,9 +1208,9 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				AssessmentVariableDto result = dto.iterator().next();
 				
 				//TODO: Move this logic into the AssessmentVariableDto object
-				String value = null;
+				Double value = null;
 				if (result.getValue() != null) {
-					value = result.getValue();
+					value = Double.valueOf(result.getValue());
 				}
 				else if(result.getChildren() != null){
 				    double sum = 0d;
@@ -1223,13 +1225,12 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				        }
 				    }
 				    if(useSum){
-				        value = Double.toString(sum);
+				        value = sum;
 				    }
 				}
 				
 				if(value != null){
 				    timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  value);
-				    total++;
 				}
 			} catch (Exception ex) {// do nothing
 				logger.warn("exception getting a assessment variable for time series", ex);

@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.entity.Battery;
+import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.IllegalSystemStateException;
 import gov.va.escreening.exception.TemplateProcessorException;
@@ -46,25 +47,27 @@ public interface TemplateProcessorService {
 	 * Renders a template of the given type using responses in the given assessment
 	 * @param surveyId the id of the survey to render a template for
 	 * @param type TemplateType to render
-	 * @param veteranAssessmentId
+	 * @param veteranAssessment the assessment we are rendering a battery for
 	 * @return rendered text
 	 * @throws IllegalSystemStateException 
 	 * @throw IllegalStateException 
 	 * @throw EntityNotFoundException if a template of the given type does not exist for the given survey
 	 */
-	public String renderSurveyTemplate(int surveyId, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, EntityNotFoundException;
+	public String renderSurveyTemplate(int surveyId, TemplateType type, VeteranAssessment veteranAssessment, ViewType viewType) 
+	        throws IllegalSystemStateException, EntityNotFoundException;
 
 	
 	/**
 	 * Renders a template of the given type using responses in the given assessment
 	 * @param batteryId the id of the battery to render a template for
 	 * @param type TemplateType to render
-	 * @param veteranAssessmentId
+	 * @param veteranAssessment the assessment we are rendering a battery for
 	 * @param viewType - the view type to render
 	 * @return rendered text
 	 * @throws IllegalSystemStateException 
 	 * @throw IllegalStateException 
 	 * @throw EntityNotFoundException if a template of the given type does not exist for the given battery
 	 */
-	public String renderBatteryTemplate(Battery battery, TemplateType type, int veteranAssessmentId, ViewType viewType) throws IllegalSystemStateException, EntityNotFoundException;
+	public String renderBatteryTemplate(Battery battery, TemplateType type, VeteranAssessment veteranAssessment, ViewType viewType) 
+	        throws IllegalSystemStateException, EntityNotFoundException;
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.entity.TemplateType;
 
 @Repository
@@ -22,13 +23,19 @@ public class TemplateTypeRepositoryImpl extends AbstractHibernateRepository<Temp
 
 	@Override
 	public List<TemplateType> findAllModuleTypeOrderByName() {
-		// 3, 8, 9 are type could be mapped to module.
-		return (List<TemplateType>)entityManager.createQuery("from " + TemplateType.class.getName()+" t where t.templateTypeId in (3,8,9) order by t.name ").getResultList();
+		// types which can be mapped to a module
+		return entityManager.createQuery(
+		            "FROM " + TemplateType.class.getName()
+		            +" t where t.templateTypeId in (" + TemplateConstants.moduleTemplateIds() + ") order by t.name ",
+		            TemplateType.class).getResultList();
 	}
 	
 	@Override
 	public List<TemplateType> findAllTypeOrderByNameForBattery() {
-		// 3, 8, 9 are type could be mapped to module.
-		return (List<TemplateType>)entityManager.createQuery("from " + TemplateType.class.getName()+" t where t.templateTypeId  not in (3,8,9) order by t.name ").getResultList();
+		// types which can be mapped to a battery
+	    return entityManager.createQuery(
+	            "From " + TemplateType.class.getName()
+                +" t where t.templateTypeId not in (" + TemplateConstants.moduleTemplateIds() + ") order by t.name ",
+                TemplateType.class).getResultList();
 	}
 }

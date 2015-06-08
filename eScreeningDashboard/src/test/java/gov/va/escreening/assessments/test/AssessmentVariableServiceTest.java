@@ -49,35 +49,35 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
 	@Test
 	public void testTimeSeries()
 	{
-		Map<String, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
+		Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(TEST_VET_ID, 11, 3);
 		assertNotNull(timeSeries);
 		assertEquals(1, timeSeries.size());
 	}
 	
 	@Test
     public void testVeteran18_PainScoreTimeSeries(){
-        Map<String, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 2300, 12);
+        Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 2300, 12);
         assertNotNull(timeSeries);
         assertEquals(1, timeSeries.size());
     }
 	
    @Test
     public void testVeteran18_PHQ9TimeSeries(){
-        Map<String, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 1599, 12);
+        Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 1599, 12);
         assertNotNull(timeSeries);
         assertEquals(1, timeSeries.size());
     }
 	
 	@Test
     public void testVeteran18_PTSDTimeSeries(){
-        Map<String, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 1929, 12);
+        Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 1929, 12);
         assertNotNull(timeSeries);
         assertEquals(1, timeSeries.size());
     }
 	
 	@Test
     public void testVeteran16_PHQ9TimeSeries(){
-        Map<String, String> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(16, 1599, 12);
+        Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(16, 1599, 12);
         assertNotNull(timeSeries);
         assertEquals(3, timeSeries.size());
     }

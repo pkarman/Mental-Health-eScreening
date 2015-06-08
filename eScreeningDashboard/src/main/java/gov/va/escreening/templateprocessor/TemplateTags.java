@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author Robin Carnow
  *
  */
-enum TemplateTags {
+public enum TemplateTags {
 	BATTERY_HEADER_START, BATTERY_HEADER_END, 
 	BATTERY_FOOTER_START, BATTERY_FOOTER_END,
 	SECTION_TITLE_START, SECTION_TITLE_END, 
@@ -17,7 +17,7 @@ enum TemplateTags {
 	MODULE_TITLE_START, MODULE_TITLE_END, 
 	MODULE_START, MODULE_END,
 	MODULE_COMPONENTS_START,MODULE_COMPONENTS_END,  
-	LINE_BREAK, NBSP,
+	LINE_BREAK, NBSP, PRE_START, PRE_END,
 	IMG_LOGO_VA_HC, IMG_CESMITH_BLK_BRDR,
 	IMG_VA_VET_SMRY,
 	
@@ -37,7 +37,7 @@ enum TemplateTags {
 	;
 	
 	
-	enum Style {
+	public enum Style {
 		TEXT("([", "]+)"), 
 		XML("(<[", "]+>)"), 
 		FREEMARKER_VAR("(\\$\\{[", "]+\\})");
@@ -60,7 +60,7 @@ enum TemplateTags {
 	}
 	
 	/**
-	 * Creates a regex which contains a group with contains an OR'ing of each tag given. 
+	 * Creates a regex with a group which contains an OR'ing of each tag given. 
 	 * @param style dictates what the surrounding strings are around the tag (e.g. ${FREE_MARKER}, <XML_STYLE>)
 	 * @param tags the tags that will be OR'ed together
 	 * @return a regex string with a large group that contains a tag entry for each passed in.  
