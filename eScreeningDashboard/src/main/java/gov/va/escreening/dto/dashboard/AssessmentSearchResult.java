@@ -1,8 +1,13 @@
 package gov.va.escreening.dto.dashboard;
 
+import freemarker.template.SimpleDate;
 import gov.va.escreening.dto.AlertDto;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class AssessmentSearchResult implements Serializable {
@@ -105,11 +110,23 @@ public class AssessmentSearchResult implements Serializable {
         this.ssnLastFour = ssnLastFour;
     }
 
+    //todo (krizvi.ctr@iiinfo.com) -- fix to accommodate assessments taken prior to 6/6/2015
+    private static DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
     public String getDuration() {
+        try {
+            Date PROD_DATE = df.parse("06-06-2015");
+            String strCompletionDt = getCompleteDate();
+            if (strCompletionDt != null && df.parse(strCompletionDt).before(PROD_DATE)) {
+                duration *= 60;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            // do not raise any run time exception
+        }
         int min = (int) duration / 60;
         int sec = (int) duration % 60;
 
-        String minSec= String.format("%02d min %02d sec ", min,sec);
+        String minSec = String.format("%02d min %02d sec ", min, sec);
         return minSec;
     }
 
