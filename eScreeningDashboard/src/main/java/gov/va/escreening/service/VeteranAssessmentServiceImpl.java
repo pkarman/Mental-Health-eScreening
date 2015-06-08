@@ -81,7 +81,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(VeteranAssessmentServiceImpl.class);
-
+	private static final int MAX_ASSESSMENT_HISTORY_COUNT = 15;
+	
 	@Autowired
 	private AssessmentStatusRepository assessmentStatusRepository;
 	@Autowired
@@ -1186,10 +1187,11 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			
 		});
 		
+		//This map should be updated in history date order
 		LinkedHashMap<String, Double> timeSeries = new LinkedHashMap<>();
-		int total = 0;
-		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
-		{
+		for(int i=assessmentList.size()-Math.min(assessmentList.size(), MAX_ASSESSMENT_HISTORY_COUNT); 
+		        i < assessmentList.size(); i++){
+		    
 			VeteranAssessment va = assessmentList.get(i);
 			try {
 				Date d = va.getDateUpdated();
@@ -1230,7 +1232,6 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				
 				if(value != null){
 				    timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  value);
-				    total++;
 				}
 			} catch (Exception ex) {// do nothing
 				logger.warn("exception getting a assessment variable for time series", ex);

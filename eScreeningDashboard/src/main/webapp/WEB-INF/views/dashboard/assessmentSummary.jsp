@@ -992,10 +992,7 @@
             });
         });
 
-        ticks.reverse(); // reverse the order on the ticks
         graphParams.maxXPoint != null ? graphMaxValue = graphParams.maxXPoint : graphMaxValue = maxValue;
-
-        //var maxValue = d3.max(ticks , function(d) { return +d.value;} );
 
         // Vars
         var w = 450,
