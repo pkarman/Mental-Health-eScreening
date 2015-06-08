@@ -131,11 +131,10 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			List<SurveyPage> surveyPageList) {
 
 		// First validate and save data.
-		List<SurveyMeasureResponse> savedResponses = saveUserInput(assessmentRequest);
+		saveUserInput(assessmentRequest);
 
 		// evaluate rules
-		ruleProcessorService.processRules(
-				assessmentContext.getVeteranAssessmentId(), savedResponses);
+		ruleProcessorService.processRules(assessmentContext.getVeteranAssessmentId());
 
 		// If all went well, get the next set of question for the user, if any.
 		return getAssessmentResponse(assessmentRequest, surveyPageList);

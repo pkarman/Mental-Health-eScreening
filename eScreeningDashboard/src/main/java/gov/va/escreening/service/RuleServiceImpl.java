@@ -97,12 +97,7 @@ public class RuleServiceImpl implements RuleService {
     private AssessmentVariableService avService;
     
     @Override
-    public void processRules(Integer veteranAssessmentId,
-            Collection<SurveyMeasureResponse> responses) {
-        if (responses.isEmpty()) {
-            return;
-        }
-
+    public void processRules(Integer veteranAssessmentId) {
         List<Rule> rules = ruleRepository
                 .getRuleForAssessment(veteranAssessmentId);
 
@@ -151,7 +146,16 @@ public class RuleServiceImpl implements RuleService {
         ResolverParameters params = new ResolverParameters(assessment, variables);
         
         //add response found for this assessment
-        params.addResponses(assessment.getSurveyMeasureResponseList());
+        if(assessment.getSurveyMeasureResponseList() != null){
+            List<SurveyMeasureResponse> responses = new ArrayList<>(assessment.getSurveyMeasureResponseList().size());
+            for(SurveyMeasureResponse smr : assessment.getSurveyMeasureResponseList()){
+                //we don't want to include responses copied from another assessment
+                if(smr.getCopiedFromVeteranAssessment() == null){
+                    responses.add(smr);
+                }
+            }
+            params.addResponses(responses);
+        }
         
         //add any newly saved response
         if(unsavedResponses != null)
