@@ -287,12 +287,12 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		
 		/* Add Veteran Progress templates grouped together */
 		if(documentType.getRequiredTypes().contains(TemplateType.CPRS_PROGRESS_HISTORY)){
-		    evaluator.appendGroupedTemplates("HISTORICAL VALUES", cprsHistory.toString());
+		    evaluator.appendGroupedTemplates("Historical Values", cprsHistory.toString());
 		}
 		
 		/* Add optional VistA questions/answer text */
 		if(optionalTemplates.contains(TemplateType.VISTA_QA)) {
-			evaluator.appendGroupedTemplates("CLINICAL REMINDERS", quesAndAnswers.toString());
+			evaluator.appendGroupedTemplates("Clinical Reminders", quesAndAnswers.toString());
 		}
 		
 		return evaluator.appendFooter(templateMap.get(documentType.getFooterType())).generate();

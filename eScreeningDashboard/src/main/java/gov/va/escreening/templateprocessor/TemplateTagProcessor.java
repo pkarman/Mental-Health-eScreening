@@ -119,7 +119,7 @@ public class TemplateTagProcessor {
         
         //remove other tags (this is all we expect in the wysiwyg editor)
         noteText = noteText.replaceAll("</*\\s*[BbIiuUsSp(blockquote)(pre)(ol)(li)(h1)(h2)(h3)(h4)(h5)(h6)(br)(BR)(span)(div)]+\\s*/*>", "");
-        noteText = noteText.replaceAll("<\\/*[^>]+>", "");
+        noteText = noteText.replaceAll("<\\/*[^>\n\r\u0085\u2028\u2029]+>", "");
         
         //replace all &###; with unicode equivalents  
         noteText = StringEscapeUtils.unescapeHtml4(noteText);
