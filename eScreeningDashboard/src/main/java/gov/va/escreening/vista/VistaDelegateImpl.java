@@ -115,7 +115,6 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         if (ctxt.opFailed(SaveToVistaContext.PendingOperation.pain_scale)) {
             return;
         }
-
         // save this activity in audit log
         VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
         veteranAssessmentAuditLogRepository.update(auditLogEntry);
@@ -322,7 +321,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String mhaDesc = mhaResults.getMentalHealthAssessmentResultDescription();
         try {
             veteranAssessmentService.saveMentalHealthTestResult(veteranAssessmentId, mhaSurveyId.intValue(), mhaDesc);
-            ctxt.addSuccess(SaveToVistaContext.PendingOperation.saveMhaToDb, msg(SaveToVistaContext.MsgKey.usr_pass_mha__mhtr_success, veteranAssessmentId, mhaSurveyId, mhaDesc));
+            ctxt.addSuccess(SaveToVistaContext.PendingOperation.saveMhaToDb, msg(SaveToVistaContext.MsgKey.usr_pass_mha__mhtr_success, veteranAssessment.getVeteran().getVeteranIen()));
         } catch (Exception e) {
             ctxt.addSysErr(SaveToVistaContext.PendingOperation.saveMhaToDb, Throwables.getRootCause(e).getMessage());
         }
