@@ -45,7 +45,6 @@ import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,7 +55,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -70,7 +68,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ListMultimap;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -131,7 +128,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 			List<SurveyPage> surveyPageList) {
 
 		// First validate and save data.
-		saveUserInput(assessmentRequest);
+	    saveUserInput(assessmentRequest);
 
 		// evaluate rules
 		ruleProcessorService.processRules(assessmentContext.getVeteranAssessmentId());
@@ -602,15 +599,14 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				}
 			}
 
-				if (answered) {
-					prepareSurveyResponseList(surveyMeasureResponseList,
-					        previousResponseMap,
-							errorResponse, measure,
-							submissionBuilder, veteranAssessment, surveyPage,
-							dbMeasure);
-				}
-			 else {
-				measuresToDelete.add(measure.getMeasureId());
+			if(answered) {
+			    prepareSurveyResponseList(surveyMeasureResponseList, previousResponseMap,
+			            errorResponse, measure,
+			            submissionBuilder, veteranAssessment, surveyPage,
+			            dbMeasure);
+			}
+			else {
+			    measuresToDelete.add(measure.getMeasureId());
 			}
 		}
 
@@ -626,6 +622,17 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				surveyPage, surveyMeasureResponseList);
 
 		// Save to database.
+		if(veteranAssessment.getSurveyMeasureResponseList() == null){
+		    veteranAssessment.setSurveyMeasureResponseList(new ArrayList<SurveyMeasureResponse>()); 
+		}
+		//create a map to collect the updates to veteran assessment
+		Map<Integer, SurveyMeasureResponse> currentAssessmentResponses = Maps.newHashMap();
+		for(SurveyMeasureResponse response : veteranAssessment.getSurveyMeasureResponseList()){
+		    if(!measuresToDelete.contains(response.getMeasure().getMeasureId())){
+		        currentAssessmentResponses.put(response.getSurveyMeasureResponseId(), response);
+		    }
+		}
+		
 		try {
 			for (SurveyMeasureResponse response : surveyMeasureResponseList) {
 
@@ -634,6 +641,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				} else {
 					surveyMeasureResponseRepository.update(response);
 				}
+				currentAssessmentResponses.put(response.getSurveyMeasureResponseId(), response);
 			}
 
 			List<VeteranAssessmentMeasureVisibility> visList = measureVisibilityRepository
@@ -653,6 +661,12 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				surveyMeasureResponseRepository.deleteResponsesForMeasures(
 						assessmentRequest.getAssessmentId(), measuresToDelete);
 			}
+			
+			//save updated responses
+			veteranAssessment.getSurveyMeasureResponseList().clear();
+			veteranAssessment.getSurveyMeasureResponseList().addAll(currentAssessmentResponses.values());
+			veteranAssessmentRepository.update(veteranAssessment);
+			
 			// TODO: Currently only a Veteran can take the assessment, person
 			// type will need to be detected once a
 			// user can take an assessment to properly track the person_id
@@ -685,7 +699,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 		if (assessmentRequest.getPageId().intValue() == AssessmentConstants.SURVEY_IDENTIFICATION_ID) {
 			persistToNonAssessmentStructure(assessmentRequest, surveyPage);
 		}
-
+		
 		return surveyMeasureResponseList;
 	}
 

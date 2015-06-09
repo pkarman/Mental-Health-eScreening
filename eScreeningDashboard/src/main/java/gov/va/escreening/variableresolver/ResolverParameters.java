@@ -105,8 +105,8 @@ public class ResolverParameters {
      * @param responses 
      */
     public void addResponses(Collection<SurveyMeasureResponse> responses){
-        if(responses == null){
-            logger.warn("Null response collection was passed in.");
+        if(responses == null || responses.isEmpty()){
+            logger.warn("***Null or empty responses were given to resolver.");
             return;
         }
         for(SurveyMeasureResponse response : responses){
