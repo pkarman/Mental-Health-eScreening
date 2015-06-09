@@ -84,9 +84,6 @@ $(document).ready(function(e) {
     	}
     });
     
-    
-    
-    
     $("#assessmentContainer").bind("DOMSubtreeModified", function() {
       /* Radio buttons and Checkbox Focus */
       $('input.checkSwitch').on('focus', function () {
@@ -104,11 +101,7 @@ $(document).ready(function(e) {
             $(this).closest('table').find('th').eq(0).addClass("empty");
           }	  
       });
-	});
-      
-      
- 
-          
+	});     
 });
 
 
@@ -131,6 +124,7 @@ $(document).ready(function(e) {
   
   
 function logout(reason){
+	hideError();
 	var reasonQuery = "";
 	if(reason != null && typeof reason == "string" && reason != ""){
 		reasonQuery += "?reason=" + reason;
@@ -139,15 +133,17 @@ function logout(reason){
 }
 
 function showError() {
-   $('.top_header_message').slideDown(300).show(0);
-   if(errorAPI != true){
-	   $(".top_header").html(errorDelay);
-   }
+	if(!errorAPI){
+		$(".top_header").html(errorDelay);
+	}
+	$('.top_header_message').slideDown(300).show(0);
 }
 
 
 function hideError() {
 	$('.top_header_message').slideUp(300).hide(0);
+	errorAPI = false;
+	openRequests = 0;
 }
 
 //TODO: this should be done using sequence numbers instead of one boolean
@@ -309,7 +305,6 @@ function callMeasure(url, requestJSON, callbackSuccess)
 	});
 }
 
-
 function handleServerErrorMessage(data, errorThrown) {
 	showError();
 	errorAPI = true;
@@ -379,7 +374,7 @@ function asyncPost(url, requestJSON, callbackSuccess){
       dataType: 'json',
       contentType: "application/json; charset=utf-8",
 	  async:true,
-	  timeout: 15000,
+	  timeout: 30000,
 	  data: requestJSON,
 	  success: callbackSuccess,
 	  error: handleServerErrorMessage,
@@ -388,6 +383,7 @@ function asyncPost(url, requestJSON, callbackSuccess){
 
 
 function initialPageCallback(response){
+	hideError();
 	consumeResponse(response);
 	$("#savedTime").html(getSavedTimeStamp(response));
 	setTimer(response);
