@@ -32,7 +32,7 @@
 		<level value="INFO" />
 	</logger>
 	<logger name="org.springframework.expression">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<category name="org.springframework.jdbc.core.JdbcTemplate">
@@ -57,7 +57,7 @@
 	-->
 	<!-- Application Loggers -->
 	<logger name="gov.va.escreening">
-		<level value="debug" />
+		<level value="INFO" />
 	</logger>
 
 	<logger name="gov.va.escreening.interceptor">

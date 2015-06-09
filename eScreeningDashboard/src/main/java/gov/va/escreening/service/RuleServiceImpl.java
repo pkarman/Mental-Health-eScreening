@@ -18,7 +18,6 @@ import gov.va.escreening.entity.HealthFactor;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.MeasureAnswer;
 import gov.va.escreening.entity.Rule;
-import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.EscreeningDataValidationException;
@@ -146,16 +145,7 @@ public class RuleServiceImpl implements RuleService {
         ResolverParameters params = new ResolverParameters(assessment, variables);
         
         //add response found for this assessment
-        if(assessment.getSurveyMeasureResponseList() != null){
-            List<SurveyMeasureResponse> responses = new ArrayList<>(assessment.getSurveyMeasureResponseList().size());
-            for(SurveyMeasureResponse smr : assessment.getSurveyMeasureResponseList()){
-                //we don't want to include responses copied from another assessment
-                if(smr.getCopiedFromVeteranAssessment() == null){
-                    responses.add(smr);
-                }
-            }
-            params.addResponses(responses);
-        }
+        params.addResponses(assessment.getSurveyMeasureResponseList(), false);
         
         //add any newly saved response
         if(unsavedResponses != null)
@@ -345,6 +335,7 @@ public class RuleServiceImpl implements RuleService {
 
         // TODO: this can be done in parallel (update VisibilityUpdate to be
         // thread safe if we do this)
+        logger.debug("Firing events for true rule: {}", rule.getRuleId());
         for (Event event : rule.getEvents()) {
             switch (event.getEventType().getEventTypeId()) {
 
@@ -378,10 +369,15 @@ public class RuleServiceImpl implements RuleService {
                     throw new IllegalStateException(message);
                 }
 
+                
                 if (healthFactor.getVistaIen() != null) {
-                    //logger.debug("Adding health factor {} to assessment {}",
-                    //        healthFactor, veteranAssessmentId);
                     healthFactorSet.add(healthFactor);
+                    logger.debug("Added health factor {} to assessment {}",
+                            healthFactor, veteranAssessmentId);
+                }
+                else{
+                    logger.warn("There is not set IEN number of health factor {}",
+                            healthFactor);
                 }
                 break;
 

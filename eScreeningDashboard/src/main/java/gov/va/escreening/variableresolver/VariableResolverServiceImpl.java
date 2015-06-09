@@ -66,7 +66,9 @@ public class VariableResolverServiceImpl implements VariableResolverService {
     
     @Override
     public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
-            Collection<AssessmentVariable> dbVariables) {
+            Collection<AssessmentVariable> dbVariables,
+            boolean includeCopiedResponse) {
+        
         List<AssessmentVariableDto> assessmentVariableDtos = new ArrayList<AssessmentVariableDto>();
         
         // clear the smr cache before resolving variable for every assessment 
@@ -76,13 +78,20 @@ public class VariableResolverServiceImpl implements VariableResolverService {
         ResolverParameters params = new ResolverParameters(assessment, dbVariables);
         
         //add responses from assessment
-        params.addResponses(assessment.getSurveyMeasureResponseList());
+        
+        params.addResponses(assessment.getSurveyMeasureResponseList(), includeCopiedResponse);
         
         for(AssessmentVariable dbVariable : dbVariables){
             assessmentVariableDtos.addAll(resolveAssessmentVariable(dbVariable, params).asSet());
         }
         
         return assessmentVariableDtos;
+    }
+    
+    @Override
+    public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
+            Collection<AssessmentVariable> dbVariables) {
+        return resolveVariablesFor(veteranAssessmentId, dbVariables, true);
     }
     
     @Override

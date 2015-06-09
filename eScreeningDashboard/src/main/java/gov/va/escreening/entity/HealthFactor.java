@@ -153,7 +153,9 @@ public class HealthFactor implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.HealthFactor[ healthFactorId=" + healthFactorId + " ]";
+        return "HealthFactor[ healthFactorId=" + healthFactorId 
+                + ", name=" + name
+                + " ]";
     }
 
 }

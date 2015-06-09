@@ -1205,6 +1205,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
 		{
 			VeteranAssessment va = assessmentList.get(i);
+			
 			try {
 				Date d = va.getDateUpdated();
 				long time = d.getTime()/1000;
@@ -1216,8 +1217,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				{
 					continue;
 				}
-					
-				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
+				
+				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables, false);
 				AssessmentVariableDto result = dto.iterator().next();
 				
 				//TODO: Move this logic into the AssessmentVariableDto object
