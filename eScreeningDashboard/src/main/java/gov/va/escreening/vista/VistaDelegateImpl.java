@@ -78,10 +78,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         Long patientIEN = Long.parseLong(veteranAssessment.getVeteran().getVeteranIen());
 
         // Get Mental Health Assessments
-        MentalHealthAssessmentResult mentalHealthAssessmentResult = saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, ctxt);
-        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.mha)) {
-            return;
-        }
+        saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, ctxt);
 
         // Generate CPRS Note based on the responses to the survey
         // questions.
@@ -94,27 +91,20 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
 
         VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, ctxt);
-        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.cprs)) {
-            return;
+
+        if(progressNote != null && progressNote.getIEN() != null){
+            // Do Health Factors
+            saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
+            if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
+                return;
+            }
         }
-
-
-        // Do Health Factors
-        saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
-        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
-            return;
-        }
-
+        
         // save TBI Consult request
         saveTbiConsultRequest(veteranAssessment, vistaLinkClient, ctxt);
-        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.tbi)) {
-            return;
-        }
 
         savePainScale(veteranAssessment, visitDate, vistaLinkClient, ctxt);
-        if (ctxt.opFailed(SaveToVistaContext.PendingOperation.pain_scale)) {
-            return;
-        }
+        
         // save this activity in audit log
         VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
         veteranAssessmentAuditLogRepository.update(auditLogEntry);
