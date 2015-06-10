@@ -12,6 +12,7 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,18 +107,28 @@ public class ResolverParameters {
      * <b>Please note:</b> this method should be called before a call to {@link #addUnsavedResponses(List)}
      * @param responses 
      */
-    public void addResponses(Collection<SurveyMeasureResponse> responses){
-        if(responses == null){
-            logger.warn("Null response collection was passed in.");
+    public void addResponses(Collection<SurveyMeasureResponse> responses, boolean includeCopiedResponses){
+        if(responses == null || responses.isEmpty()){
+            logger.warn("***Null or empty responses were given to resolver.");
             return;
         }
         for(SurveyMeasureResponse response : responses){
-            MeasureAnswer ma = response.getMeasureAnswer();
-            Answer answer = new Answer(ma, response);
-            Integer measureId = ma.getMeasure().getMeasureId();
+            if(includeCopiedResponses || response.getCopiedFromVeteranAssessment() == null){
+                MeasureAnswer ma = response.getMeasureAnswer();
+                Answer answer = new Answer(ma, response);
+                Integer measureId = ma.getMeasure().getMeasureId();
             
-            addMeasureResponse(measureId, answer);
+                addMeasureResponse(measureId, answer);
+            }
         }
+    }
+    
+    /**
+     * Convenience method which will include copied response from other assessments
+     * @param responses
+     */
+    public void addResponses(Collection<SurveyMeasureResponse> responses){
+        addResponses(responses, true);
     }
     
     /**

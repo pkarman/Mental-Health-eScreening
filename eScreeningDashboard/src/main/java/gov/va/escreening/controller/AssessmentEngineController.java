@@ -54,8 +54,10 @@ public class AssessmentEngineController {
 			assessmentDelegate.ensureValidAssessmentContext();
 
 			Integer assessmentId = assessmentDelegate.getVeteranAssessmentId();
-
+			assessmentDelegate.prepareAssessmentContext();
+			
 			assessmentEngineService.transitionAssessmentStatusTo(assessmentId, AssessmentStatusEnum.INCOMPLETE);
+			
 			model.addAttribute("veteranAssessmentId", assessmentId);
 			model.addAttribute("sections", assessmentDelegate.getAssessmentSections());
 			model.addAttribute("veteranFullName", assessmentDelegate.getVeteranFullName());
