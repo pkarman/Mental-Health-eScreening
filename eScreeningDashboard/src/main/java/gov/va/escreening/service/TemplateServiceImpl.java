@@ -192,6 +192,13 @@ public class TemplateServiceImpl implements TemplateService {
 
 	    dto.setJson(t.getJsonFile());
 	    ObjectMapper om = new ObjectMapper();
+	    
+	    if(t.getJsonFile() == null && t.getGraphParams() == null){
+	        ErrorBuilder.throwing(EscreeningDataValidationException.class)
+                .toAdmin("Template's json file is not defined. This means it is a handwritten template and cannot be edited with editor. ID: " + templateId)
+                .toUser("The editing of this template version is unsupported.")
+                .throwIt();
+	    }
 
 	    if (t.getJsonFile() != null) {
 	        // now parsing the template file
@@ -204,10 +211,7 @@ public class TemplateServiceImpl implements TemplateService {
 	            return null;
 	        }
 	    }else{
-	        ErrorBuilder.throwing(EscreeningDataValidationException.class)
-	            .toAdmin("Template's json file is not defined. This means it is a handwritten template and cannot be edited with editor. ID: " + templateId)
-	            .toUser("The editing of this template version is unsupported.")
-	            .throwIt();
+	        dto.setBlocks(Collections.<INode>emptyList());
 	    }
 
 	    if(t.getGraphParams() != null){
