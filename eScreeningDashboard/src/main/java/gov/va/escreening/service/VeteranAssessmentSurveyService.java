@@ -17,10 +17,10 @@ public interface VeteranAssessmentSurveyService {
      */
     List<Survey> getSurveys(Integer veteranAssessmentId);
 
-    /**
-     * Updates the assessment progress for veteranAssessmentId.
-     * @param veteranAssessmentId
-     */
+//    /**
+//     * Updates the assessment progress for veteranAssessmentId.
+//     * @param veteranAssessmentId
+//     */
     void updateProgress(int veteranAssessmentId, long sessionCreationTime);
 
     /**

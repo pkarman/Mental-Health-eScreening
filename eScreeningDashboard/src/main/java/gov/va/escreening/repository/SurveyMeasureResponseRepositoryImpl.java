@@ -5,6 +5,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -189,5 +190,19 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 		Integer numberOfRows = surveyMeasureResponseList.size();
 
 		return numberOfRows;
+	}
+
+	@Override
+	public List<SurveyMeasureResponse> findLast48HourAnswersForVet(int veteranId) {
+		String sql = "FROM SurveyMeasureResponse smr where smr.veteranAssessment.veteran.veteranId=:vetId "
+				+ "and smr.dateModified > :date and smr.copiedFromVeteranAssessment = null order by dateModified desc";
+		
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.HOUR, -48);
+		
+		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class)
+				.setParameter("vetId", veteranId).setParameter("date", c.getTime());
+		
+		return query.getResultList();
 	}
 }

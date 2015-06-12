@@ -121,8 +121,13 @@ public class SaveToVistaContext {
         buildCallResults(SaveToVistaContext.MsgType.failMsg);
         buildCallResults(SaveToVistaContext.MsgType.warnMsg);
 
-        buildCallResultsForPendingOperations();
-        assessmentEngineService.transitionAssessmentStatusTo(this.veteranAssessmentId, AssessmentStatusEnum.ERROR);
+        buildCallResultsForPendingOperations(); 
+        Map<PendingOperation, String> failedOps = msgsTbl.column(MsgType.failMsg);
+        
+        //requirements dictate that we will not be setting the assessment into an Error state if the only error was an MHA save error 
+        if(failedOps.size() != 1 || !failedOps.containsKey(PendingOperation.sendMhaToVista)){
+            assessmentEngineService.transitionAssessmentStatusTo(this.veteranAssessmentId, AssessmentStatusEnum.ERROR);
+        }
     }
 
     private void buildCallResultsForPendingOperations() {

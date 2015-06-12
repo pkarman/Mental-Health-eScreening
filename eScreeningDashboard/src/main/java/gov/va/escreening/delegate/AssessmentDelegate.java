@@ -38,7 +38,15 @@ public interface AssessmentDelegate {
      * @param veteranAssessment
      */
     void setUpAssessmentContext(VeteranDto veteran, VeteranAssessment veteranAssessment);
-
+    
+    
+    /**
+     * Configures the session scoped AssessmentContext so the Veteran can take an on-line assessment.
+     * Prepares the assessments including copy the past 48 hour answers.
+     * 
+     */
+    void prepareAssessmentContext();
+    
     /**
      * Checks the current AssessmentContext and throws an InvalidAssessmentContextException if <br/>
      * the veteran is not logged in.<br/>

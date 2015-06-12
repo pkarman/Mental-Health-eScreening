@@ -215,6 +215,10 @@ Editors.config(function(RestangularProvider, $provide) {
 						//as soon as the modal should close the variable is used to create the modal result
 						$scope.$watch('selections.show',function(newVar, oldVar){
 							if (!newVar) {
+								if($scope.assessmentVariable.transformations.length === 1
+									&& $scope.assessmentVariable.transformations[0].name === "none"){
+									$scope.assessmentVariable.transformations = [];
+								}
 								var embed = TemplateBlockService.createAVElement($scope.assessmentVariable);
 								$modalInstance.close(embed);
 							}

@@ -5,7 +5,6 @@ import gov.va.escreening.dto.rule.EventDto;
 import gov.va.escreening.dto.rule.RuleDto;
 import gov.va.escreening.entity.Measure;
 import gov.va.escreening.entity.Rule;
-import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.exception.EntityNotFoundException;
 import gov.va.escreening.exception.EscreeningDataValidationException;
 
@@ -22,11 +21,14 @@ import java.util.Set;
 public interface RuleService {
 
     /**
-     * Evaluates all rules corresponding to the given responses.
+     * Evaluates all rules corresponding to the given assessment. Visibility (aka follow-up question) events
+     * are not fired since this should be done as the veteran answers questions in real time.<br/>
+     * <strong>Please note: survey measure responses which were copied from another assessment will 
+     * not be available to the rules engine when these rules are evaluated.</strong>
+     * @param veteranAssessmentId - the ID of the assessment to run rules for.
      * 
-     * @param responses usually this will be the set of responses that were just submitted and saved by the user.
      */
-    public void processRules(Integer veteranAssessmentId, Collection<SurveyMeasureResponse> responses);
+    public void processRules(Integer veteranAssessmentId);
 
     /**
      * Evaluates any rule that dictates the visibility of the given questions.<br/>
@@ -40,7 +42,10 @@ public interface RuleService {
     void updateVisibilityForQuestions(Integer veteranAssessmentId, Collection<Measure> questions);
 
 	/**
-	 * @param rules all rules
+	 * This method will run each rule given and returns the rules which evaluated to true.<br/>
+     * <strong>Please note: survey measure responses which were copied from another assessment will 
+     * not be available to the rules engine when these rules are evaluated.</strong>
+	 * @param rules all rules to filter
 	 * @param veteranAssessmentId
 	 * @param assessmentRequest the assessment request we are evaluating rules for
 	 * @return a set of rules which evaluate to true
@@ -48,6 +53,9 @@ public interface RuleService {
     public Set<Rule> filterTrue(Collection<Rule> rules, AssessmentRequest assessmentRequest);
     
     /**
+     * This method will run each rule given and returns the rules which evaluated to true.<br/>
+     * <strong>Please note: survey measure responses which were copied from another assessment will 
+     * not be available to the rules engine when these rules are evaluated.</strong>
      * @param rules all rules
      * @param veteranAssessmentId assessment variable ID we are evaluating rules for
      * @return a set of rules which evaluate to true

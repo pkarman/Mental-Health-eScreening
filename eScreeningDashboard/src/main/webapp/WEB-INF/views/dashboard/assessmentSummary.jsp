@@ -512,8 +512,9 @@
 
 
         // t808 - call returnURL to assessmentSummary as URL to use as new redirection page
-        var vid = "${veteranAssessmentInfo.veteranId}";
-        returnURL(vid, "assessmentSummary");
+        var vaid = "${veteranAssessmentInfo.veteranAssessmentId}"; 	// TODO: JSP Values need to send as parameters for a function
+        var vid = "${veteranAssessmentInfo.veteranId}";				// TODO: JSP Values need to send as parameters for a function
+        returnURL(vaid, "assessmentSummary");
 
 
         $(this).on("click", '#VeteranSummaryButton', function (e) {
@@ -521,9 +522,6 @@
             var modal_contents = $("#VeteranSummaryModal .modal_contents");
             $('#VeteranSummaryModal').modal('show');
             $(modal_contents).html('<i class="ajax_loading text-center"></i> Loading...');
-
-            var vaid = "${veteranAssessmentInfo.veteranAssessmentId}"; 	// TODO: JSP Values need to send as parameters for a function
-            var vid = "${veteranAssessmentInfo.veteranId}";				// TODO: JSP Values need to send as parameters for a function
 
             var modal_url = 'assessmentSummary/assessments/' + vaid + '/veteranSummary';
             $.ajax({

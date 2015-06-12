@@ -21,15 +21,24 @@ public interface VariableResolverService {
 	List<AssessmentVariableDto> resolveVariablesForTemplateAssessment(VeteranAssessment assessment, Template template);
 
 	/**
-	 * Resolves the given AssessmentVariable to a list of AssessmentVariableDto. 
-	 * If the same variables are to be resolved for different assessments, it is better to use {@link #resolveAssessmentVariable(AssessmentVariable, ResolverParameters)} 
-	 * @param veteranAssessmentId
-	 * @param dbVariables
-	 * @return the resolved assessment variable dtos
+	 * This is a convenience method which includes responses copied from other assessments. See other method for details
 	 * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
 	 */
     Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
             Collection<AssessmentVariable> dbVariables);
+    
+    /**
+     * Resolves the given AssessmentVariable list to a list of AssessmentVariableDto. 
+     * If the same variables are to be resolved for different assessments, it is better to use {@link #resolveAssessmentVariable(AssessmentVariable, ResolverParameters)} 
+     * @param veteranAssessmentId 
+     * @param dbVariables variables to resolve 
+     * @param includeCopiedResponse when true copied responses from other assessments will be included; otherwise 
+     * they will be filtered out.
+     * @return the resolved assessment variable dtos
+     * @throws CouldNotResolveVariableException if the assessmentVariable cannot be resolved for the given veteranAssessmentId
+     */
+    public Iterable<AssessmentVariableDto> resolveVariablesFor(Integer veteranAssessmentId, 
+            Collection<AssessmentVariable> dbVariables, boolean includeCopiedResponse);
     
     /**
      * 

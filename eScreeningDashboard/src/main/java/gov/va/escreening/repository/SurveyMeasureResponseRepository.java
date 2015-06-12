@@ -70,4 +70,6 @@ public interface SurveyMeasureResponseRepository extends RepositoryInterface<Sur
      * @return
      */
     Integer getNumRowsForAssessmentIdMeasure(int veteranAssessmentId, Measure parentMeasureId);
+    
+    List<SurveyMeasureResponse> findLast48HourAnswersForVet(int veteranId);
 }
