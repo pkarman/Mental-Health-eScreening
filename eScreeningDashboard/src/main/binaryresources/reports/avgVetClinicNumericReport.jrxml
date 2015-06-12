@@ -4,6 +4,7 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="noData" class="java.lang.Boolean"/>
 	<field name="clinicName" class="java.lang.String"/>
 	<field name="veteranModuleGraphReportDTOs" class="java.util.Collection"/>
 	<background>
@@ -42,7 +43,8 @@
 		</band>
 	</title>
 	<detail>
-		<band height="256" splitType="Stretch">
+		<band height="199" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="572" height="20" uuid="578fbe1f-218f-4277-8767-1c6525c6e00b"/>
 				<textElement verticalAlignment="Middle">
@@ -57,4 +59,13 @@
 			</subreport>
 		</band>
 	</detail>
+	<summary>
+		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="208" y="16" width="100" height="20" uuid="2b515823-3382-4f82-90c8-019c6d8b1079"/>
+				<text><![CDATA[No results found]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>

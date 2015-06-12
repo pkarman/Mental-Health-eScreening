@@ -25,7 +25,6 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import junit.framework.Assert;
@@ -437,7 +436,7 @@ public class XportDataTest {
         StopWatch sw = new StopWatch(name);
         for (int i = 0; i < 2; i++) {
             sw.start("iter_" + i);
-            String progressNoteContent = templateProcessorService.renderSurveyTemplate(surveyId, type, va.getVeteranAssessmentId(), ViewType.TEXT);
+            String progressNoteContent = templateProcessorService.renderSurveyTemplate(surveyId, type, va, ViewType.TEXT);
             sw.stop();
             assertTrue(!progressNoteContent.isEmpty());
         }
@@ -458,7 +457,9 @@ public class XportDataTest {
 
         // now we also need to make sure all smr entered by user in the json file were tested and found correct
         for (TestSurvey ts : atd.testSurveys) {
-            assertTrue(String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap), ts.smrMap.isEmpty());
+            assertTrue(
+                    String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap), 
+                    ts.smrMap.isEmpty());
         }
 
         return true;
@@ -595,13 +596,13 @@ public class XportDataTest {
     @Test
     public void testExportLogs() throws Exception {
         List<ExportLog> elList = elr.findAll();
-        Assert.assertNotNull(elList);
+        assertNotNull(elList);
     }
 
     @Test
     public void testExportLogsForDays() throws Exception {
         List<ExportLog> elList = elr.findAllForDays(1);
-        Assert.assertNotNull(elList);
+        assertNotNull(elList);
     }
 
     // @Rollback(value = false)

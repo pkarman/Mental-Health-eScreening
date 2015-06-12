@@ -17,10 +17,10 @@ public interface VeteranAssessmentSurveyService {
      */
     List<Survey> getSurveys(Integer veteranAssessmentId);
 
-    /**
-     * Updates the assessment progress for veteranAssessmentId.
-     * @param veteranAssessmentId
-     */
+//    /**
+//     * Updates the assessment progress for veteranAssessmentId.
+//     * @param veteranAssessmentId
+//     */
     void updateProgress(int veteranAssessmentId, long sessionCreationTime);
 
     /**
@@ -41,5 +41,5 @@ public interface VeteranAssessmentSurveyService {
 	public abstract void updateProgress(VeteranAssessment va, AssessmentRequest req,
 			Survey survey, List<VeteranAssessmentMeasureVisibility> visList);
 
-    Map<Integer,Integer> calculateAvgTimePerSurvey(Map<String, Object> requestData);
+    Map<Integer, Map<String, String>> calculateAvgTimePerSurvey(Map<String, Object> requestData);
 }

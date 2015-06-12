@@ -2,6 +2,10 @@ package gov.va.escreening.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import gov.va.escreening.delegate.ReportFunctionCommon;
+import gov.va.escreening.delegate.ScoreMap;
+import gov.va.escreening.entity.AssessmentVariable;
+import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyScoreInterval;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveyScoreIntervalRepository;
@@ -22,8 +26,17 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
     @Autowired
     private SurveyScoreIntervalRepository intervalRepository;
 
-    @Resource(type= SurveyRepository.class)
+    @Resource(type = SurveyRepository.class)
     SurveyRepository sr;
+
+    @Resource(name = "assessmentVariableService")
+    AssessmentVariableService avs;
+
+    @Resource(type = ReportFunctionCommon.class)
+    private ReportFunctionCommon reportsHelper;
+
+    @Resource(name = "scoreMap")
+    ScoreMap scoreMap;
 
     @Transactional(readOnly = true)
     @Override
@@ -46,7 +59,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
 
     @Transactional(readOnly = true)
     @Override
-    public Map<String, Object> generateMetadata(Integer surveyId) {
+    public Map<String, Object> generateMetadata(Integer surveyId, Integer veteranId, String avName, Integer clinicId) {
 
         List<SurveyScoreInterval> intervals = intervalRepository.getIntervalsBySurvey(surveyId);
         if (intervals == null || intervals.isEmpty()) {
@@ -56,7 +69,7 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         String max = "-1";
         String min = "100000";
 
-        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId);
+        Map<String, Object> metaDataMap = createTemplateMetaData(surveyId, veteranId, avName, clinicId);
         List<Float> ticks = Lists.newArrayList();
         Map<String, Object> intervalsMap = Maps.newLinkedHashMap();
 
@@ -84,10 +97,12 @@ public class SurveyScoreIntervalServiceImpl implements SurveyScoreIntervalServic
         return metaDataMap;
     }
 
-    private Map<String, Object> createTemplateMetaData(int surveyId) {
+    private Map<String, Object> createTemplateMetaData(int surveyId,  Integer veteranId, String avName, Integer clinicId) {
         Map<String, Object> metaDataMap = Maps.newHashMap();
         metaDataMap.put("footer", ""); //todo what to do here?
-        metaDataMap.put("title", sr.findOne(surveyId).getName());
+        String title = reportsHelper.getModuleName(surveyId, avName, this.scoreMap.getAvMap());
+        metaDataMap.put("title", title);
+        metaDataMap.put("chartId", reportsHelper.createChartId(surveyId, avName, veteranId, clinicId));
         metaDataMap.put("numberOfMonths", 12); //todo find a logic to assign the right number here
         return metaDataMap;
     }

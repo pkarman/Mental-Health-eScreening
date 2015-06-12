@@ -8,13 +8,17 @@
 		<param name="MaxFileSize" value="10MB" />
 		<param name="MaxBackupIndex" value="10" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p:%d{dd/MMM/yyyy@HH:mm:ss,SSS}:%-10M--%m%n" />
+			<param name="ConversionPattern" value="%-5p:%d{dd/MMM/yyyy@HH:mm:ss,SSS}:%C{1}.%-10M--%m%n" />
 		</layout>
 	</appender>
 
 	<!-- Application Loggers -->
 	<logger name="gov.va.escreening">
-		<level value="info" />
+		<level value="DEBUG" />
+	</logger>
+	
+	<logger name="gov.va.escreening.interceptor">
+		<level value="WARN" />
 	</logger>
 	<logger name="org.springframework.core">
 		<level value="INFO" />
@@ -39,21 +43,13 @@
 	<logger name="org.springframework.ws.client.MessageTracing">
 		<level value="INFO" />
 	</logger>
+	
 	<logger name="org.hibernate.type">
 		<level value="INFO" />
 	</logger>
 
 	<logger name="org.apache.http.client">
 		<level value="INFO" />
-	</logger>
-	-->
-	<!-- Application Loggers -->
-	<logger name="gov.va.escreening">
-		<level value="WARN" />
-	</logger>
-
-	<logger name="gov.va.escreening.interceptor">
-		<level value="WARN" />
 	</logger>
 
 	<!-- Root Logger -->

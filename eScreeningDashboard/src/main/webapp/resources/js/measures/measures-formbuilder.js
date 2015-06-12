@@ -728,12 +728,11 @@ function TableBuilder(formBuilder){
 			for(var i = 0; i < question.answers.length; i++){
 				var answer = question.answers[i];
 				
-				if(answer.answerType != null &&  answer.answerType == "none"){
+				if(answer.answerType != null &&  answer.answerType == "none" && question.isRequired != true){ // JH case added in case of required question
 					noneAnswer = answer;
 					break;
 				}
 			}
-			
 			if(noneAnswer != null && noneAnswer.answerText.replace(/^\s+|\s+$/g, '') != ""){
 				entryName = noneAnswer.answerText;
 			}
@@ -752,9 +751,12 @@ function TableBuilder(formBuilder){
 			.addClass("searchBtn")
 			.addClass("tableQuestionAdd")
 			.on("click", function(){
+				var noneDiv = questionContainer.find("div.tableQuestionNA");
+				var checkVis = noneDiv.size() > 0;
+				
 				if(questionContainer.children().length == 0) {
 					var rowCount = questionContainer.children().size();
-					createTableForm(id, questionContainer, rowCount, true, entryName);
+					createTableForm(id, questionContainer, rowCount, true, entryName, checkVis);
 				}
 				else {
 					if (surveyValidation != null && surveyValidation.pageIsValid()){ // we don't really need to validate on every Add						
@@ -766,7 +768,7 @@ function TableBuilder(formBuilder){
 							var entryCount = questionContainer.find(".tableQuestionEntry").size();
 							var lastEntryIsClicked = questionContainer.find("div.tableQuestionEntry:last").hasClass("wasClicked");
 							if(entryCount == 0 || lastEntryIsClicked) {
-								createTableForm(id, questionContainer, entryCount, true, entryName);
+								createTableForm(id, questionContainer, entryCount, true, entryName, checkVis);
 							}
 							else{
 								openTableQuestionEntryClicked();
@@ -774,10 +776,11 @@ function TableBuilder(formBuilder){
 						}
 			    	}
 				}
-
-				questionContainer
-					.find("div.tableQuestionNA")
-					.slideUp(400, function(){$(this).remove();});
+				
+				noneDiv.slideUp(400, function(){
+						$(this).remove();
+						formBuilder.checkVisibility();
+					});
 				
 				// reshow the none button
 				$(this).nextAll(".tableNone").fadeIn();
@@ -801,7 +804,7 @@ function TableBuilder(formBuilder){
 			// we may have to add table data here for each row or maybe the datatable plugin can do it in a nicer way
 			
 			//for now we will just add a set of child measures to the question entry container
-			createTableForm(id, questionContainer, i, false, entryName).addClass("wasClicked");
+			createTableForm(id, questionContainer, i, false, entryName, true).addClass("wasClicked");
 		}
 	    
 		//configure None option if found in answers array
@@ -813,7 +816,8 @@ function TableBuilder(formBuilder){
 				.attr("type", "button")
 				.val("None")
 				.click( function(){ 
-					clearTableQuestion(table, noneAnswer.answerId, $(this));
+					clearTableQuestion(table, noneAnswer.answerId, $(this), true);
+					formBuilder.checkVisibility();
 				} )
 				.appendTo(table.find(".tableQuestionButtons"));
 			
@@ -855,9 +859,10 @@ function TableBuilder(formBuilder){
 	 * @param rowIndex the row of the table that the form represents
 	 * @param animate if true then an animation will be used to show the new entry. **Should animate only after first entry is showing.
 	 * @param entryName is the name of each entry (e.g. Child, Enlistment, etc.)
+	 * @param skipVisCheck if true then the visibility check called after the entry has been added will be skipped
 	 * @returns the entry that was created and appended to the given container (for further custom updates). 
 	 */
-	function createTableForm(tableMeasureId, container, rowIndex, animate, entryName){
+	function createTableForm(tableMeasureId, container, rowIndex, animate, entryName, skipVisCheck){
 		var measures = self.getTableModel(tableMeasureId)['childMeasures'];
 		var onlyOneMeasure = measures.length == 1;
 		
@@ -890,16 +895,6 @@ function TableBuilder(formBuilder){
 			.html(entryName  + "  " + (rowIndex + 1))
 			.appendTo(deleteWrapper);
 		
-		// In case if we need the toggling features otherwise delete the following code
-		/*
-		$("<input/>")
-			.addClass("toggleButton")
-			.attr("type", "button")
-			.val("Toggle")
-			.click(function() {	$(this).parent().nextAll("li").toggle(); })
-			.appendTo(deleteWrapper);
-		*/
-		
 		$("<input/>")
 			.addClass("tableDeleteButton")
 			.attr("type", "button")
@@ -916,7 +911,6 @@ function TableBuilder(formBuilder){
 				}
 				
 				removeEntry(self.tableEntryFor($(this)));
-				
 			})
 			.appendTo(deleteWrapper);
 		
@@ -954,6 +948,10 @@ function TableBuilder(formBuilder){
 			container.append(entryWrapper);
 		}
 		
+		if(!skipVisCheck){
+			formBuilder.checkVisibility();	
+		}
+		
 		return entryWrapper;
 	}
 	
@@ -974,7 +972,7 @@ function TableBuilder(formBuilder){
 		tableQuestionLookup[tableQuestion.measureId] = {'childMeasures': tableQuestion.childMeasures, 'answers': tableQuestion.answers};
 	}
 
-	function clearTableQuestion(table, noneAnswerId, noneButton){		
+	function clearTableQuestion(table, noneAnswerId, noneButton, skipVisCheck){		
 		var noneInput = $("<input/>")
 			.addClass("tableQuestionNA")
 			.attr("id", "inp" + noneAnswerId)
@@ -990,7 +988,7 @@ function TableBuilder(formBuilder){
 		table.find(".tableQuestionEntryContainer")
 			.append(noneDiv)
 			.find(".tableQuestionEntry")
-				.each(function(){removeEntry($(this));});
+				.each(function(){removeEntry($(this), skipVisCheck);});
 		
 		//hide noneButton
 		noneButton.fadeOut(400, function(){noneButton.hide();});
@@ -1003,7 +1001,7 @@ function TableBuilder(formBuilder){
 	}
 	
 
-	function removeEntry(entry){
+	function removeEntry(entry, skipVisCheck){
 		entry.animate(
 			{height: 0, opacity: 0}, 500, 
 			function(){
@@ -1017,6 +1015,10 @@ function TableBuilder(formBuilder){
 					var index = $(this).index();
 					$(this).find(".entryLabelText").html(entryName + "  " + (index+1));
 				});
+				
+				if(!skipVisCheck){	
+					formBuilder.checkVisibility();
+				}
 			});
 	}
 	
@@ -1103,7 +1105,10 @@ function MatrixBuilder(formBuilder, selectBuilder){
 		//clear answer text
 	    var columnHeader = answer.answerText;
 		answer.answerText = "";
-		return selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
+		var radio = selectBuilder.buildRadioLI(answer, "grp_"+measureId, columnHeader);
+		radio.find("input[type=radio]")
+			.change(formBuilder.checkVisibility);
+		return radio;
 	}
 
 	function multiMatrixAnswerFactory(answer, measureId){

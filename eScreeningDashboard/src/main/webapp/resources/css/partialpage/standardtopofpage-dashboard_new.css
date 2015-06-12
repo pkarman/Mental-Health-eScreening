@@ -105,7 +105,7 @@ h2 {
   padding: 0 5px;
 }
 .gray-lighter {
-  background-color: #eee;
+  background-color:#eee;
 }
 .txt_lable_lg {
   font-size: 22px;
@@ -317,9 +317,6 @@ iframe {
 #mainContent .ui-tabs .ui-tabs-nav li a {
   padding: 0.1em 3em;
 }
-#mainContent table.dataTable tr.odd, #mainContent table.dataTable tr.odd td.sorting_1, #mainContent table.dataTable tr.even td.sorting_1 {
-  background-color: transparent;
-}
 .exportImg {
   margin: 0px;
   padding: 0px;
@@ -397,7 +394,7 @@ iframe {
   padding: 0.1em 3em;
 }
 #mainContent table.dataTable tr.odd, #mainContent table.dataTable tr.odd td.sorting_1, #mainContent table.dataTable tr.even td.sorting_1 {
-  background-color: transparent;
+  background-color: rgba(0,0,0,.05);
 }
 .exportImg {
   margin: 0px;
@@ -698,8 +695,40 @@ table.gridtable td {
 }
 */
  
- 
+.panel-included .panel{
+	background-color:transparent;
+	border:1px solid rgba(169,68,66,0.20);
+	border:none;
+	box-shadow:none;
+}
 
+.panel-included .panel-group .panel-heading + .panel-collapse .panel-body{
+	border-top: none;
+	border-bottom:1px solid rgba(169,68,66,0.20);
+}
+
+.panel-included .panel-heading {
+	padding:4px;
+}
+
+.panel-included .panel-body {
+	padding: 4px 24px;
+}
+
+.panel-included .panel-group{
+	 margin-bottom: 0px;
+}
+
+.panel-included .panel-title{
+	font-size:14px;
+}
+  
+  
+  
+.panel-included .panel-heading h4 a{
+	font-weight:bold;
+	font-size:14px;
+}
 /* Common */
 .padding_0 {
   padding: 0px !important;
@@ -858,6 +887,24 @@ a.offscreen:focus, a.offscreen:active {
   background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
 }
 /* added by JH */
+/* Edit Veterans Assessment */
+.directionsBlock{
+	background-color:rgba(255,246,218,1.00);
+	border:1px solid rgba(0,0,0,1.00);
+	padding:8px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+.custom-hr-editVeteran{
+	margin-bottom:0px !important;
+	margin-top:0px !important;
+}
+
+.custom-label-editVeteran{
+	font-weight:normal;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -920,8 +967,13 @@ a.offscreen:focus, a.offscreen:active {
   stroke-width: 2px;
 }
 
-
-
+.table thead tr:first-child th {
+	background-color: #30333E;
+	color: white;
+	border:1px solid #8F8F8F;
+	vertical-align:middle;
+	font-size:12px;
+}
 /* Reports */
 .vertical_scoll_list_b {
   overflow-y: scroll;
@@ -1011,6 +1063,7 @@ a.offscreen:focus, a.offscreen:active {
 .icon-arrow-left{
 	background-position: -240px -96px;
 }
+
 
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 .container {

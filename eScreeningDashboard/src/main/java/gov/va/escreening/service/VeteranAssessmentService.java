@@ -261,13 +261,14 @@ public interface VeteranAssessmentService {
     List<String> getHealthFactorReport(int veteranAssessmentId);
     
     /**
-     * Returns the a map of assessment vairable values overtime
-     * @param veteranID
-     * @param assessmentVariableID
+     * Returns an ordered map of assessment variable values overtime
+     * @param veteranID 
+     * @param assessmentVariableID - the ID of the {@link gov.va.escreening.entity.AssessmentVariable} to pull history for
      * @param numOfMonth
-     * @return
+     * @return the returned map has an iteration order of ascending date order. The map will have 
+     * a max of 15 entries. 
      */
-    Map<String, String> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
+    Map<String, Double> getVeteranAssessmentVariableSeries(int veteranID, int assessmentVariableID,
     		int numOfMonth);
 
     String getUniqueVeterns(List<Integer> clinicIds, String strFromDate, String strToDate);
@@ -332,4 +333,6 @@ public interface VeteranAssessmentService {
     int findAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds);
 
     List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
+
+    int getMissingEthnicityCount(List cList, String fromDate, String toDate);
 }

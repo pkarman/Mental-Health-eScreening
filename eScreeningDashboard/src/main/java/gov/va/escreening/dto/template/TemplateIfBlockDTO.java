@@ -1,5 +1,6 @@
 package gov.va.escreening.dto.template;
 
+import gov.va.escreening.condition.BlockUtil;
 import gov.va.escreening.service.AssessmentVariableService;
 
 import java.util.List;
@@ -42,9 +43,7 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 
 	public void setRight(TemplateBaseContent right) {
 		this.right = right;
-	}
-
-	
+	}	
 	
 	public List<TemplateFollowingConditionBlock> getConditions() {
 		return conditions;
@@ -56,19 +55,36 @@ public class TemplateIfBlockDTO extends TemplateBaseBlockDTO {
 
 	@Override
 	public StringBuilder appendFreeMarkerFormat(StringBuilder sb, Set<Integer> ids, AssessmentVariableService assessmentVariableService) {
-		addHeader(sb);
+		StringBuilder result = addHeader(sb);
 		
-		sb.append("<#if ").append("(").append(FormulaUtil.createFormula(operator, left, right, ids)).append(")");
+		result.append("<#if ").append("(").append(BlockUtil.conditionToFreeMarker(operator, left, right, ids)).append(")");
 		
-		if (conditions != null && conditions.size() > 0)
-		{
-			for(TemplateFollowingConditionBlock tfcb : conditions)
-			{
-				sb.append(tfcb.toFreeMarkerFormatFormula(ids));
+		if (conditions != null && conditions.size() > 0){
+			for(TemplateFollowingConditionBlock tfcb : conditions){
+				result = tfcb.toFreeMarker(result, ids);
 			}
 		}
-		sb.append(" >\n");
+		result.append(" >\n");
 		
-		return addChildren(sb, ids, assessmentVariableService).append("\n</#if>\n");
+		return addChildren(result, ids, assessmentVariableService).append("\n</#if>\n");
 	}
+
+    /**
+     * Appends the Spring EL translation of this block.
+     * @param sb
+     * @param AvIds
+     * @return
+     */
+    public StringBuilder translateToSpringEl(StringBuilder sb, Set<Integer> avIds){
+        StringBuilder result = sb;
+        
+        result.append(BlockUtil.conditionToSpringEl(operator, left, right, avIds));
+        
+        if (conditions != null && conditions.size() > 0){
+            for(TemplateFollowingConditionBlock tfcb : conditions) {
+                result = tfcb.toSpringEl(result, avIds);
+            }
+        }
+        return result;
+    }
 }

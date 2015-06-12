@@ -2,6 +2,7 @@ package gov.va.escreening.service;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
 import gov.va.escreening.domain.AssessmentStatusEnum;
@@ -12,7 +13,6 @@ import gov.va.escreening.dto.SearchAttributes;
 import gov.va.escreening.dto.VeteranAssessmentInfo;
 import gov.va.escreening.dto.dashboard.AssessmentSearchResult;
 import gov.va.escreening.dto.dashboard.SearchResult;
-
 import gov.va.escreening.dto.report.Report593ByDayDTO;
 import gov.va.escreening.dto.report.Report593ByTimeDTO;
 import gov.va.escreening.dto.report.Report594DTO;
@@ -20,7 +20,6 @@ import gov.va.escreening.dto.report.Report595DTO;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.form.AssessmentReportFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
-
 import gov.va.escreening.entity.AssessmentAppointment;
 import gov.va.escreening.entity.AssessmentStatus;
 import gov.va.escreening.entity.AssessmentVariable;
@@ -57,11 +56,11 @@ import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
-
 import gov.va.escreening.util.VeteranUtil;
 import gov.va.escreening.validation.DateValidationHelper;
 import gov.va.escreening.variableresolver.AssessmentVariableDto;
 import gov.va.escreening.variableresolver.VariableResolverService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +69,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -81,7 +81,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(VeteranAssessmentServiceImpl.class);
-
+	private static final int MAX_ASSESSMENT_HISTORY_COUNT = 15;
+	
 	@Autowired
 	private AssessmentStatusRepository assessmentStatusRepository;
 	@Autowired
@@ -401,11 +402,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 				if (veteranAssessment.getDashboardAlerts() != null && veteranAssessment.getDashboardAlerts().size() > 0) {
 					for (DashboardAlert dashboardAlert : veteranAssessment.getDashboardAlerts()) {
-						AlertDto alertDto = new AlertDto();
-						alertDto.setAlertId(dashboardAlert.getDashboardAlertId());
-						alertDto.setAlertName(dashboardAlert.getName());
-
-						assessmentSearchResult.getAlerts().add(alertDto);
+						assessmentSearchResult.getAlerts().add(new AlertDto(dashboardAlert));
 					}
 				}
 
@@ -805,7 +802,6 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				veteranAssessmentMeasureVisibilityRepository.create(new VeteranAssessmentMeasureVisibility(assessment, eventMeasure));
 			}
 		}
-
 	}
 
 	@Transactional(readOnly = false)
@@ -957,6 +953,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 			if (survey.isMha()) {
 
+				boolean surveyIsCopied = false;
 				String mentalHealthTestName = survey.getMhaTestName();
 				String reminderDialogIEN = survey.getMhaResultGroupIen();
 				String mentalHealthTestAnswers = "";
@@ -1004,7 +1001,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				// Get all the answers and lookup the MHA values we need to
 				// send.
 				// Should always have a question that is marked as MHA, but....
-				if (measureIdList != null && measureIdList.size() > 0) {
+				if (measureIdList != null && measureIdList.size() > 0 && !surveyIsCopied) {
 
 					// we now have a list of measure id
 					// Get all the answers the veteran submitted for the measure
@@ -1016,7 +1013,12 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 						boolean respondHasMeasureId = false;
 
 						for (SurveyMeasureResponse response : veteranAssessment.getSurveyMeasureResponseList()) {
-
+							if(response.getCopiedFromVeteranAssessment() != null)
+							{
+								//skip the whole survey because it was copied.
+								surveyIsCopied = true;
+								break;
+							}
 							if (response.getMeasure().getMeasureId().equals(measureId)) {
 								respondHasMeasureId = true;
 								if (response.getBooleanValue()) { // responded = true
@@ -1030,16 +1032,24 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 							// Append it.
 							mentalHealthTestAnswers += mhaValue;
 						}
+						
+						if(surveyIsCopied) break;
 					}
 				}
 
-				MentalHealthAssessment mentalHealthAssessment = new MentalHealthAssessment();
-				mentalHealthAssessment.setSurveyId(surveyId);
-				mentalHealthAssessment.setMentalHealthTestName(mentalHealthTestName);
-				mentalHealthAssessment.setReminderDialogIEN(reminderDialogIEN == null ? 0L : Long.parseLong(reminderDialogIEN.trim()));
-				mentalHealthAssessment.setMentalHealthTestAnswers(mentalHealthTestAnswers);
+				if (!surveyIsCopied) {
+					MentalHealthAssessment mentalHealthAssessment = new MentalHealthAssessment();
+					mentalHealthAssessment.setSurveyId(surveyId);
+					mentalHealthAssessment
+							.setMentalHealthTestName(mentalHealthTestName);
+					mentalHealthAssessment
+							.setReminderDialogIEN(reminderDialogIEN == null ? 0L
+									: Long.parseLong(reminderDialogIEN.trim()));
+					mentalHealthAssessment
+							.setMentalHealthTestAnswers(mentalHealthTestAnswers);
 
-				mentalHealthAssessmentList.add(mentalHealthAssessment);
+					mentalHealthAssessmentList.add(mentalHealthAssessment);
+				}
 			}
 		}
 
@@ -1139,7 +1149,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
 	private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	@Override
-	public Map<String, String> getVeteranAssessmentVariableSeries(
+	public Map<String, Double> getVeteranAssessmentVariableSeries(
 			int veteranId, int assessmentVariableID, int numOfMonth) {
 		
 		AssessmentVariable dbVariable = assessmentVariableRepo.findOne(assessmentVariableID);
@@ -1150,8 +1160,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 		//if this variable is a measure (question) then add all answers' variables
 		if(dbVariable.getMeasure() != null && dbVariable.getMeasure().getMeasureAnswerList() != null){
 		    for(MeasureAnswer answer : dbVariable.getMeasure().getMeasureAnswerList()){
-		        if(answer.getAssessmentVariable() != null){
-		            dbVariables.add(answer.getAssessmentVariable());
+		        if(answer.assessmentVariable() != null){
+		            dbVariables.add(answer.assessmentVariable());
 		        }
 		        else{
 		            logger.error("Answer with ID {} does not have an associated assessment variable. This should never happen.", 
@@ -1190,11 +1200,13 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 			
 		});
 		
-		LinkedHashMap<String, String> timeSeries = new LinkedHashMap<String, String>();
-		int total = 0;
-		for(int i=assessmentList.size()-1; i>=0 && total<=15; i--)
-		{
+		//This map should be updated in history date order
+		LinkedHashMap<String, Double> timeSeries = new LinkedHashMap<>();
+		for(int i=assessmentList.size()-Math.min(assessmentList.size(), MAX_ASSESSMENT_HISTORY_COUNT); 
+		        i < assessmentList.size(); i++){
+		    
 			VeteranAssessment va = assessmentList.get(i);
+			
 			try {
 				Date d = va.getDateUpdated();
 				long time = d.getTime()/1000;
@@ -1206,14 +1218,14 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				{
 					continue;
 				}
-					
-				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables);
+				
+				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables, false);
 				AssessmentVariableDto result = dto.iterator().next();
 				
 				//TODO: Move this logic into the AssessmentVariableDto object
-				String value = null;
+				Double value = null;
 				if (result.getValue() != null) {
-					value = result.getValue();
+					value = Double.valueOf(result.getValue());
 				}
 				else if(result.getChildren() != null){
 				    double sum = 0d;
@@ -1228,13 +1240,12 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				        }
 				    }
 				    if(useSum){
-				        value = Double.toString(sum);
+				        value = sum;
 				    }
 				}
 				
 				if(value != null){
 				    timeSeries.put(variableSeriesDateFormat.format(va.getDateUpdated()),  value);
-				    total++;
 				}
 			} catch (Exception ex) {// do nothing
 				logger.warn("exception getting a assessment variable for time series", ex);
@@ -1402,7 +1413,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public Integer getMissingEducationCount(List<Integer> cList, String fromDate, String toDate) {
         Integer measureId = 23;
 
-        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  23);
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate, 23);
     }
 
     @Override
@@ -1418,7 +1429,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
     @Override
     public int getMissingEmploymentCount(List<Integer> cList, String fromDate, String toDate) {
-        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  24);
+        return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate, 24);
     }
 
     @Override
@@ -1441,4 +1452,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     public List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds) {
         return veteranAssessmentRepository.findAlertsCount(fromDate, toDate, clinicIds);
     }
+	@Override
+	public int getMissingEthnicityCount(List cList, String fromDate, String toDate) {
+		return veteranAssessmentRepository.getMissingCountFor(cList, fromDate, toDate,  21);
+	}
 }

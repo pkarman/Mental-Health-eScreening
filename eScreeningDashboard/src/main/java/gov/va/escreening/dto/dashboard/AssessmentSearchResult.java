@@ -1,8 +1,13 @@
 package gov.va.escreening.dto.dashboard;
 
+import freemarker.template.SimpleDate;
 import gov.va.escreening.dto.AlertDto;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class AssessmentSearchResult implements Serializable {
@@ -24,6 +29,10 @@ public class AssessmentSearchResult implements Serializable {
     private Integer duration;
     private Integer percentComplete;
     private List<AlertDto> alerts;
+
+    public AssessmentSearchResult() {
+
+    }
 
     public String getClinicianName() {
         return clinicianName;
@@ -105,8 +114,12 @@ public class AssessmentSearchResult implements Serializable {
         this.ssnLastFour = ssnLastFour;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public String getDuration() {
+        int min = (int) duration / 60;
+        int sec = (int) duration % 60;
+
+        String minSec = String.format("%02d min %02d sec ", min, sec);
+        return minSec;
     }
 
     public void setDuration(Integer duration) {
@@ -143,10 +156,6 @@ public class AssessmentSearchResult implements Serializable {
 
     public void setCompleteDate(String completeDate) {
         this.completeDate = completeDate;
-    }
-
-    public AssessmentSearchResult() {
-
     }
 
     @Override

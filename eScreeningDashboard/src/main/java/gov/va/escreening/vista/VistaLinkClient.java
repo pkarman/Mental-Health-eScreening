@@ -1,5 +1,6 @@
 package gov.va.escreening.vista;
 
+import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.vista.dto.ConsultationServiceNameDataSet;
 import gov.va.escreening.vista.dto.ConsultationUrgencyDataSet;
@@ -71,5 +72,5 @@ public interface VistaLinkClient {
     public Map<String, Map<String, String>> getConsultInfo(String orderType);
     
     void closeConnection();
-	boolean savePainScale(VeteranAssessment veteranAssessment, String visitDate);
+	boolean savePainScale(VeteranAssessment veteranAssessment, String visitDate, SaveToVistaContext response);
 }

@@ -6,6 +6,7 @@
 <!doctype html>
 <html>
 <head>
+    <title>Veteran Search</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
@@ -20,7 +21,7 @@
     <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css"/>
     <link href="resources/css/formButtons.css" rel="stylesheet" type="text/css"/>
 
-    <title>Veteran Search</title>
+
    
 <style type="text/css">
 

@@ -13,7 +13,7 @@
 			</div>
 			<div class="col-md-6">
 				<label class="sr-only">Assessment Variable Search</label>
-				<input type="text" class="form-control" ng-model="avSearch" placeholder="Assessment Variable Search" tabindex="5">
+				<input type="text" class="form-control" ng-model="searchObj.displayName" placeholder="Assessment Variable Search" tabindex="5">
 			</div>
 		</div>
 		<br>
@@ -34,7 +34,7 @@
 						</td>
 					</tr>
 				</table>
-
+				<div ng-if="!variablesLoaded" class="text-warning text-center"><H3>Loading...</H3></div>
 			</div>
 
 		</div>
@@ -145,7 +145,7 @@
 							tabindex="6"
 							ng-model="transformationType"
 							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
-						<option value="">No Transformation</option>
+							<option value="">-- Select Transformation --</option>
 					</select>
 				</div>
 
@@ -174,7 +174,7 @@
 							tabindex="6"
 							ng-model="transformationType"
 							ng-options="transformation as transformation.displayName for transformation in assessmentVariable.transformations">
-						<option value="">{{ (block) ? 'No Transformation' : '-- Select Transformation --' }}</option>
+						<option value="">-- Select Transformation --</option>
 					</select>
 				</div>
 

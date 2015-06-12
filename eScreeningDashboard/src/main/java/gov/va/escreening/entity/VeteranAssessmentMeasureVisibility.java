@@ -47,11 +47,16 @@ public class VeteranAssessmentMeasureVisibility implements Serializable {
     private Date dateCreated;
     
     public VeteranAssessmentMeasureVisibility(){}
-            
     public VeteranAssessmentMeasureVisibility(VeteranAssessment assessment, Measure measure){
         this.veteranAssessment = assessment;
         this.measure = measure;
         this.isVisible = false;
+    }
+    
+    public VeteranAssessmentMeasureVisibility(VeteranAssessment assessment, Measure measure, Boolean isVisible){
+        this.veteranAssessment = assessment;
+        this.measure = measure;
+        this.isVisible = isVisible;
     }
     
     public Integer getVeteranAssessmentMeasureVisibilityId() {

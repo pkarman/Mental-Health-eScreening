@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="599Report" language="groovy" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.6500000000000032"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="23"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
 	<parameter name="clinicNames" class="java.lang.String"/>
 	<parameter name="noData" class="java.lang.Boolean"/>
@@ -13,9 +13,6 @@
 	<field name="positiveCount" class="java.lang.String"/>
 	<field name="negativeCount" class="java.lang.String"/>
 	<field name="missingCount" class="java.lang.String"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
 	<title>
 		<band height="151" splitType="Stretch">
 			<image>
@@ -66,10 +63,25 @@
 			</textField>
 		</band>
 	</title>
+	<pageHeader>
+		<band height="40">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="133" y="0" width="267" height="40" uuid="9280b863-b8aa-425a-89d1-0e002a0c1532"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[No Results Found.]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
 	<detail>
 		<band height="72" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<frame>
-				<reportElement mode="Transparent" x="0" y="0" width="286" height="72" backcolor="#CCCCCC" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b"/>
+				<reportElement mode="Transparent" x="0" y="0" width="286" height="72" backcolor="#CCCCCC" uuid="63a5ee82-8dbc-4a42-8dbc-59ad29e9838b">
+					<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>

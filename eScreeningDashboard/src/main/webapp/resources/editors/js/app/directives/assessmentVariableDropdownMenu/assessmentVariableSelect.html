@@ -1,0 +1,15 @@
+<div class="assessmentVariableSelection">
+	<div ng-click="openSelections($event)" on-enter="openSelections()" tabindex="3">
+		<link rel="stylesheet" type="text/css" href="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenu.css">
+		<input type="hidden" name="selectedAssessmentVariable" ng-model="assessmentVariable" required update-hidden>
+		<i class="fa fa-list"> </i> <span id="assessmentVariableMenuLabel">{{ assessmentVariable != null && assessmentVariable.name != null && assessmentVariable.name.length > 0 ? (assessmentVariable.name | limitToWithEllipsis: 33) : 'Select Variable'}}</span>
+	</div>
+	<assessment-var-tbl
+		assessment-variable="assessmentVariable"
+		assessment-variables="assessmentVariables"
+		editor-type="editorType" 
+		allow-transformations="allowTransformations" 
+		show="avMenu.show" 
+		ng-if="avMenu.show" 
+		class="assessmentVariableTable" />
+</div>

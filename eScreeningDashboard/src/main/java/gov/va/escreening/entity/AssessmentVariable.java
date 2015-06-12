@@ -6,17 +6,36 @@
 
 package gov.va.escreening.entity;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import gov.va.escreening.constants.AssessmentConstants;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
+
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * @author jocchiuzzo
@@ -39,11 +58,12 @@ public class AssessmentVariable implements Serializable {
     private String description;
     @Column(name = "formula_template")
     private String formulaTemplate;
-    @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
+    
+    //can't make this lazy until we stop using override values (see MeasureAnswerAssessmentVariableResolverImpl)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")//, fetch = FetchType.LAZY) 
     private List<VariableTemplate> variableTemplateList;
     @JoinColumn(name = "measure_id", referencedColumnName = "measure_id")
     @ManyToOne
@@ -54,11 +74,15 @@ public class AssessmentVariable implements Serializable {
     @JoinColumn(name = "measure_answer_id", referencedColumnName = "measure_answer_id")
     @ManyToOne
     private MeasureAnswer measureAnswer;
+    
+    //TODO: We should change this to have a list (or Set really) of AssessmentVariables and not a list of AssessmentVarChildren
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variableParent", orphanRemoval = true)
     private List<AssessmentVarChildren> assessmentVarChildrenList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "assessmentVariableId", fetch = FetchType.LAZY)
     private List<AssessmentVariableColumn> assessmentVariableColumnList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true)
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentAssessment", orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("displayOrder")
     private List<AssessmentFormula> assessmentFormulas;
 
@@ -147,25 +171,44 @@ public class AssessmentVariable implements Serializable {
         this.measureAnswer = measureAnswer;
     }
 
-    //public List<RuleAssessmentVariable> getRuleAssessmentVariableList() {
-    //    return ruleAssessmentVariableList;
-    //}
-
-    //public void setRuleAssessmentVariableList(List<RuleAssessmentVariable> ruleAssessmentVariableList) {
-    //    this.ruleAssessmentVariableList = ruleAssessmentVariableList;
-    //}
-
+    //TODO: We should change this to have a list of AssessmentVariables and not a list of AssessmentVarChildren
     public List<AssessmentVarChildren> getAssessmentVarChildrenList() {
         return assessmentVarChildrenList;
     }
 
     public void setAssessmentVarChildrenList(List<AssessmentVarChildren> assessmentVarChildrenList) {
         if (this.assessmentVarChildrenList == null) {
-        this.assessmentVarChildrenList = assessmentVarChildrenList;
-        } else {
+            this.assessmentVarChildrenList = assessmentVarChildrenList;
+        } 
+        else {
             this.assessmentVarChildrenList.clear();
             this.assessmentVarChildrenList.addAll(assessmentVarChildrenList);
+        }
     }
+    
+    //TODO: when we move away from using AssessmentVarChildren, this should be replaced with a simple assignment
+    public void setChildren(Set<AssessmentVariable> children){
+        //create map of current assessmentVarChildren
+        if(assessmentVarChildrenList == null){
+            assessmentVarChildrenList = new ArrayList<>(children.size());
+        }
+        
+        Map<Integer, AssessmentVarChildren> currentChildMap = Maps.newHashMapWithExpectedSize(getAssessmentVarChildrenList().size());
+        for(AssessmentVarChildren varChild : assessmentVarChildrenList){
+            currentChildMap.put(varChild.getVariableChild().getAssessmentVariableId(), varChild);
+        }
+        
+        List<AssessmentVarChildren> newChildren = new ArrayList<>(children.size());
+        for(AssessmentVariable child : children){
+            AssessmentVarChildren newVarChild = currentChildMap.get(child.getAssessmentVariableId());
+            if(newVarChild == null){
+                newVarChild = new AssessmentVarChildren(this, child);
+            }
+            newChildren.add(newVarChild);
+        }
+        
+        assessmentVarChildrenList.clear();
+        assessmentVarChildrenList.addAll(newChildren);
     }
 
     public List<AssessmentVariableColumn> getAssessmentVariableColumnList() {
@@ -211,7 +254,9 @@ public class AssessmentVariable implements Serializable {
 
     @Override
     public String toString() {
-        return "[id=" + assessmentVariableId + "]";
+        return "[id=" + assessmentVariableId  
+                +", displayName=" + displayName
+                + "]";
     }
 
     public Map<String, Object> getAsMap() {
@@ -221,8 +266,12 @@ public class AssessmentVariable implements Serializable {
         return asMap;
     }
 
-    public List getAsList() {
-        return Arrays.asList(getDisplayName(), getAssessmentVariableId(), getDescription(), getFormulaTemplate(), getDisplayName().length()+1);
+    public List<String> getAsList() {
+        return Arrays.asList(getDisplayName(), 
+                getAssessmentVariableId().toString(), 
+                getDescription(), 
+                getFormulaTemplate(), 
+                Integer.valueOf(getDisplayName().length()+1).toString());
     }
 
     public void attachFormulaTokens(List<String> tokens) {
@@ -254,5 +303,9 @@ public class AssessmentVariable implements Serializable {
         Map<String, Object> formulaAsMap = getAsMap();
         formulaAsMap.put("description", getDescription());
         return formulaAsMap;
+    }
+    
+    public boolean isFormula(){
+        return getAssessmentVariableTypeId().getAssessmentVariableTypeId().equals(AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA);
     }
 }

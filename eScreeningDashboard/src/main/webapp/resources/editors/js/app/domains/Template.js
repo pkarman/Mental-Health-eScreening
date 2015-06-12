@@ -36,6 +36,7 @@ EScreeningDashboardApp.models.Template = function (templateConfig) {
         this.type = (Object.isDefined(templateConfig.type))? templateConfig.type: null;
         this.name = (Object.isDefined(templateConfig.type) && Object.isDefined(templateConfig.type.name))? templateConfig.type.name: null;
         this.blocks = (Object.isArray(templateConfig.blocks))? EScreeningDashboardApp.models.TemplateBlock.createTemplateBlockArray(templateConfig.blocks): [];
+        
     }
     
     /**

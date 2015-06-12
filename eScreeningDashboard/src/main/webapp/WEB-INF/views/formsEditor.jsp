@@ -7,13 +7,12 @@
 <head lang="en">
     <title>VA Editors</title>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     
     <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
     <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -91,6 +90,8 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionTransformer.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/QuestionsTransformer.js"></script>
 
+    <script type="text/javascript" src="resources/editors/js/app/domains/Event.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/domains/Rule.js"></script>
 
     <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionUIObjectWrapper.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/MenuItemSurveySectionWrapper.js"></script>
@@ -120,8 +121,6 @@
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateBlock.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateCondition.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateConnector.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateLeftVariable.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/domains/TemplateRightVariable.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateTransformation.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/domains/TemplateType.js"></script>
 	
@@ -130,9 +129,9 @@
     <script type="text/javascript" src="resources/editors/vendors/angularUtils/directives/uiBreadcrumbs/uiBreadcrumbs.js"></script>
     <script type="text/javascript" src="resources/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/ui-bootstrap-tpls-0.10.0.min.js"></script>
-    <script src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
-    <script src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
+    <script type="text/javascript" src='resources/editors/vendors/textAngular/textAngular-rangy.min.js'></script>
+    <script type="text/javascript" src='resources/editors/vendors/textAngular/textAngular-sanitize.min.js'></script>
+    <script type="text/javascript" src='resources/editors/vendors/textAngular/textAngular.min.js'></script>
     <script type="text/javascript" src="resources/bower_components/ng-table/ng-table.min.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/sortable.js"></script>
     <script type="text/javascript" src="resources/editors/js/directives/xeditable.min.js"></script>
@@ -145,11 +144,13 @@
     <script type="text/javascript" src="resources/editors/states.js"></script>
 
     <!-- Services -->
-    <script type="text/javascript" src="resources/editors/js/app/services/assessment-variable.manager.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableManager.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/AssessmentVariableService.js"></script>
-    <script type="text/javascript" src="resources/editors/components/alerts/message.factory.js"></script>
+    <script type="text/javascript" src="resources/editors/components/alerts/MessageFactory.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/BatteryService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/ClinicalReminderService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/EventService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/RuleService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/SurveyService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateBlockService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/TemplateTypeService.js"></script>
@@ -159,6 +160,7 @@
     <script type="text/javascript" src="resources/editors/js/app/services/QuestionService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/MeasureService.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/services/EventBusService.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/services/RecursionHelper.js"></script>
 
     <!-- Application filters -->
     <script type="text/javascript" src="resources/editors/js/app/filters/messageFilters.js"></script>
@@ -186,6 +188,10 @@
     <!-- Survey Sections View State -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/sections/sectionsController.js"></script>
 
+    <!-- Rules Sections -->
+    <script type="text/javascript" src="resources/editors/js/app/controllers/rules/rules.controller.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/controllers/rules/rules.detail.controller.js"></script>
+
     <!-- Modules View State(s) -->
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.controller.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.detail.controller.js"></script>
@@ -200,15 +206,16 @@
     <script type="text/javascript" src="resources/editors/js/app/controllers/modules/modules.templates.edit.controller.js"></script>
     
     <!--  Directives -->
-    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVariableDropdownMenuDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableDropdownMenu/assessmentVarSelect.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/assessmentVariableTable/assessmentVariableTableDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockEditorDirective.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockConditionEditorDirective/templateBlockConditionEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/modules/matrix-transformation.directive.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/updateHiddenDirective.js"></script>
-    <script type="text/javascript" src="resources/editors/js/app/directives/castIntegerDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/stringToNumberDirective.js"></script>
     <script type="text/javascript" src="resources/editors/js/app/directives/templateBlockTextEditorDirective.js"></script>
+    <script type="text/javascript" src="resources/editors/js/app/directives/conditionEditorDirective.js"></script>
     <script type="text/javascript" src="resources/editors/components/utilities/really-click.directive.js"></script>
+
 
     <script type="text/javascript">	
         $(document).ready(function() {
@@ -274,7 +281,8 @@
                 <div class="button-group" ng-show="$state.current.name!=='home'">
                 	<a ng-class="{active: $state.includes('batteries')}" class="btn btn-default btnHeader btnHeaderLeft" ui-sref="batteries.list">Manage Batteries</a>
                 	<a ng-class="{active: $state.includes('modules')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="modules">Manage Module</a>
-                	<a ng-class="{active: $state.includes('sections')}" class="btn btn-default btnHeader btnHeaderRight" ui-sref="sections">Manage Sections</a>
+                	<a ng-class="{active: $state.includes('sections')}" class="btn btn-default btnHeader btnHeaderMid" ui-sref="sections">Manage Sections</a>
+                    <a ng-class="{active: $state.includes('rules')}" class="btn btn-default btnHeader btnHeaderRight" ui-sref="rules">Manage Rules</a>
                 </div>
                 </div>
                 </div>
@@ -283,7 +291,7 @@
 
                          <div class="col-md-12">
                              <!-- Alerts and Messages -->
-                             <alert ng-repeat="message in flashMessages" type="message.type" close="message.close($index)">{{message.msg}}</alert>
+                             <alert ng-repeat="message in flashMessages" type="message.type" close="message.close($index)"><p ng-bind="message.msg"></p></alert>
                          </div>
 
             		    <div class="col-md-12" ui-view></div>

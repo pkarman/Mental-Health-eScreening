@@ -1,12 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<htmL>
+<html>
 <head>
+	<title>Page Not Found</title>
 	<base href="${pageContext.request.contextPath}/"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
    	
-  <!-- FAVICON -->
+	<!-- FAVICON -->
 	<link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon">
 	<link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />
 	<link rel="apple-touch-icon" href="resources/images/favico_va_310x310.png" />
@@ -14,7 +15,6 @@
 	<link rel="apple-touch-icon" sizes="72x72" href="resources/images/favico_va_touch_72x72.png" />
 	<link rel="apple-touch-icon" href="resources/images/favico_va_touch_57x57.png" />
 
-	<title>Page Not Found</title>
 	<link href="resources/css/home.css" rel="stylesheet" type="text/css">
 	<link href="resources/css/partialpage/standardtopofpage-partial.css" rel="stylesheet" type="text/css"/>
 	<link href="resources/css/login.css" rel="stylesheet" type="text/css">
@@ -49,10 +49,7 @@
 				</div>
 			</div>
 		</div>
-		
 	</div>
-	
 </div>
 </body>
-
-</htmL>
+</html>

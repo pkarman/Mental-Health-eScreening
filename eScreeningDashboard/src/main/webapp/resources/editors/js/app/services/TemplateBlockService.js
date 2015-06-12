@@ -9,7 +9,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
         
         function newAVElement(variable){
         	var name = variable.getName();
-        	var hashCode = variablePrefix + hashVariable(variable);
+        	var hashCode = variablePrefix + this.addVariableToHash(variable);
             var idValue = hashCode + '_' + variableSeed++;
             
             return '<img ' +

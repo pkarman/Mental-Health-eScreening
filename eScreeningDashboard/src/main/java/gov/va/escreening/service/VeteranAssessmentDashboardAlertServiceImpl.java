@@ -4,7 +4,9 @@ import gov.va.escreening.dto.AlertDto;
 import gov.va.escreening.dto.dashboard.DashboardAlertItem;
 import gov.va.escreening.dto.dashboard.NearingCompletionAlertItem;
 import gov.va.escreening.dto.dashboard.SlowMovingAlertItem;
+import gov.va.escreening.entity.DashboardAlert;
 import gov.va.escreening.entity.VeteranAssessmentDashboardAlert;
+import gov.va.escreening.repository.DashboardAlertRepository;
 import gov.va.escreening.repository.VeteranAssessmentDashboardAlertRepository;
 
 import java.util.ArrayList;
@@ -16,15 +18,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
+
+import static com.google.common.base.Preconditions.*;
+
 @Service("escVetAssessmentDashboardAlertSrv")
 public class VeteranAssessmentDashboardAlertServiceImpl implements VeteranAssessmentDashboardAlertService {
 
-	private VeteranAssessmentDashboardAlertRepository veteranAssessmentDashboardAlertRepository;
-
+	private final VeteranAssessmentDashboardAlertRepository veteranAssessmentDashboardAlertRepository;
+	private final DashboardAlertRepository alertRepo;
+	
 	@Autowired
-	public void setVeteranAssessmentDashboardAlertRepository(
-			VeteranAssessmentDashboardAlertRepository veteranAssessmentDashboardAlertRepository) {
-		this.veteranAssessmentDashboardAlertRepository = veteranAssessmentDashboardAlertRepository;
+	VeteranAssessmentDashboardAlertServiceImpl(
+			VeteranAssessmentDashboardAlertRepository veteranAssessmentDashboardAlertRepository,
+			DashboardAlertRepository alertRepo) {
+		this.veteranAssessmentDashboardAlertRepository = checkNotNull(veteranAssessmentDashboardAlertRepository);
+		this.alertRepo = checkNotNull(alertRepo);
 	}
 
 	@Transactional(readOnly = true)
@@ -36,11 +45,7 @@ public class VeteranAssessmentDashboardAlertServiceImpl implements VeteranAssess
 		List<VeteranAssessmentDashboardAlert> resultList = veteranAssessmentDashboardAlertRepository.findByVeteranAssessmentId(veteranAssessmentId);
 
 		for (VeteranAssessmentDashboardAlert alert : resultList) {
-			AlertDto alertDto = new AlertDto();
-			alertDto.setAlertId(alert.getDashboardAlert().getDashboardAlertId());
-			alertDto.setAlertName(alert.getDashboardAlert().getName());
-			alertList.add(alertDto);
-
+		    alertList.add(new AlertDto(alert.getDashboardAlert()));
 		}
 
 		return alertList;
@@ -127,6 +132,17 @@ public class VeteranAssessmentDashboardAlertServiceImpl implements VeteranAssess
 			alerts.add(new NearingCompletionAlertItem(perentage, alert == 0 ? "#009900" : "#990000", alert, lastName, lst4Ssn, vaid));
 		}
 		return alerts;
+	}
+	
+	@Transactional(readOnly = true)
+    @Override
+	public List<AlertDto> findAlerts(){
+	    List<DashboardAlert>  dbAlerts = alertRepo.findAll();
+	    List<AlertDto> dtoAlerts = Lists.newArrayListWithExpectedSize(dbAlerts.size());
+	    for(DashboardAlert dbAlert : dbAlerts){
+	        dtoAlerts.add(new AlertDto(dbAlert));
+	    }
+	    return dtoAlerts;
 	}
 
 }

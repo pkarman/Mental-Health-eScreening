@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="IndividualStatisticsGraphNumberReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1c0b9543-dc87-41a6-8245-0bba5d65a295">
-	<property name="ireport.zoom" value="1.771561000000014"/>
+	<property name="ireport.zoom" value="1.2100000000000093"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="251"/>
 	<parameter name="lastNameSSN" class="java.lang.String"/>
 	<parameter name="fromToDate" class="java.lang.String"/>
+	<parameter name="noData" class="java.lang.Boolean" isForPrompting="false"/>
 	<field name="moduleName" class="java.lang.String"/>
 	<field name="score" class="java.lang.String"/>
 	<field name="scoreHistoryTitle" class="java.lang.String"/>
@@ -57,6 +58,7 @@
 	</title>
 	<detail>
 		<band height="216" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{noData}]]></printWhenExpression>
 			<frame>
 				<reportElement x="0" y="24" width="572" height="192" uuid="b4934b12-0cdc-4350-850b-4ceafade03c6">
 					<printWhenExpression><![CDATA[$F{hasData}.equals( false )]]></printWhenExpression>
@@ -66,7 +68,7 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<staticText>
-					<reportElement x="145" y="67" width="196" height="37" uuid="78ed2ceb-f299-475c-a047-aea3cc59ee19">
+					<reportElement x="1" y="67" width="571" height="37" uuid="78ed2ceb-f299-475c-a047-aea3cc59ee19">
 						<printWhenExpression><![CDATA[$F{hasData}.equals( false )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -159,4 +161,16 @@
 			</frame>
 		</band>
 	</detail>
+	<summary>
+		<band height="50">
+			<printWhenExpression><![CDATA[$P{noData}]]></printWhenExpression>
+			<staticText>
+				<reportElement x="191" y="15" width="138" height="20" uuid="2cff6124-568a-4b73-9a29-25b79a3f5b4a"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No Data Found]]></text>
+			</staticText>
+		</band>
+	</summary>
 </jasperReport>

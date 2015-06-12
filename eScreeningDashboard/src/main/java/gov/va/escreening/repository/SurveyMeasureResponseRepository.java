@@ -17,14 +17,15 @@ public interface SurveyMeasureResponseRepository extends RepositoryInterface<Sur
      * @param veteranAssessmentId
      * @param measureId
      * @return
-     */
+     */   //TODO: Remove this method since it is not used by live code
     List<SurveyMeasureResponse> getForVeteranAssessmentAndMeasure(int veteranAssessmentId, int measureId);
 	
     /**
      * Retrieves the SurveyMeasureReponse for a veteran assessment and survey.
      * @param veteranAssessmentId
      * @param surveyId
-     * @return a ListMultimap mapping from answer IDs to responses. Calling get() for an answer ID, will return a Collection with SurveyMeasureResponse.tabularRow iteration order.
+     * @return a ListMultimap mapping from answer IDs to responses. 
+     * Calling get() for an answer ID, will return a List with SurveyMeasureResponse.tabularRow iteration order.
      */
      ListMultimap<Integer, SurveyMeasureResponse> getForVeteranAssessmentAndSurvey(int veteranAssessmentId, int surveyId);
 
@@ -33,27 +34,9 @@ public interface SurveyMeasureResponseRepository extends RepositoryInterface<Sur
      * @param veteranAssessmentId
      * @param measureAnswerId
      * @return
-     */
+     */    //TODO: Remove this method since it is not used by live code
     SurveyMeasureResponse findSmrUsingPreFetch(int veteranAssessmentId, int measureAnswerId, @Nullable Integer tabularRow);
 
-    /**
-     * Retrieves the SurveyMeasureResposne based on veteran assessment and measure answer.
-     * @param veteranAssessmentId
-     * @param measureAnswerId
-     * @param tabularRow the optional row index 
-     * @return
-     */
-    SurveyMeasureResponse find(int veteranAssessmentId, int measureAnswerId, @Nullable Integer tabularRow);
-    
-    /**
-     * Retrieves the SurveyMeasureResposne based on veteran assessment, measure, and tabularRow id.
-     * @param veteranAssessmentId
-     * @param measureId
-     * @param tabularRow 
-     * @return
-     */
-    List<SurveyMeasureResponse> findForAssessmentIdMeasureRow(int veteranAssessmentId, int measureId, int tabularRow);
-    
     /**
      * <strong>Permanently</strong> deletes a measure answer.
      * @param veteranAssessmentId 
@@ -87,4 +70,6 @@ public interface SurveyMeasureResponseRepository extends RepositoryInterface<Sur
      * @return
      */
     Integer getNumRowsForAssessmentIdMeasure(int veteranAssessmentId, Measure parentMeasureId);
+    
+    List<SurveyMeasureResponse> findLast48HourAnswersForVet(int veteranId);
 }

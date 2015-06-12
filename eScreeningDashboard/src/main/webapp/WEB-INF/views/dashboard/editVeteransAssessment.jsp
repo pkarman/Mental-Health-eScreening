@@ -8,6 +8,7 @@
 <html>
 <head>
 	<title>Batch Create Battery</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="resources/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery/jquery.dataTables.js"></script>
@@ -27,7 +28,6 @@
 	<link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css" />
-	<link href="resources/css/formButtons.css" rel="stylesheet" type="text/css" />
 	
 	<!-- Bootstrap -->
 	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
@@ -202,12 +202,12 @@
                                             </c:forEach>
                                             <form:errors path="selectedBatteryId" cssClass="help-inline"/>
 										</div>
-										<hr />
+										<hr class="custom-hr-editVeteran" />
 												<div class="row">
 													<div class="col-md-6 padding_5"><div class="border_right_gray text-center"><strong>Highlight & Select Screening Modules</strong></div></div>
 													<div class="col-md-6 padding_5"><div class="text-center"><strong>Highlight Screening Modules</strong></div></div>
 												</div>
-												<hr />
+												<hr class="custom-hr-editVeteran" />
 												
 										<ul class="battery_list" style="padding: 0px">
 											<li></li>
@@ -235,7 +235,15 @@
 									</div>
 
 									<div class="col-md-8">
-				    					<table class="table table-striped table-hover module_list" summary="Screening Modules Table">
+											<div class="directionsBlock">
+												<strong>Directions&nbsp;&nbsp; </strong>
+												<input name="name" id="id" type="checkbox" checked="checked" class="directionChecked">
+												<label class="custom-label-editVeteran"> Use module for all selected veterans</label>
+												&nbsp;&nbsp;&nbsp;
+												<input name="name" id="id" type="checkbox" class="directionIndeterminate">
+												<label class="custom-label-editVeteran">Remain the same state</label>
+											</div>
+										<table class="table table-striped table-hover module_list" summary="Screening Modules Table">
 				    						<thead>
 				    							<tr>
 				    								<th scope="col" class="col-md-6">Screening Module</th>
@@ -288,10 +296,8 @@
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
-
 	<!-- Scripts -->
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-	
 	<!-- Page Scripts -->
 	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/editVeteransAssessment.js" />"></script>
 </body>

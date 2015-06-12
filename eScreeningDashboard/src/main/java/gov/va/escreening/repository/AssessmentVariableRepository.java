@@ -11,4 +11,7 @@ public interface AssessmentVariableRepository extends RepositoryInterface<Assess
 	AssessmentVariable findOneByDisplayName(String name);
 
     Collection<AssessmentVariable> findByDisplayNames(List<String> displayNames);
+
+    Collection<AssessmentVariable> getParentVariables(
+            AssessmentVariable childVariable);
 }

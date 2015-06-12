@@ -1,0 +1,159 @@
+<div class="row">
+    <div class="col-md-12">
+
+		<h1>{{rule.id ? 'Edit' : 'Add'}} {{rule.name}} Rule</h1>
+
+		<!-- Alerts and Messages -->
+		<alert ng-repeat="alert in alerts track by $index" type="alert.type" close="alert.close($index)">{{alert.msg}}</alert>
+
+	    <form name="ruleDetailsForm" novalidate>
+		    <div class="row">
+			    <div class="col-md-12">
+				    <div class="form-group border-radius-main-form gray-lighter">
+					    <label for="ruleName">Rule Name *</label>
+					    <input name="inputTitle" id="ruleName" type="text" class="form-control"
+							    ng-model="rule.name"
+							    placeholder="Enter Rule Name" requried>
+				    </div>
+			    </div>
+		    </div>
+
+		    <div class="row">
+			    <div class="col-md-12">
+				    <div class="border-radius-main-form gray-lighter">
+
+					    <h3>Expression</h3>
+					    <template-block-editor block="rule.condition"
+							    assessment-variables="assessmentVariables"
+							    show-validation-messages="showValidationMessages"
+							    enable-types-dropdown="enableTypeDropdown"
+							    editor-width="12"></template-block-editor>
+							     
+					    <h3>Events</h3>
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="consults">Consults</label>
+							    <ui-select
+									    multiple
+									    ng-model="selectedEvents.consults"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
+									    title="Click to select or start typing to continue with consult..." id="consults">
+
+								    <ui-select-match
+										    placeholder="Select or enter consult....">
+									    {{$item.name}}
+								    </ui-select-match>
+
+								    <ui-select-choices
+										    repeat="consult in consults | filter: {name: $select.search} track by consult.id"
+										    refresh-delay="1000">
+									    <medium>
+										    {{consult.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
+					    </div>
+
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="health-factors">Health Factors</label>
+							    <ui-select
+									    multiple
+									    ng-model="selectedEvents.healthFactors"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
+									    title="Click to select or start typing to continue with health factors..." id="health-factors">
+
+								    <ui-select-match
+										    placeholder="Select or enter health factor....">
+									    {{$item.name}}
+								    </ui-select-match>
+
+								    <ui-select-choices
+										    repeat="healthFactor in healthFactors | filter: {name: $select.search} track by healthFactor.id"
+										    refresh-delay="1000">
+									    <medium>
+										    {{healthFactor.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
+					    </div>
+
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="alerts">Dashboard Alerts</label>
+							    <ui-select
+									    multiple
+									    ng-model="selectedEvents.dashboardAlerts"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
+									    title="Click to select or start typing to continue with dashboard alerts..." id="alerts">
+
+								    <ui-select-match
+										    placeholder="Select or enter dashboard alerts....">
+									    {{$item.name}}
+								    </ui-select-match>
+
+								    <ui-select-choices
+										    repeat="alert in dashboardAlerts | filter: {name: $select.search} track by alert.id"
+										    refresh-delay="1000">
+									    <medium>
+										    {{alert.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
+					    </div>
+
+					    <div class="border-radius-block-type bg-gray-light">
+						    <div class="form-group">
+							    <label for="questions">Show Follow-up Questions</label>
+							    <ui-select
+									    multiple
+									    ng-model="selectedEvents.questions"
+									    theme="bootstrap"
+									    ng-disabled="disable"
+									    on-remove="removeEvent($item, $model)"
+									    on-select="addEvent($item, $model)"
+									    title="Click to select or start typing to continue with follow-up questions..." id="questions">
+
+								    <ui-select-match
+										    placeholder="Select or enter follow-up questions....">
+									    {{$item.name}}
+								    </ui-select-match>
+
+								    <ui-select-choices
+										    repeat="question in questions | filter: {name: $select.search} track by question.id"
+										    refresh-delay="1000">
+									    <medium>
+										    {{question.name}}
+									    </medium>
+								    </ui-select-choices>
+							    </ui-select>
+						    </div>
+					    </div>
+
+				    </div>
+			    </div>
+		    </div>
+	    </form>
+
+	    <br>
+
+	    <div class="form-group">
+		    <div class="text-right">
+			    <button class="btn btn-primary" ng-click="saveRule()" ng-disabled="!ruleDetailsForm.$valid">Save</button>
+			    <button class="btn btn-default" ng-click="cancel(ruleDetailsForm);">Cancel</button>
+		    </div>
+	    </div>
+    </div>
+</div>

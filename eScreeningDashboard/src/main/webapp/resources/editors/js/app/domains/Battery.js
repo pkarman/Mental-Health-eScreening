@@ -24,7 +24,7 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
 	this.id = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.id))? jsonBatteryObject.id : -1;
 	this.name = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.name))? jsonBatteryObject.name : null;
 	this.description = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.description))? jsonBatteryObject.description : null;
-	this.disabled = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.disabled) && Object.isBoolean(jsonBatteryObject.disabled)) ? jsonBatteryObject.disabled : false;
+	this.disabled = Object.isDefined(jsonBatteryObject) ? jsonBatteryObject.disabled : false;
     this.createdDate = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.createdDate))? (Object.isDate(jsonBatteryObject.createdDate)) ? jsonBatteryObject.createdDate : BytePushers.converters.DateConverter.convertToDate(jsonBatteryObject.createdDate, BytePushers.converters.DateConverter.YYYYMMDDThhmmsssTZD_DATE_FORMAT) : null;
     this.surveys = (Object.isDefined(jsonBatteryObject) && Object.isDefined(jsonBatteryObject.surveys)&& Object.isArray(jsonBatteryObject.surveys))? EScreeningDashboardApp.models.SurveysTransformer.transformJSONPayload({"surveys":jsonBatteryObject.surveys}) : [];
     
@@ -40,9 +40,6 @@ EScreeningDashboardApp.models.Battery = function(jsonBatteryObject){
     };
     this.isDisabled = function(){
     	return this.disabled;
-    };
-    this.disabled = function(isDisabled){
-        this.disabled = isDisabled;
     };
     this.getCreatedDate = function(){
     	return this.createdDate;

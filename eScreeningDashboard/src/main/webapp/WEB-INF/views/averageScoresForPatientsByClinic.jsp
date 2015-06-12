@@ -7,6 +7,7 @@
 <html>
 <head>
 	<title>Reports | Average Scores for Veterans by Clinic</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link href="<c:url value="/resources/css/jquery/jquery-ui-1.10.3.custom.min.css" />" rel="stylesheet" type="text/css" />
@@ -204,7 +205,6 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/reports/reportsCommon.js" />"></script>
 	<script src="<c:url value="/resources/js/d3/d3.min.js" />"></script>
-	<script src="<c:url value="/resources/js/d3/chart.js" />"></script>
 	
 	<script type="text/javascript" src="<c:url value="/resources/js/d3/chart.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/resources/bower_components/checklist-model/checklist-model.js" />"></script>

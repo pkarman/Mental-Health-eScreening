@@ -54,8 +54,10 @@ public class AssessmentEngineController {
 			assessmentDelegate.ensureValidAssessmentContext();
 
 			Integer assessmentId = assessmentDelegate.getVeteranAssessmentId();
-
+			assessmentDelegate.prepareAssessmentContext();
+			
 			assessmentEngineService.transitionAssessmentStatusTo(assessmentId, AssessmentStatusEnum.INCOMPLETE);
+			
 			model.addAttribute("veteranAssessmentId", assessmentId);
 			model.addAttribute("sections", assessmentDelegate.getAssessmentSections());
 			model.addAttribute("veteranFullName", assessmentDelegate.getVeteranFullName());
@@ -94,14 +96,18 @@ public class AssessmentEngineController {
 			@RequestBody AssessmentRequest assessmentRequest,
 			HttpSession session) {
 
-		logger.debug("POST:/services/assessments/active\nIn processData() \n{}", assessmentRequest);
+		logger.debug("POST:/services/assessments/active");//\nIn processData() \n{}", assessmentRequest);
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
         startInstrumentation(assessmentRequest, session);
 
 		smrLister.clearSmrFromCache();
-		AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
+		long startTime = System.nanoTime();
+        AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
+        long endTime = System.nanoTime();
+        logger.debug("processPage time: {}ms", (endTime - startTime)/1000000l);
+        
 		smrLister.clearSmrFromCache();
 
         finishInstrumentation(assessmentResponse, session);
@@ -149,7 +155,8 @@ public class AssessmentEngineController {
 		logger.debug("updating survey page visibility");
 
 		assessmentDelegate.ensureValidAssessmentContext();
-
+		assessmentRequest.setAssessmentId(assessmentDelegate.getVeteranAssessmentId());
+		
 		//long start = System.currentTimeMillis();
 		Map<Integer, Boolean> inMemory = assessmentEngineService.getUpdatedVisibilityInMemory(assessmentRequest);
 		//long end1 = System.currentTimeMillis();

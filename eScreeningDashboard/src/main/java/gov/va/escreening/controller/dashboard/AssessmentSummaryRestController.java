@@ -5,7 +5,6 @@ import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.controller.RestController;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.exception.ErrorResponseException;
-import gov.va.escreening.exception.ErrorResponseRuntimeException;
 import gov.va.escreening.exception.FreemarkerRenderException;
 import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.security.CurrentUser;
@@ -18,17 +17,16 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping(value = "/dashboard")
@@ -53,7 +51,7 @@ public class AssessmentSummaryRestController extends RestController{
     @ResponseBody
     public List<String> getHealthFactorTitleList(@PathVariable Integer veteranAssessmentId,
             @CurrentUser EscreenUser escreenUser) {
-
+        logger.debug("veteranSummary");
         logger.debug("getHealthFactorTitleList");
 
         // Call service class here.
@@ -77,8 +75,9 @@ public class AssessmentSummaryRestController extends RestController{
 
     @RequestMapping(value = "/assessmentSummary/assessments/{veteranAssessmentId}/cprsNote", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public String getCprsNote(@PathVariable Integer veteranAssessmentId, @CurrentUser EscreenUser escreenUser) {
-
+    public String getCprsNote(@PathVariable Integer veteranAssessmentId, 
+            HttpServletRequest request) {
+        logRequest(logger, request);
         logger.debug("getCprsNote");
         String progressNoteContent = null;
 
@@ -98,7 +97,7 @@ public class AssessmentSummaryRestController extends RestController{
             }
         }
         
-        logger.debug("Returrning note:\n{}", progressNoteContent);
+        logger.debug("Returning note:\n{}", progressNoteContent);
 
         return progressNoteContent;
     }
@@ -107,9 +106,11 @@ public class AssessmentSummaryRestController extends RestController{
     
     @RequestMapping(value = "/assessmentSummary/assessments/{veteranAssessmentId}/veteranSummary", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public String getVeteranSummary(@PathVariable Integer veteranAssessmentId, @CurrentUser EscreenUser escreenUser) {
-
-        logger.debug("veteranSummary");
+    public String getVeteranSummary(@PathVariable Integer veteranAssessmentId, 
+            HttpServletRequest request) {
+        logRequest(logger, request);
+        logger.debug("getVeteranSummary");
+        
         String progressNoteContent = null;
 
         try {
@@ -141,11 +142,11 @@ public class AssessmentSummaryRestController extends RestController{
     
     @RequestMapping(value = "/assessmentSummary/assessmentvarseries/{veteranId}/{assessmentVarId}/{numMonth}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Map<String, String> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
-    		@PathVariable Integer assessmentVarId, @PathVariable Integer numMonth) {
-    	logger.debug(String.format("Get time series for veteran %d, assessment variable ID %d.", veteranId, assessmentVarId));
+    public Map<String, Double> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
+    		@PathVariable Integer assessmentVarId, @PathVariable Integer numMonth, HttpServletRequest request) {
+        logRequest(logger, request);
+        logger.debug("getAssessmentVariableTimeSeires: Get time series for veteran {}, assessment variable ID {}.", veteranId, assessmentVarId);
     	
     	return veteranAssessmentService.getVeteranAssessmentVariableSeries(veteranId, assessmentVarId, numMonth);
-    	
    }
 }

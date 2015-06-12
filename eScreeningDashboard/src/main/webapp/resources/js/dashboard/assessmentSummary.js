@@ -94,7 +94,24 @@ $(document).ready(function() {
 	});
 	clearInterval(timer);
 	*/
-	
-	
-	
+
+	// Plus or Minus for errors
+	$('.collapse').on('shown.bs.collapse', function(){
+		$(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+	}).on('hidden.bs.collapse', function(){
+		$(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+	});
+
+
 });
+
+// t808 returnURL to redirect to assessmentSummary 
+function returnURL(vid, mappingReturnURL){
+	// Check browser support
+	if (typeof(Storage) != "undefined") {
+		localStorage.setItem("lsvid", vid);
+		localStorage.setItem("mappingReturnURL", mappingReturnURL);
+	} else {
+		$(".errorMsg").html("Sorry, your browser does not support Web Storage...");
+	}
+}

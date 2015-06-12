@@ -1,5 +1,6 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.base.Throwables;
 import gov.va.escreening.dto.CallResult;
 import gov.va.escreening.dto.PasswordResetRequest;
 import gov.va.escreening.form.UserEditViewFormBean;
@@ -189,9 +190,7 @@ public class UserEditViewController {
 			return "adminTab/userEditView";
 		}
 
-		CallResult callResult = new CallResult();
-		callResult.setHasError(false);
-
+		CallResult callResult = null;
 		try {
 			if (!userEditViewFormBean.getIsCreateMode()) {
 				logger.debug("Edit mode");
@@ -204,19 +203,15 @@ public class UserEditViewController {
 				logger.debug("Created new User with userId: " + userId);
 			}
 		} catch (DataIntegrityViolationException e) {
-			callResult.setHasError(true);
-			callResult.setUserMessage("Another user is already using the Login ID.");
-			callResult.setSystemMessage(e.getMessage());
+			callResult=new CallResult(true, "Another user is already using the Login ID.", Throwables.getRootCause(e).getMessage());
 			logger.warn("Constraint violation exception while trying to save new user to database: " + e);
 		} catch (Exception e) {
-			callResult.setHasError(true);
-			callResult.setUserMessage("An unexpected error occured while saving to the database. Please try again and if the problem persists contact the technical administrator.");
-			callResult.setSystemMessage(e.getMessage());
+			callResult=new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists contact the technical administrator.", Throwables.getRootCause(e).getMessage());
 			logger.error("Excpetion while trying to save new user to database: " + e);
 		}
 
 		// If there is an error, return the same view.
-		if (callResult.getHasError()) {
+		if (callResult!=null && callResult.getHasError()) {
 
 			model.addAttribute("callResult", callResult);
 
@@ -227,6 +222,7 @@ public class UserEditViewController {
 			return "adminTab/userEditView";
 		}
 
+		model.addAttribute("callResult", new CallResult(false,"User data saved successfully", null));
 		return "redirect:/dashboard/userListView";
 	}
 
@@ -273,13 +269,10 @@ public class UserEditViewController {
 
 		logger.debug("In resetPassword");
 
-		CallResult callResult = new CallResult();
-		callResult.setHasError(false);
+		CallResult callResult = null;
 
 		if (passwordResetRequest == null) {
-			callResult.setHasError(true);
-			callResult.setUserMessage("Password and Confirmed Password fields are required.");
-
+			callResult = new CallResult(true, "Password and Confirmed Password fields are required.",null);
 			return callResult;
 		} else {
 			boolean hasError = false;
@@ -317,9 +310,7 @@ public class UserEditViewController {
 
 			// If we ahve errors, then just return here.
 			if (hasError) {
-				callResult.setHasError(true);
-				callResult.setUserMessage(errorMessage);
-
+				callResult=new CallResult(true, errorMessage,null);
 				return callResult;
 			}
 		}
@@ -328,19 +319,13 @@ public class UserEditViewController {
 		try {
 			userService.resetUserPassword(passwordResetRequest.getUserId(), passwordResetRequest.getPassword());
 		} catch (Exception e) {
-			callResult.setHasError(true);
-			callResult.setUserMessage("An error occured while trying to save the new password. Please try again and if the problem persists, contact the technical administrator.");
-			callResult.setSystemMessage(e.toString());
-
+			callResult=new CallResult(true,"An error occured while trying to save the new password. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage() );
 			logger.error("Failed to update user's password from admin page: " + e);
-
 			return callResult;
 		}
 
 		// Successfully updated password
-		callResult.setHasError(false);
-		callResult.setUserMessage("Successfully updated password.");
-
+		callResult=new CallResult(false, "Successfully updated password.", null);
 		return callResult;
 	}
 

@@ -3,7 +3,7 @@ package gov.va.escreening.controller.dashboard;
 import java.util.List;
 
 import gov.va.escreening.controller.RestController;
-import gov.va.escreening.delegate.EditorsViewDelegate;
+import gov.va.escreening.delegate.EditorsDelegate;
 import gov.va.escreening.domain.ErrorCodeEnum;
 import gov.va.escreening.dto.ae.ErrorResponse;
 import gov.va.escreening.dto.editors.*;
@@ -26,8 +26,8 @@ public class ManageSectionRestController extends RestController{
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Resource(type=EditorsViewDelegate.class)
-	private EditorsViewDelegate editorsViewDelegate;
+    @Resource(type=EditorsDelegate.class)
+	private EditorsDelegate editorsViewDelegate;
 
     @Resource(type=MeasureRepository.class)
     private MeasureRepository measureRepo;

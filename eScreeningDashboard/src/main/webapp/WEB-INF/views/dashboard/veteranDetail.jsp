@@ -6,6 +6,7 @@
 <!doctype html>
 <html>
 <head>
+	<title>Veteran Search</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 <script type="text/javascript"
@@ -33,7 +34,7 @@
 <link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
 
-<title>Veteran Search</title>
+
 
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -394,17 +395,8 @@
 								</c:if>
 							</tbody>
 						</table>
-
-
 					</div>
 				</div>
-				
-
-
-			
-
-
-
 			</div>
 		</div>
 		</form:form>
@@ -412,7 +404,7 @@
 
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 
-</body>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/dashboard/veteranDetails.js" />"></script>
+</body>
 </html>

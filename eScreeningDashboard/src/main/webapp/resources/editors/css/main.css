@@ -354,8 +354,9 @@ fieldset {
     background-color: #eeeeee;
     background-image: none;	
     border: none;
-    margin-top: 70px;
+    margin-top: 40px;
     text-align: center;
+	min-height:0px;
 }
 .angular-ui-tree-empty:before{
 	content: "Click Add New Block to build a template";
@@ -367,7 +368,34 @@ fieldset {
 	border: none;
 }
 
+.min-height-235{
+	min-height:235px;
+}
+.min-height-150{
+	min-height:150px;
+}
 
+.margin-bottom-20{
+	margin-bottom:20px;
+}
+
+fieldset.group-border {
+    border: 1px groove #F7F7F7 !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+legend.group-border {
+	font-size: 15px !important;
+	font-weight: bold !important;
+	text-align: left !important;
+	width:auto;
+	padding:0 10px;
+	border-bottom:none;
+}
+	
 .ui-resizable-s{
 	height: 4px;
 	background: rgba(173, 173, 223, 0.54);
@@ -380,4 +408,31 @@ fieldset {
 	width: 4px;
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
+}
+
+/* Edit Battery */
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add {
+    -webkit-transition: 400ms ease-in-out all;
+    -moz-transition: 400ms ease-in-out all;
+    -o-transition: 400ms ease-in-out all;
+    transition: 400ms ease-in-out all;
+    display: block !important;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+    opacity: 0;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+    opacity: 1;
+}
+
+.notificationMsg{
+	position:absolute;
+	text-align:center;
+	z-index:1000;
+	width:92%;
 }

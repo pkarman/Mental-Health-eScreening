@@ -34,12 +34,13 @@ EScreeningDashboardApp.models.Survey = (function survey() {
             mha: '',
             mhaTestName: '',
             mhaResultGroupIen: '',
-            clinicalReminderId: '',
+            clinicalReminderIdList: [],
             createdDate: '',
             surveySection: {},
             displayOrderForSection: '',  //do not default this to any valid number
             markedForDeletion: '',
-            visible: ''
+            visible: '',
+            isPublished: false
         };
 
         for (var prop in obj) {

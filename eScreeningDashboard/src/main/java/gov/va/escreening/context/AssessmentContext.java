@@ -1,8 +1,10 @@
 package gov.va.escreening.context;
  
 import gov.va.escreening.domain.VeteranDto;
+import gov.va.escreening.entity.SurveyPage;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class AssessmentContext implements Serializable {
  
@@ -11,7 +13,14 @@ public class AssessmentContext implements Serializable {
     private Integer veteranAssessmentId;
     private Boolean isInitialized = false;
     private VeteranDto veteran;
+    private List<SurveyPage> surveyPageList;
     
+	public List<SurveyPage> getSurveyPageList() {
+		return surveyPageList;
+	}
+	public void setSurveyPageList(List<SurveyPage> surveyPageList) {
+		this.surveyPageList = surveyPageList;
+	}
 	public Integer getVeteranAssessmentId() {
         return veteranAssessmentId;
     }

@@ -12,6 +12,8 @@ public interface SurveyBaseProperties {
     void setName(String name);
     String getDescription();
     void setDescription(String description);
+    Boolean getIsPublished();
+    void setIsPublished(Boolean isPublished);
     Integer getVersion();
     void setVersion(Integer version);
     boolean isMha();
