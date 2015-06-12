@@ -249,7 +249,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 
 	@Override
 	public VeteranDto fetchVeteran(EscreenUser escreenUser, Integer veteranId,
-			String veteranIen, boolean forceRefresh) {
+			String veteranIen, boolean forceRefresh, boolean applyMap) {
 
 		boolean isStale = false;
 		VeteranDto veteranDto = null;
@@ -280,7 +280,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 			// Read the current assigned IEN and last time it was refreshed.
 			veteranIen = veteranDto.getVeteranIen();
 
-			if (escreenUser.getCprsVerified() && veteranIen != null
+			if (applyMap && escreenUser.getCprsVerified() && veteranIen != null
 					&& (forceRefresh || isStale)) {
 				VeteranDto vistaVeteranDto = vistaService.getVeteran(
 						escreenUser.getVistaDivision(),

@@ -60,6 +60,7 @@ public class MapVeteranToVistaRecordController {
     @RequestMapping(value = "/mapVeteranToVistaRecord", method = RequestMethod.GET)
     public String setUpPageSelectVeteran(
             @RequestParam(value = "vid", required = true) Integer veteranId,
+            @RequestParam(value = "errMsg", required = false) String errMsg,
             @ModelAttribute MapVeteranToVistaRecordFormBean mapVeteranToVistaRecordFormBean,
             Model model, @CurrentUser EscreenUser escreenUser) {
 
@@ -67,7 +68,7 @@ public class MapVeteranToVistaRecordController {
 
         logger.debug("setUp: " + mapVeteranToVistaRecordFormBean.toString());
         
-        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, null, false);
+        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, null, false, false);
 
         // Prepopulate search form with target Veteran.
         mapVeteranToVistaRecordFormBean.setLastName(veteranDto.getLastName());
@@ -75,6 +76,7 @@ public class MapVeteranToVistaRecordController {
 
         model.addAttribute("isPostBack", false);
         model.addAttribute("veteran", veteranDto);
+        model.addAttribute("errMsg", errMsg);
 
         return "dashboard/mapVeteranToVistaRecord";
     }
@@ -106,7 +108,7 @@ public class MapVeteranToVistaRecordController {
             searchResultList = new ArrayList<SelectVeteranResultDto>();
         }
         
-        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, mapVeteranToVistaRecordFormBean.getVeteranId(), null, false);
+        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, mapVeteranToVistaRecordFormBean.getVeteranId(), null, false, false);
 
         model.addAttribute("isPostBack", true);
         model.addAttribute("veteran", veteranDto);
