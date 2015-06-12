@@ -46,7 +46,7 @@ public class SelectVeteranRestController extends BaseDashboardRestController {
             veteranId = Integer.valueOf(veteranIdString);
         }
 
-        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, veteranIen, false);
+        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, veteranIen, false, false);
 
         return veteranDto;
     }

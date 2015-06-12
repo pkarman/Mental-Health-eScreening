@@ -56,7 +56,7 @@ public interface CreateAssessmentDelegate {
 	 * @return
 	 */
 	VeteranDto fetchVeteran(EscreenUser escreenUser, Integer veteranId,
-			String veteranIen, boolean forceRefresh);
+			String veteranIen, boolean forceRefresh, boolean applyMap);
 
 	/**
 	 * Retrieves the appointments for the veteran.

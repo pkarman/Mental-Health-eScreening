@@ -1,6 +1,8 @@
 package gov.va.escreening.controller.dashboard;
 
+import com.google.common.base.Throwables;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
+import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.domain.VeteranAssessmentDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.form.VeteranDetailFormBean;
@@ -11,11 +13,16 @@ import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,11 +32,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-public class VeteranDetailController {
+public class VeteranDetailController implements MessageSourceAware {
 
     private static final Logger logger = LoggerFactory.getLogger(VeteranDetailController.class);
 
     private CreateAssessmentDelegate createAssessmentDelegate;
+    private MessageSource messageSource;
 
     @Autowired
     public void setCreateAssessmentDelegate(CreateAssessmentDelegate createAssessmentDelegate) {
@@ -73,55 +81,74 @@ public class VeteranDetailController {
         logger.debug("In setUpPageVeteranDetail");
 
         // Get veteran.
-        VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, veteranIen, forceRefresh);
+        VeteranDto veteranDto = null;
+        try {
+            veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, veteranIen, forceRefresh, true);
 
-        if (veteranDto == null) {
-            String s = String.format("Cannot find veteran with Veteran ID %s or VistA ID %s", veteranId, veteranIen);
-            throw new IllegalArgumentException(s);
-            // Or show message in this page?
-        }
-
-        // Get veteran appointments.
-        List<VistaVeteranAppointment> veteranAppointmentList = new ArrayList<VistaVeteranAppointment>();
-        List<VistaVeteranClinicalReminder> veteranClinicalReminderList = new ArrayList<VistaVeteranClinicalReminder>();
-
-        if (escreenUser.getCprsVerified()) {
-            if (veteranDto.getVeteranIen() != null) {
-                veteranAppointmentList = createAssessmentDelegate.getVeteranAppointments(escreenUser,
-                        veteranDto.getVeteranIen());
-                veteranClinicalReminderList = createAssessmentDelegate.getVeteranClinicalReminders(escreenUser,
-                        veteranDto.getVeteranIen());
+            if (veteranDto == null) {
+                String s = String.format("Cannot find veteran with Veteran ID %s or VistA ID %s", veteranId, veteranIen);
+                throw new IllegalArgumentException(s);
+                // Or show message in this page?
             }
-        }
 
-        List<VeteranAssessmentDto> veteranAssessmentList = new ArrayList<VeteranAssessmentDto>();
+            // Get veteran appointments.
+            List<VistaVeteranAppointment> veteranAppointmentList = new ArrayList<VistaVeteranAppointment>();
+            List<VistaVeteranClinicalReminder> veteranClinicalReminderList = new ArrayList<VistaVeteranClinicalReminder>();
 
-        if (veteranDto.getVeteranId() != null) {
-            veteranAssessmentList = createAssessmentDelegate.getVeteranAssessments(veteranDto.getVeteranId(), escreenUser.getProgramIdList());
-        }
-
-        veteranDetailFormBean.setVeteranId(veteranDto.getVeteranId());
-        veteranDetailFormBean.setVeteranIen(veteranDto.getVeteranIen());
-        veteranDetailFormBean.setHasActiveAssessment(false);
-
-        for (VeteranAssessmentDto assessment : veteranAssessmentList) {
-            if (StringUtils.equalsIgnoreCase(assessment.getAssessmentStatus(), "Clean")) {
-                veteranDetailFormBean.setHasActiveAssessment(true);
-                break;
+            if (escreenUser.getCprsVerified()) {
+                if (veteranDto.getVeteranIen() != null) {
+                    veteranAppointmentList = createAssessmentDelegate.getVeteranAppointments(escreenUser,
+                            veteranDto.getVeteranIen());
+                    veteranClinicalReminderList = createAssessmentDelegate.getVeteranClinicalReminders(escreenUser,
+                            veteranDto.getVeteranIen());
+                }
             }
-            else if (StringUtils.equalsIgnoreCase(assessment.getAssessmentStatus(), "Incomplete")) {
-                veteranDetailFormBean.setHasActiveAssessment(true);
-                break;
+
+            List<VeteranAssessmentDto> veteranAssessmentList = new ArrayList<VeteranAssessmentDto>();
+
+            if (veteranDto.getVeteranId() != null) {
+                veteranAssessmentList = createAssessmentDelegate.getVeteranAssessments(veteranDto.getVeteranId(), escreenUser.getProgramIdList());
             }
+
+            veteranDetailFormBean.setVeteranId(veteranDto.getVeteranId());
+            veteranDetailFormBean.setVeteranIen(veteranDto.getVeteranIen());
+            veteranDetailFormBean.setHasActiveAssessment(false);
+
+            for (VeteranAssessmentDto assessment : veteranAssessmentList) {
+                if (StringUtils.equalsIgnoreCase(assessment.getAssessmentStatus(), "Clean")) {
+                    veteranDetailFormBean.setHasActiveAssessment(true);
+                    break;
+                } else if (StringUtils.equalsIgnoreCase(assessment.getAssessmentStatus(), "Incomplete")) {
+                    veteranDetailFormBean.setHasActiveAssessment(true);
+                    break;
+                }
+            }
+
+            model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+            model.addAttribute("veteran", veteranDto);
+            model.addAttribute("veteranAppointmentList", veteranAppointmentList);
+            model.addAttribute("veteranClinicalReminderList", veteranClinicalReminderList);
+            model.addAttribute("veteranAssessmentList", veteranAssessmentList);
+            model.addAttribute("ibc", isBatteryCreated);
+            return "dashboard/veteranDetail";
+        } catch (DataIntegrityViolationException e) {
+            String errMsg = Throwables.getRootCause(e).getMessage();
+            errMsg = buildUserFriendlyErrMsg(errMsg);
+            logger.warn(errMsg);
+            model.addAttribute("vid", veteranId);
+            model.addAttribute("errMsg", errMsg);
+            return "redirect:/dashboard/mapVeteranToVistaRecord";
         }
 
-        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-        model.addAttribute("veteran", veteranDto);
-        model.addAttribute("veteranAppointmentList", veteranAppointmentList);
-        model.addAttribute("veteranClinicalReminderList", veteranClinicalReminderList);
-        model.addAttribute("veteranAssessmentList", veteranAssessmentList);
-        model.addAttribute("ibc", isBatteryCreated);
-        return "dashboard/veteranDetail";
+    }
+
+    private String buildUserFriendlyErrMsg(String errMsg) {
+        Pattern datePatt = Pattern.compile("(.*?')(.*?)(%->)([0-9]{4})(.*)");
+        Matcher m = datePatt.matcher(errMsg);
+        if (m.matches()) {
+            return msg("already_mapped_veteran", m.group(2), m.group(4));
+        }
+        return errMsg;
     }
 
     /**
@@ -163,5 +190,13 @@ public class VeteranDetailController {
         // Redirect to create assessment page with the veteranId parameter.
         model.addAttribute("vid", veteranDetailFormBean.getVeteranId());
         return "redirect:/dashboard/editVeteranAssessment";
+    }
+    private String msg(String msgKey, Object... args) {
+        return messageSource.getMessage(msgKey, args, null);
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
     }
 }

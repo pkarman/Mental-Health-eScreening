@@ -108,6 +108,12 @@
             <h1>Map Veteran to VistA Record</h1>
           </div>
         </div>
+        <c:if test="${not empty errMsg}">
+          <div class="alert alert-danger">
+            <c:out value="${errMsg}"/>
+          </div>
+        </c:if>
+
         <div class="border-radius-main-form">
           <div class="row">
             <div class="col-md-6"> Name (Last, First Middle)
