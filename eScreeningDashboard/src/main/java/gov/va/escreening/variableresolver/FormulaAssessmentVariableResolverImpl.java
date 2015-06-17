@@ -154,12 +154,6 @@ public class FormulaAssessmentVariableResolverImpl implements
     					getCouldNotResolveMessage(
     							assessmentVariable.getAssessmentVariableId(),
     							veteranAssessmentId, uoe.getMessage()));
-    		} catch (Exception e) {
-    			logger.error("Exception: ", e);
-    			throw new CouldNotResolveVariableException(
-    					getCouldNotResolveMessage(
-    							assessmentVariable.getAssessmentVariableId(),
-    							veteranAssessmentId, e.getMessage()));
     		}
     		
     		//add resolved Dto to the cache

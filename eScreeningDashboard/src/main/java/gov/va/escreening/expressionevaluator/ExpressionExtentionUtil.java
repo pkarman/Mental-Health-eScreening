@@ -99,7 +99,15 @@ public class ExpressionExtentionUtil {
         }
         
         DateTime today = DateTime.now();
-        DateTime startDate = STANDARD_DATE_FORMAT.parseDateTime(date);
+        DateTime startDate = null;
+        try{
+            startDate = STANDARD_DATE_FORMAT.parseDateTime(date);
+        }
+        catch(Exception e){
+            //The reason this is ignored is because of our old system of using override_display_value we are moving away from it but for now this code has to be robust enough to deal with this case
+            logger.warn("Invalid date given: {}", date);
+            return date;
+        }
             
         Interval interval = new Interval(startDate, today);
         Period period = interval.toPeriod();
