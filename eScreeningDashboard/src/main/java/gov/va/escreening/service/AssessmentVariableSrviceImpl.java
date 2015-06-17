@@ -536,7 +536,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 				if (!av.isFormula() && compareMeasure(av, m)) {
 					avBldr.buildFromMeasure(av, avc, m);
 					handleCustomType(avFormula, avBldr);
-				} else if (!ignoreAnswers && !av.isFormula() && compareMeasureAnswer(av, m)) {
+				} else if (!av.isFormula() && compareMeasureAnswer(av, m)) {
 					avBldr.buildFromMeasureAnswer(av, avc, m, avc.getVariableChild().getMeasureAnswer());
 					handleCustomType(avFormula, avBldr);
 				}
