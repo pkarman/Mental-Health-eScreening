@@ -64,6 +64,9 @@ public class ExpressionEvaluatorServiceImpl implements
         this.avr = checkNotNull(avr);
         this.avs = checkNotNull(avs);
         stdContext = new StandardEvaluationContext();
+        stdContext.registerFunction("calculateAge",
+                ExpressionExtentionUtil.class.getDeclaredMethod("calculateAge", new Class[] { String.class }));
+
         parser = new SpelExpressionParser();
     }
     
@@ -164,9 +167,15 @@ public class ExpressionEvaluatorServiceImpl implements
         try {
             answer = evaluateFormula(workingTemplate, formulaDto.getAvMap());
         } catch (Exception spe) {
-            logger.error(Throwables.getRootCause(spe).getMessage());
-            throw new IllegalStateException("error:"
-                    + Throwables.getRootCause(spe).getMessage());
+            String msg = "Error while evaluating formula: " 
+                    + formulaDto.getExpressionTemplate() 
+                    + "\nPartially resolved formula is: "
+                    + workingTemplate
+                    + "\nError: "
+                    + Throwables.getRootCause(spe).getMessage();
+            
+            logger.error(msg);
+            throw new IllegalStateException(msg, spe);
         }
 
         return answer;

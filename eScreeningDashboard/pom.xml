@@ -829,6 +829,19 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apply-sprint-prototype-bug-fix-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_prototype_bug_fix</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>
 						<goals>
