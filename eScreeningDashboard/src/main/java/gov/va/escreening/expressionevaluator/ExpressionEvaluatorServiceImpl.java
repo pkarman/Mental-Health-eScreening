@@ -64,6 +64,9 @@ public class ExpressionEvaluatorServiceImpl implements
         this.avr = checkNotNull(avr);
         this.avs = checkNotNull(avs);
         stdContext = new StandardEvaluationContext();
+        stdContext.registerFunction("calculateAge",
+                ExpressionExtentionUtil.class.getDeclaredMethod("calculateAge", new Class[] { String.class }));
+
         parser = new SpelExpressionParser();
     }
     

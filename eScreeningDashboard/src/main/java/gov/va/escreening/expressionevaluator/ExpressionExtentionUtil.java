@@ -72,7 +72,7 @@ public class ExpressionExtentionUtil {
      * @return a string containing the number of years between today and the given 
      * date ({@code veteranBirthDate} must be in the standard format). 
      */
-    public String calculateAge(String veteranBirthDate) {
+    public static String calculateAge(String veteranBirthDate) {
         return yearsFromDate(veteranBirthDate);
     }
     
@@ -93,7 +93,7 @@ public class ExpressionExtentionUtil {
      * @return a string containing the number of years between today and the given 
      * date ({@code date} must be in the standard format). 
      */
-    public String yearsFromDate(String date){
+    public static String yearsFromDate(String date){
         if(date == null || DEFAULT_VALUE.equals(date)){
             return DEFAULT_VALUE;
         }
