@@ -409,6 +409,11 @@
 				<configuration>
 					<parallel>classes</parallel>
 					<useUnlimitedThreads>true</useUnlimitedThreads>
+					<systemPropertyVariables>
+						<jacoco-agent.destfile>
+							target/jacoco.exec
+						</jacoco-agent.destfile>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -436,6 +441,51 @@
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.4.201502262128</version>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>CLASS</element>
+									<excludes>
+										<exclude>*Test</exclude>
+								    </excludes>
+								    <limits>
+								    	<!-- Keeping this commented until update tests
+								    	<limit>
+								    		<counter>LINE</counter>
+								    		<value>COVEREDRATIO</value>
+								    		<minimum>0.3</minimum>
+							    		</limit>
+							    	-->
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -775,6 +825,19 @@
 						 	<orderFile>ascending</orderFile>
 							<fileset>
 								<basedir>src/main/sql/sprint_39</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>apply-sprint-prototype-bug-fix-data</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/sprint_prototype_bug_fix</basedir>
 							</fileset>
 						</configuration>
 					</execution>

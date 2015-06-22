@@ -1,5 +1,6 @@
 package gov.va.escreening.variableresolver;
 
+import static gov.va.escreening.constants.AssessmentConstants.STANDARD_DATE_FORMAT;
 import static org.junit.Assert.*;
 
 import java.util.Collection;
@@ -8,6 +9,7 @@ import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.test.AssessmentVariableBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -151,6 +153,30 @@ public class FormulaAssessmentVariableResolverTest {
                 .addAnswer(null, null, "second", null, null, false, null)
                 .addAnswer(null, null, "third", null, null, false, null)
                 .addAnswer(null, null, "fourth", null, 4d, true, null));
+    }
+    
+    @Test
+    public void testCalculateAgeWithNullParameter() throws Exception{
+        Collection<AssessmentVariable> dependencies = avBuilder
+                .addFreeTextAv(1, "dob", null)
+                .getVariables();
+            
+        avBuilder
+            .addFormulaAv(5, "#calculateAge([1])")
+            .addAvChildren(dependencies);
+                
+        Collection<AssessmentVariableDto> dtos = avBuilder.getDTOs();
+        for(AssessmentVariableDto dto : dtos){
+            assertFalse("The formula should not have been resolved to a value", dto.getVariableId().equals(5));
+        }
+    }
+    
+    @Test
+    public void testCalculateAgeWithValidDate() throws Exception{
+        DateTime date = new DateTime().minusYears(3);
+        
+        assertFormulaResult("calculateAge(\"[1]\")", 3, avBuilder
+                .addFreeTextAv(1, "dob", date.toString(STANDARD_DATE_FORMAT)));
     }
     
     private void assertFormulaResult(String formulaExpression,

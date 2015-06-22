@@ -72,7 +72,7 @@ public class ExpressionExtentionUtil {
      * @return a string containing the number of years between today and the given 
      * date ({@code veteranBirthDate} must be in the standard format). 
      */
-    public String calculateAge(String veteranBirthDate) {
+    public static String calculateAge(String veteranBirthDate) {
         return yearsFromDate(veteranBirthDate);
     }
     
@@ -93,13 +93,21 @@ public class ExpressionExtentionUtil {
      * @return a string containing the number of years between today and the given 
      * date ({@code date} must be in the standard format). 
      */
-    public String yearsFromDate(String date){
+    public static String yearsFromDate(String date){
         if(date == null || DEFAULT_VALUE.equals(date)){
             return DEFAULT_VALUE;
         }
         
         DateTime today = DateTime.now();
-        DateTime startDate = STANDARD_DATE_FORMAT.parseDateTime(date);
+        DateTime startDate = null;
+        try{
+            startDate = STANDARD_DATE_FORMAT.parseDateTime(date);
+        }
+        catch(Exception e){
+            //The reason this is ignored is because of our old system of using override_display_value we are moving away from it but for now this code has to be robust enough to deal with this case
+            logger.warn("Invalid date given: {}", date);
+            return date;
+        }
             
         Interval interval = new Interval(startDate, today);
         Period period = interval.toPeriod();

@@ -28,6 +28,12 @@ public class FormulaTest {
     ExpressionEvaluatorService expressionEvaluator;
 
     @Test
+    public void testCalculateAge() {
+        String result = expressionEvaluator.evaluateFormula("#calculateAge('12/13/1936')", null);
+        Assert.isTrue(result.equals("78"));
+    }
+
+    @Test
     public void testValidRoundFormula() {
         String result = expressionEvaluator.evaluateFormula("T(Math).round(199/T(Math).pow( ( ( 6 * 12 ) + 0 ) ,2)*703)", null);
         Assert.isTrue(result.equals("27"));

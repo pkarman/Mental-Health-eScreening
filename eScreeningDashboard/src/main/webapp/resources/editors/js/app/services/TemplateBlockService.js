@@ -9,7 +9,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
         
         function newAVElement(variable){
         	var name = variable.getName();
-        	var hashCode = variablePrefix + this.addVariableToHash(variable);
+        	var hashCode = variablePrefix + addVariableToHash(variable);
             var idValue = hashCode + '_' + variableSeed++;
             
             return '<img ' +
@@ -80,6 +80,16 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
 		function getVariableFromHash(hashCode){
 			return variableHash[hashCode];
 		}
+		
+		/**
+         * Adds the given variable to the service's variable registry and returns a unique ID for the given variable
+         */
+        function addVariableToHash(variable){
+        	//create hashcode and set variable for that entry
+        	var hashCode = hashVariable(variable);
+        	variableHash[hashCode] = variable;
+        	return hashCode;
+        }
         
         return {
             /**
@@ -144,6 +154,7 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
             },
             
             createAVElement : newAVElement,
+            addVariableToHash : addVariableToHash,
             
             /**
              * Cleans up the given container after a drag and drop operation was carried out
@@ -159,16 +170,6 @@ angular.module('EscreeningDashboardApp.services.templateBlock', [])
                     return removeDuplicateBlockContent(target, container);
                 }
                 return false;
-            },
-			
-            /**
-             * Adds the given variable to the service's variable registry and returns a unique ID for the given variable
-             */
-            addVariableToHash: function(variable){
-            	//create hashcode and set variable for that entry
-            	var hashCode = hashVariable(variable);
-            	variableHash[hashCode] = variable;
-            	return hashCode;
             },
 			
             /**
