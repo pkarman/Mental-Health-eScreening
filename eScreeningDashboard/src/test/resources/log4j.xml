@@ -20,6 +20,8 @@
 	<logger name="gov.va.escreening.interceptor">
 		<level value="WARN" />
 	</logger>
+	
+	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
 		<level value="INFO" />
 	</logger>
@@ -42,7 +44,7 @@
 
 	<logger name="org.springframework.ws.client.MessageTracing">
 		<level value="INFO" />
-	</logger>
+	</logger> 	
 	
 	<logger name="org.hibernate.type">
 		<level value="INFO" />

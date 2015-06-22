@@ -466,7 +466,7 @@ public class XportDataTest {
     }
 
     // @Rollback(value = false)
-    @Test
+    //@Test
     public void testBasicDemoFileForExportDataDetailIdentified() throws UnsupportedEncodingException, IOException, AssessmentAlreadyExistException {
         assertTrue("basic_demo.json", exportDataTesterIdentified("basic_demo.json", detail));
     }
