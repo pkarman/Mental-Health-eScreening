@@ -53,6 +53,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 @Service("vistaService")
 public class VistaServiceImpl implements VistaService {
 
@@ -61,6 +63,9 @@ public class VistaServiceImpl implements VistaService {
     private ClinicalReminderService clinicalReminderService;
     private ClinicService clinicService;
     private NoteTitleService noteTitleService;
+
+    @Resource(name="veteranService")
+    VeteranService vs;
 
     @Autowired
     private NoteTitleRepository noteTitleRepo;
@@ -167,6 +172,20 @@ public class VistaServiceImpl implements VistaService {
 
         if (resultList == null) {
             resultList = new ArrayList<VeteranDto>();
+        } else {
+            // look for these in local database too, if they are found in local database then update the veteranId,
+            // as veteranId belongs to the local db PK
+            for(VeteranDto vDto:resultList){
+                List<VeteranDto> localDbMatchingVeterans = vs.findVeterans(vDto);
+                if (localDbMatchingVeterans!=null && !localDbMatchingVeterans.isEmpty()){
+                    for (VeteranDto localDbMatchingVeteran:localDbMatchingVeterans){
+                        if (localDbMatchingVeteran.equals(vDto)){
+                            vDto.setVeteranId(localDbMatchingVeteran.getVeteranId());
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         // VistA only filters on the last name initial. So, filter it here.

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@Service
+@Service("veteranService")
 public class VeteranServiceImpl implements VeteranService {
 
     private static final Logger logger = LoggerFactory.getLogger(VeteranServiceImpl.class);
