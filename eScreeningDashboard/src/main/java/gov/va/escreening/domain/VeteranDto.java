@@ -1,5 +1,7 @@
 package gov.va.escreening.domain;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -241,8 +243,20 @@ public class VeteranDto implements Serializable {
         this.dateRefreshedFromVista = dateRefreshedFromVista;
     }
 
-    public VeteranDto() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VeteranDto that = (VeteranDto) o;
+        return Objects.equal(lastName, that.lastName) &&
+                Objects.equal(ssnLastFour, that.ssnLastFour) &&
+                Objects.equal(birthDate, that.birthDate) &&
+                Objects.equal(veteranIen, that.veteranIen);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(lastName, ssnLastFour, birthDate, veteranIen);
     }
 
     @Override

@@ -227,6 +227,8 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 		for (int i = 0; i < vistaResultList.size(); ++i) {
 			SelectVeteranResultDto selectVeteranResultDto = new SelectVeteranResultDto();
 
+			selectVeteranResultDto.setVeteranId(vistaResultList.get(i)
+					.getVeteranId());
 			selectVeteranResultDto.setVeteranIen(vistaResultList.get(i)
 					.getVeteranIen());
 			selectVeteranResultDto.setSsnLastFour(vistaResultList.get(i)
