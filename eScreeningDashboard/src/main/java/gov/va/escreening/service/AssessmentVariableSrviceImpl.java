@@ -5,6 +5,7 @@ import gov.va.escreening.constants.AssessmentConstants;
 
 import com.google.common.collect.*;
 
+import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.dto.ae.ErrorBuilder;
 import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
@@ -148,7 +149,8 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	/**
 	 * recursively search that AssessmentVariable belongs to the MeasurementAnswer of passed in Measure
-	 * 
+	 * and measure's measure type is not select one. We want to NOT return any answers of select one
+	 *
 	 * @param av
 	 * @param m
 	 * @return
@@ -157,7 +159,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	public boolean compareMeasureAnswer(AssessmentVariable av, Measure m) {
 		if (av == null) {
 			return false;
-		} else if (av.getMeasureAnswer() != null && m.equals(av.getMeasureAnswer().getMeasure())) {
+		} else if (av.getMeasureAnswer() != null && m.equals(av.getMeasureAnswer().getMeasure()) && m.getMeasureType().getMeasureTypeId() != MeasureTypeEnum.SELECTONE.getMeasureTypeId() && m.getMeasureType().getMeasureTypeId() != MeasureTypeEnum.SELECTONEMATRIX.getMeasureTypeId()) {
 			return true;
 		} else {
 			for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
