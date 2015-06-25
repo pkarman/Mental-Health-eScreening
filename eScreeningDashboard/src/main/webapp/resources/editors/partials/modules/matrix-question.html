@@ -57,9 +57,17 @@
 							</div>
 						</div>
 
-						<div class="row" ng-if="survey.mha && question.type === 'selectOneMatrix'">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-12" ng-if="survey.mha && question.type === 'selectOneMatrix'">
+								<label class="checkbox"> <input type="checkbox" 
+									ng-model="childQuestion.mha" 
+									ng-change="updateQuestionAnswers()"> Is MHA </label>
+							</div>
+							
 							<div class="col-sm-offset-1 col-sm-12">
-								<label class="checkbox"> <input type="checkbox" ng-model="childQuestion.mha" ng-change="updateQuestionAnswers()"> Is MHA </label>
+								<label class="checkbox"> <input type="checkbox"
+										ng-model="childQuestion.other"
+										ng-change="updateQuestionAnswers()"> Other </label>
 							</div>
 						</div>
 
@@ -124,13 +132,6 @@
 
 								<div class="row">
 									<div class="form-group">
-										<div class="col-md-5" ng-if="question.type === 'selectOneMatrix'">
-											<label class="checkbox"> <input type="checkbox"
-													ng-model="answer.type"
-													ng-true-value="other"
-													ng-false-value="{{ null }}"
-													ng-change="updateQuestionAnswers()"> Other </label>
-										</div>
 
 										<div class="col-md-5" ng-if="question.type === 'selectOneMatrix' && selectedMHAQuestions.length">
 											<label>MHA Value *</label> <input type="text"
@@ -142,14 +143,11 @@
 										</div>
 
 										<div class="col-xs-3" ng-if="question.type === 'selectMultiMatrix'">
-											<label for="answerType">Type</label>
-											<select id="answerType"
-													class="form-control"
-													name="answerType"
+											<label class="checkbox"> <input type="checkbox"
 													ng-model="answer.type"
-													ng-change="updateQuestionAnswers()"
-													ng-options="answerType.value as answerType.name for answerType in answerTypes">
-											</select>
+													ng-true-value="none"
+													ng-false-value="{{ null }}"
+													ng-change="updateQuestionAnswers()"> None </label>
 										</div>
 									</div>
 								</div>

@@ -109,7 +109,7 @@ public class ResolverParameters {
      */
     public void addResponses(Collection<SurveyMeasureResponse> responses, boolean includeCopiedResponses){
         if(responses == null || responses.isEmpty()){
-            logger.warn("***Null or empty responses were given to resolver.");
+            logger.warn("Null or empty responses were given to resolver.");
             return;
         }
         for(SurveyMeasureResponse response : responses){
@@ -278,23 +278,23 @@ public class ResolverParameters {
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER:
                 MeasureAnswer ma = av.getMeasureAnswer();
                 checkMeasureIsVisibile(ma.getMeasure());               
-                logger.warn("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
+                logger.info("There was no MeasureAnswer response for MeasureAnswer ID: {}, assessment ID: {}",
                         ma.getMeasureAnswerId(), getAssessmentId());
                 
                 return ma.getMeasure().getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_MULTI ? "false" : "0";
                 
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE:
                 checkMeasureIsVisibile(av.getMeasure());
-                logger.warn("There was no question response for Measure ID: {}, assessment ID: {}",
+                logger.info("There was no question response for Measure ID: {}, assessment ID: {}",
                         av.getMeasure().getMeasureId(), getAssessmentId());
                 break;
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_FORMULA:
-                logger.warn("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
+                logger.info("Formula could not be calculated for fomula ID {}, assessment ID: {}.",
                         av.getAssessmentVariableId(), getAssessmentId());
                 break;
                 
             case AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_CUSTOM:
-                logger.warn("Custom variable could generated for variable ID {}, assessment ID: {}.",
+                logger.info("Custom variable could generated for variable ID {}, assessment ID: {}.",
                         av.getAssessmentVariableId(), getAssessmentId());
                 break;
             }
