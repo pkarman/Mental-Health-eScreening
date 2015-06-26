@@ -196,6 +196,11 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     }
     
     private void setAnswerDisplayResponse(MeasureAnswer measureAnswer){
+        if(measureAnswer.getMeasure() == null){
+            throw new IllegalArgumentException("Answer " + measureAnswer.getMeasureAnswerId() 
+                    + " is not associated with a measure. This means it was deleted using our forms editor. The call to this method should have checked for that.");
+        }
+        
         if(measureAnswer.getMeasure().getMeasureType().getMeasureTypeId() 
                 == AssessmentConstants.MEASURE_TYPE_FREE_TEXT){
             answerDisplayResponse = answerResponse;
