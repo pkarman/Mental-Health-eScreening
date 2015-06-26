@@ -1,7 +1,9 @@
 package gov.va.escreening.repository;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.domain.MeasureTypeEnum;
@@ -22,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -383,16 +386,24 @@ public class MeasureRepositoryImpl extends AbstractHibernateRepository<Measure>
         }
 
         if (measureDto.getChildMeasures() != null) {
-
-            for (gov.va.escreening.dto.ae.Measure child : measureDto
-                    .getChildMeasures()) {
+            Set<Measure> currentMeasures = ImmutableSet.copyOf(m.getChildren());
+            //clear out all measures
+            m.getChildren().removeAll(currentMeasures);
+            
+            for (gov.va.escreening.dto.ae.Measure child : measureDto.getChildMeasures()) {
 
                 if (child.getMeasureId() == null) {
                     createMeasure(child);
-                    m.addChild(findOne(child.getMeasureId()));
                 } else {
                     updateMeasure(child);
                 }
+                m.addChild(findOne(child.getMeasureId()));
+            }
+            
+            //Now we must disassociate the measure for its parent if it was removed
+            for(Measure removedChild : Sets.difference(currentMeasures, m.getChildren())){
+                removedChild.setParent(null);
+                //save change?
             }
         }
         return removedAnswers;

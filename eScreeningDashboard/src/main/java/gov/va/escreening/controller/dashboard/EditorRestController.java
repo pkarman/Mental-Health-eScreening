@@ -102,7 +102,6 @@ public class EditorRestController {
         return updateSurveyPage(surveyId, 0, surveyPage, escreenUser);
     }
 
-
     @RequestMapping(value = "/services/surveys/{surveyId}/pages/{pageId}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
     @ResponseBody
     public Response<SurveyPageInfo> updateSurveyPage(@PathVariable Integer surveyId, @PathVariable Integer pageId,@RequestBody SurveyPageInfo surveyPage, @CurrentUser EscreenUser escreenUser) {

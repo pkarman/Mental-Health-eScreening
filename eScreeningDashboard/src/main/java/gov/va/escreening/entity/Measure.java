@@ -6,7 +6,6 @@ import gov.va.escreening.dto.ae.ValidationDataTypeEnum;
 import gov.va.escreening.exception.IllegalSystemStateException;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -252,8 +251,9 @@ public class Measure implements Serializable {
      * @return a non-null set of this measure's children
      */
     public Set<Measure> getChildren() {
-        if (children == null)
-            return Collections.emptySet();
+        if (children == null){
+            children = new HashSet<>();
+        }
         return children;
     }
 

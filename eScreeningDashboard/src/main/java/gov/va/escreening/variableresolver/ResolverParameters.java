@@ -12,7 +12,6 @@ import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.entity.VeteranAssessmentMeasureVisibility;
 import gov.va.escreening.exception.CouldNotResolveVariableException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,10 +111,12 @@ public class ResolverParameters {
         for(SurveyMeasureResponse response : responses){
             if(includeCopiedResponses || response.getCopiedFromVeteranAssessment() == null){
                 MeasureAnswer ma = response.getMeasureAnswer();
-                Answer answer = new Answer(ma, response);
-                Integer measureId = ma.getMeasure().getMeasureId();
-            
-                addMeasureResponse(measureId, answer);
+                if(ma.getMeasure() != null){ //the measure is null when the answer has been removed from the question in our forms editor
+                    Answer answer = new Answer(ma, response);
+                    Integer measureId = ma.getMeasure().getMeasureId();
+                
+                    addMeasureResponse(measureId, answer);
+                }
             }
         }
     }
