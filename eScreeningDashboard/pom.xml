@@ -964,7 +964,7 @@
 			</build>
 			<properties>
 				<jdbc.url>jdbc:mysql://localhost:3306/lon-prod</jdbc.url>
-				<jdbc.db>lon-test</jdbc.db>
+				<jdbc.db>lon-prod</jdbc.db>
 				<log.suffix>lon-test</log.suffix>
 			</properties>
 		</profile>
