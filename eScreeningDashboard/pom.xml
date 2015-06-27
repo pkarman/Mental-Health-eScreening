@@ -26,9 +26,11 @@
 		<vista.port>8000</vista.port>
 		<vista.primaryStation>500</vista.primaryStation>
 		<vista.accessCode>SGll8EpcOHZe9oXgwuPsFg==</vista.accessCode>
+		<vista.duz>10000000056</vista.duz>
 		<vista.verifyCode>JQ9S3/VDJAQJO39bZVcqP8q3W8JSIxt9</vista.verifyCode>
 		<sample.patient.ien>100022</sample.patient.ien>
 		<skip.db>true</skip.db>
+		<db.skip.testData>false</db.skip.testData>
 	</properties>
 	<dependencies>
 		<!-- Web Services -->
@@ -839,11 +841,25 @@
 							<goal>execute</goal>
 						</goals>
 						<configuration>
+							<skip>${db.skip.testData}</skip>
 							<orderFile>ascending</orderFile>
 							<fileset>
 								<basedir>src/test/sql</basedir>
 							</fileset>
 						</configuration>
+					</execution>
+					<execution>
+						<id>update-admin-users-with-vista-credentials</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<autocommit>true</autocommit>
+							<sqlCommand>UPDATE user SET vista_duz='${vista.duz}', vista_division='${vista.primaryStation}' WHERE user_id &lt; 100;
+</sqlCommand>
+						</configuration>
+
 					</execution>
 				</executions>
 			</plugin>
