@@ -15,10 +15,6 @@ UPDATE measure_answer SET export_name=NULL, answer_type='none' WHERE measure_ans
 
 UPDATE measure_answer SET export_name='serv_other1' WHERE measure_answer_id='1510';
 UPDATE measure_answer SET export_name='serv_other2' WHERE measure_answer_id='1520';
-# UPDATE escreening.measure_answer SET export_name='serv_exp_other1' WHERE measure_answer_id='1274';
-# UPDATE escreening.measure_answer SET export_name='serv_exp_other2' WHERE measure_answer_id='1275';
-# UPDATE escreening.measure_answer SET export_name='serv_oper_other1' WHERE measure_answer_id='1114';
-# UPDATE escreening.measure_answer SET export_name='serv_oper_other2' WHERE measure_answer_id='1115';
 
 /**** t754 **/
 UPDATE assessment_variable SET formula_template='(([1522]?1:0) + ([1523]?1:0) + ([1524]?1:0))' WHERE assessment_variable_id='10711';
