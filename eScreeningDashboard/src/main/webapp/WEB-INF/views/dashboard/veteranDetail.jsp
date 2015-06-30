@@ -295,38 +295,38 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="col-md-6">
+					<%--<div class="col-md-6">--%>
 
 
-						<h3>Clinical Reminder List</h3>
-						<table class="table table-striped table-hover" summary="Clinical Reminder List">
-							<thead>
-								<tr>
-									<th scope="col">Date</th>
-									<th scope="col">Name</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:if test="${not empty veteranClinicalReminderList}">
-									<c:forEach var="item" items="${veteranClinicalReminderList}">
-										<tr>
+						<%--<h3>Clinical Reminder List</h3>--%>
+						<%--<table class="table table-striped table-hover" summary="Clinical Reminder List">--%>
+							<%--<thead>--%>
+								<%--<tr>--%>
+									<%--<th scope="col">Date</th>--%>
+									<%--<th scope="col">Name</th>--%>
+								<%--</tr>--%>
+							<%--</thead>--%>
+							<%--<tbody>--%>
+								<%--<c:if test="${not empty veteranClinicalReminderList}">--%>
+									<%--<c:forEach var="item" items="${veteranClinicalReminderList}">--%>
+										<%--<tr>--%>
 
-											<td><c:out value="${item.dueDateString}" /></td>
-											<td><c:out value="${item.name}" /></td>
+											<%--<td><c:out value="${item.dueDateString}" /></td>--%>
+											<%--<td><c:out value="${item.name}" /></td>--%>
 
-										</tr>
-									</c:forEach>
-								</c:if>
-								<c:if test="${empty veteranClinicalReminderList}">
-								<tr>
-									<td colspan="2">No Clinical Reminder Found.</td>
-								</tr>
-								</c:if>
-							</tbody>
-						</table>
-						
-					</div>
-					
+										<%--</tr>--%>
+									<%--</c:forEach>--%>
+								<%--</c:if>--%>
+								<%--<c:if test="${empty veteranClinicalReminderList}">--%>
+								<%--<tr>--%>
+									<%--<td colspan="2">No Clinical Reminder Found.</td>--%>
+								<%--</tr>--%>
+								<%--</c:if>--%>
+							<%--</tbody>--%>
+						<%--</table>--%>
+						<%----%>
+					<%--</div>--%>
+					<%----%>
 				</div>
 				
 				<hr />
