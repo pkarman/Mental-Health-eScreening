@@ -11,6 +11,7 @@ import gov.va.escreening.dto.BatchBatteryCreateResult;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.entity.Program;
+import gov.va.escreening.entity.User;
 import gov.va.escreening.form.BatchCreateFormBean;
 import gov.va.escreening.form.VeteranClinicApptSearchFormBean;
 import gov.va.escreening.repository.ClinicRepository;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -45,323 +47,327 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping(value = "/dashboard")
-@SessionAttributes({ "vetIens", "vetSurveyMap", "clinicId", "searchResult", "clinics", "veterans" })
+@SessionAttributes({"vetIens", "vetSurveyMap", "clinicId", "searchResult", "clinics", "veterans"})
 public class BatchCreateController {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BatchCreateController.class);
+    private static final Logger logger = LoggerFactory
+            .getLogger(BatchCreateController.class);
 
-	@Autowired
-	private VeteranService veteranService;
+    @Autowired
+    private VeteranService veteranService;
 
-	@Autowired
-	private ClinicService clinicService;
+    @Autowired
+    private ClinicService clinicService;
 
-	@Autowired
-	private BatchBatteryCreateDelegate batchCreateDelegate;
+    @Autowired
+    private BatchBatteryCreateDelegate batchCreateDelegate;
 
-	@Autowired
-	private CreateAssessmentDelegate createAssessmentDelegate;
+    @Autowired
+    private CreateAssessmentDelegate createAssessmentDelegate;
 
-	@Autowired
-	private ClinicRepository clinicRepo;
+    @Autowired
+    private ClinicRepository clinicRepo;
 
-	@RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params = "searchButton")
-	public String searchVeterans(
-			@CurrentUser EscreenUser escreenUser,
-			@ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
-			BindingResult result,
-			Model model) {
+    @Resource(name="editVeteranAssessmentController")
+    EditVeteranAssessmentController editVeteranAssessmentController;
 
-		logger.debug("In VeteranSearchRestController searchVeterans by clinic");
-		model.addAttribute("isPostBack", true);
-		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+    @RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params = "searchButton")
+    public String searchVeterans(
+            @CurrentUser EscreenUser escreenUser,
+            @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
+            BindingResult result,
+            Model model) {
 
-		String clinicIen = selectVeteranFormBean.getSelectedClinic();
-		if(clinicIen == null)
-		{
-			result.reject("clinicIen");
-			return "dashboard/selectVeterans";
-		}
-		List<VistaClinicAppointment> appList = batchCreateDelegate
-				.searchVeteranByAppointments(escreenUser, clinicIen,
-						selectVeteranFormBean.getStartDate(),
-						selectVeteranFormBean.getEndDate());
+        logger.debug("In VeteranSearchRestController searchVeterans by clinic");
+        model.addAttribute("isPostBack", true);
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
-		model.addAttribute("searchResult", appList);
-		model.addAttribute("searchResultListSize", appList.size());
-		selectVeteranFormBean.setResult(appList);
+        String clinicIen = selectVeteranFormBean.getSelectedClinic();
+        if (clinicIen == null) {
+            result.reject("clinicIen");
+            return "dashboard/selectVeterans";
+        }
+        List<VistaClinicAppointment> appList = batchCreateDelegate
+                .searchVeteranByAppointments(escreenUser, clinicIen,
+                        selectVeteranFormBean.getStartDate(),
+                        selectVeteranFormBean.getEndDate());
 
-		return "dashboard/selectVeterans";
+        model.addAttribute("searchResult", appList);
+        model.addAttribute("searchResultListSize", appList.size());
+        selectVeteranFormBean.setResult(appList);
 
-	}
+        return "dashboard/selectVeterans";
 
-	@ModelAttribute
-	public BatchCreateFormBean getEditVeteranAssessmentFormBean() {
-		return new BatchCreateFormBean();
-	}
+    }
 
-	@RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params = "selectVeterans")
-	public ModelAndView selectVeteransForBatchCreate2(
-			Model model,
-			@ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
-			BindingResult result, @RequestParam String[] vetIens,
-			@RequestParam String clinicId, @CurrentUser EscreenUser user) {
-		model.addAttribute("vetIens", vetIens);
-		model.addAttribute("clinicId", clinicId);
-		
-		RedirectView view = new RedirectView("editVeteransAssessment");
-		view.setExposeModelAttributes(false);
-		return new ModelAndView(view);
-	}
+    @ModelAttribute
+    public BatchCreateFormBean getEditVeteranAssessmentFormBean() {
+        return new BatchCreateFormBean();
+    }
 
-	@RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.GET)
-	public String selectVeteransForBatchCreate(Model model,
-			@ModelAttribute BatchCreateFormBean batchCreateFormBean,
-			BindingResult result, @CurrentUser EscreenUser user) {
-		String[] vetIens = (String[]) model.asMap().get("vetIens");
-		String clinicId = (String) model.asMap().get("clinicId");
-		List<VistaClinicAppointment> appList = (List<VistaClinicAppointment>) model
-				.asMap().get("searchResult");
-		List<VeteranWithClinicalReminderFlag> vetList = batchCreateDelegate
-				.getVeteranDetails(vetIens, user, appList);
+    @RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params = "selectVeterans")
+    public ModelAndView selectVeteransForBatchCreate2(
+            Model model,
+            @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
+            BindingResult result, @RequestParam String[] vetIens,
+            @RequestParam String clinicId, @CurrentUser EscreenUser user) {
+        model.addAttribute("vetIens", vetIens);
+        model.addAttribute("clinicId", clinicId);
 
-		model.addAttribute("veteransSize", vetList.size());
-		model.addAttribute("veterans", vetList);
-		Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
+        RedirectView view = new RedirectView("editVeteransAssessment");
+        view.setExposeModelAttributes(false);
+        return new ModelAndView(view);
+    }
 
-		// Now getting the list of the surveys per veteran
-		for (VeteranWithClinicalReminderFlag v : vetList) {
-			Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate
-					.getPreSelectedSurveyMap(user, v.getVeteranIen());
-			if (!autoAssignedSurveyMap.isEmpty()) {
-				vetSurveyMap.put(v.getVeteranId(),
-						new HashSet(autoAssignedSurveyMap.keySet()));
-				v.setDueClinicalReminders(true);
-			}
-		}
+    @RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.GET)
+    public String selectVeteransForBatchCreate(Model model,
+                                               @ModelAttribute BatchCreateFormBean batchCreateFormBean,
+                                               BindingResult result,
+                                               @RequestParam(value="vid", required = false) Integer vId,
+                                               @RequestParam(value="programId", required = false) Integer programId,
+                                               @RequestParam(value="clinicId", required = false) Integer clinicId,
+                                               @RequestParam(value="noteTitleId", required = false) Integer noteTitleId,
+                                               @RequestParam(value="clinicianId", required = false) Integer clinicianId,
+                                               @CurrentUser EscreenUser user) {
 
-		model.addAttribute("vetSurveyMap", vetSurveyMap);
-		//batchCreateFormBean.setVetSurveyMap(vetSurveyMap);
+        // replace user from the loggedin user to the clinician
+        user = clinicianId != null ? editVeteranAssessmentController.findEscreenUser(clinicianId) : user;
+        batchCreateFormBean.setVeteranId(vId);
+        batchCreateFormBean.setSelectedProgramId(programId);
+        batchCreateFormBean.setSelectedClinicianId(clinicId);
+        batchCreateFormBean.setSelectedClinicianId(clinicianId);
+        batchCreateFormBean.setSelectedNoteTitleId(noteTitleId);
 
-		model.addAttribute("isCprsVerified", user.getCprsVerified());
-		model.addAttribute("isCreateMode", true);
+        String[] vetIens = (String[]) model.asMap().get("vetIens");
+        String varClinicId = (String) model.asMap().get("clinicId");
+        List<VistaClinicAppointment> appList = (List<VistaClinicAppointment>) model
+                .asMap().get("searchResult");
+        List<VeteranWithClinicalReminderFlag> vetList = batchCreateDelegate
+                .getVeteranDetails(vetIens, user, appList);
 
-		Clinic c = clinicRepo.findByIen(clinicId);
-		batchCreateFormBean.setSelectedClinicId(c.getClinicId());
+        model.addAttribute("veteransSize", vetList.size());
+        model.addAttribute("veterans", vetList);
+        Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
 
-		model.addAttribute("clinic", c.getName());
+        // Now getting the list of the surveys per veteran
+        for (VeteranWithClinicalReminderFlag v : vetList) {
+            Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate
+                    .getPreSelectedSurveyMap(user, v.getVeteranIen());
+            if (!autoAssignedSurveyMap.isEmpty()) {
+                vetSurveyMap.put(v.getVeteranId(),
+                        new HashSet(autoAssignedSurveyMap.keySet()));
+                v.setDueClinicalReminders(true);
+            }
+        }
 
-		if (c.getProgram() != null) {
-			int programId = c.getProgram().getProgramId();
-			batchCreateFormBean.setSelectedProgramId(programId);
+        model.addAttribute("vetSurveyMap", vetSurveyMap);
+        //batchCreateFormBean.setVetSurveyMap(vetSurveyMap);
 
-			DropDownObject dr = new DropDownObject(String.valueOf(programId), c
-					.getProgram().getName());
-			List<DropDownObject> progList = new ArrayList<DropDownObject>(1);
-			progList.add(dr);
-			model.addAttribute("programList", progList);
-			model.addAttribute("program", c.getProgram().getName());
-			List<DropDownObject> noteTitleList = createAssessmentDelegate
-					.getNoteTitleList(programId);
-			model.addAttribute("noteTitleList", noteTitleList);
+        model.addAttribute("isCprsVerified", user.getCprsVerified());
+        model.addAttribute("isCreateMode", true);
 
-			// Get all clinician list since we have a clinic.
-			List<DropDownObject> clinicianList = createAssessmentDelegate
-					.getClinicianList(programId);
-			model.addAttribute("clinicianList", clinicianList);
+        Clinic c = clinicRepo.findByIen(varClinicId);
+        batchCreateFormBean.setSelectedClinicId(c.getClinicId());
 
-		} else {
-			List<DropDownObject> programList = createAssessmentDelegate
-					.getProgramList(user.getProgramIdList());
-			model.addAttribute("programList", programList);
-		}
+        model.addAttribute("clinic", c.getName());
 
-		List<DropDownObject> batteryList = createAssessmentDelegate
-				.getBatteryList();
+        if (c.getProgram() != null) {
+            int varProgramId = c.getProgram().getProgramId();
+            batchCreateFormBean.setSelectedProgramId(varProgramId);
 
-		Map<String, String> pm = new HashMap<String, String>();
+            DropDownObject dr = new DropDownObject(String.valueOf(varProgramId), c
+                    .getProgram().getName());
+            List<DropDownObject> progList = new ArrayList<DropDownObject>(1);
+            progList.add(dr);
+            model.addAttribute("programList", progList);
+            model.addAttribute("program", c.getProgram().getName());
+            List<DropDownObject> noteTitleList = createAssessmentDelegate
+                    .getNoteTitleList(varProgramId);
+            model.addAttribute("noteTitleList", noteTitleList);
 
-		for (DropDownObject b : batteryList) {
-			List<Program> ps = createAssessmentDelegate
-					.getProgramsForBattery(Integer.parseInt(b.getStateId()));
-			StringBuilder sb = new StringBuilder();
-			for (Program p : ps) {
-				sb.append("program_" + p.getProgramId()).append(" ");
-			}
-			pm.put(b.getStateId(), sb.toString());
-		}
+            // Get all clinician list since we have a clinic.
+            List<DropDownObject> clinicianList = createAssessmentDelegate
+                    .getClinicianList(varProgramId);
+            model.addAttribute("clinicianList", clinicianList);
 
-		model.addAttribute("programsMap", pm);
-		model.addAttribute("batteryList", batteryList);
+        } else {
+            List<DropDownObject> programList = createAssessmentDelegate
+                    .getProgramList(user.getProgramIdList());
+            model.addAttribute("programList", programList);
+        }
 
-		List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate
-				.getBatterySurveyList();
-		model.addAttribute("batterySurveyList", batterySurveyList);
+        List<DropDownObject> batteryList = createAssessmentDelegate
+                .getBatteryList();
 
-		// 7. Get all the modules (surveys) that can be assigned
-		List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
+        Map<String, String> pm = new HashMap<String, String>();
 
-		// 8. Populate survey list with list of batteries it is associated with
-		// to make it easier in view.
-		for (BatterySurveyDto batterySurvey : batterySurveyList) {
+        for (DropDownObject b : batteryList) {
+            List<Program> ps = createAssessmentDelegate
+                    .getProgramsForBattery(Integer.parseInt(b.getStateId()));
+            StringBuilder sb = new StringBuilder();
+            for (Program p : ps) {
+                sb.append("program_" + p.getProgramId()).append(" ");
+            }
+            pm.put(b.getStateId(), sb.toString());
+        }
 
-			BatteryDto batteryDto = new BatteryDto(
-					batterySurvey.getBatteryId(),
-					batterySurvey.getBatteryName());
+        model.addAttribute("programsMap", pm);
+        model.addAttribute("batteryList", batteryList);
 
-			for (SurveyDto survey : surveyList) {
-				if (survey.getSurveyId().intValue() == batterySurvey
-						.getSurveyId().intValue()) {
-					if (survey.getBatteryList() == null) {
-						survey.setBatteryList(new ArrayList<BatteryDto>());
-					}
+        List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate
+                .getBatterySurveyList();
+        model.addAttribute("batterySurveyList", batterySurveyList);
 
-					survey.getBatteryList().add(batteryDto);
-					break;
-				}
-			}
-		}
-		
-		//Set pre-selected
-		Map<Integer, Integer> preselectedSurveys = new HashMap<Integer, Integer>();
-		
-		for(Map.Entry<Integer, Set<Integer>> entry : vetSurveyMap.entrySet())
-		{
-			for(Integer surveyId: entry.getValue())
-			{
-				if(!preselectedSurveys.containsKey(surveyId))
-				{
-					preselectedSurveys.put(surveyId, 1);
-				}
-				else
-				{
-					preselectedSurveys.put(surveyId, preselectedSurveys.get(surveyId)+1);
-				}
-			}
-		}
-		model.addAttribute("surveyList", surveyList);
-		
-		int[] checkIndicator = new int[surveyList.size()];
-		
-		for(int i=0; i<surveyList.size(); i++)
-		{
-			int checked = 0;
-			SurveyDto s = surveyList.get(i);
-			if(preselectedSurveys.containsKey(s.getSurveyId()))
-			{
-				int num = preselectedSurveys.get(s.getSurveyId());
-				if(num == vetIens.length)
-				{
-					checked = 2;
-				}
-				else
-				{
-					checked = 1;
-				}
-			}
-			checkIndicator[i]=checked;
-		}
-		logger.info("Check indicators: " + checkIndicator);
-		model.addAttribute("dueClinicalReminders", checkIndicator);
-		return "dashboard/editVeteransAssessment";
-	}
+        // 7. Get all the modules (surveys) that can be assigned
+        List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
 
-	/**
-	 * Returns the backing bean for the form.
-	 * 
-	 * @return
-	 */
-	@ModelAttribute("selectVeteranFormBean")
-	public VeteranClinicApptSearchFormBean getSelectVeteranFormBean() {
-		logger.debug("Creating new SelectVeteranFormBean");
-		return new VeteranClinicApptSearchFormBean();
-	}
+        // 8. Populate survey list with list of batteries it is associated with
+        // to make it easier in view.
+        for (BatterySurveyDto batterySurvey : batterySurveyList) {
 
-	/**
-	 * Initialize and setup page.
-	 * 
-	 * @param selectVeteranFormBean
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value = "/selectVeterans", method = RequestMethod.GET)
-	public String setUpPageSelectVeteran(
-			@CurrentUser EscreenUser escreenUser,
-			@ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
-			Model model) {
+            BatteryDto batteryDto = new BatteryDto(
+                    batterySurvey.getBatteryId(),
+                    batterySurvey.getBatteryName());
 
-		model.addAttribute("isPostBack", false);
-		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+            for (SurveyDto survey : surveyList) {
+                if (survey.getSurveyId().intValue() == batterySurvey
+                        .getSurveyId().intValue()) {
+                    if (survey.getBatteryList() == null) {
+                        survey.setBatteryList(new ArrayList<BatteryDto>());
+                    }
 
-		List<DropDownObject> clinicList = new ArrayList<DropDownObject>();
-		for (ClinicDto c : clinicService.getClinicDtoList()) {
-			DropDownObject o = new DropDownObject(c.getClinicIen(),
-					c.getClinicName());
-			clinicList.add(o);
-		}
+                    survey.getBatteryList().add(batteryDto);
+                    break;
+                }
+            }
+        }
 
-		model.addAttribute("clinics", clinicList);
-		return "dashboard/selectVeterans";
-	}
+        //Set pre-selected
+        Map<Integer, Integer> preselectedSurveys = new HashMap<Integer, Integer>();
 
-	 @RequestMapping(value="/batchComplete", method =RequestMethod.GET)
-	 public String setupPage(@CurrentUser EscreenUser escreenUser, Model model)
-	 {
-		 model.addAttribute("isPostBack", true);
-		 model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-		 return "dashboard/batchComplete";
-	 }
+        for (Map.Entry<Integer, Set<Integer>> entry : vetSurveyMap.entrySet()) {
+            for (Integer surveyId : entry.getValue()) {
+                if (!preselectedSurveys.containsKey(surveyId)) {
+                    preselectedSurveys.put(surveyId, 1);
+                } else {
+                    preselectedSurveys.put(surveyId, preselectedSurveys.get(surveyId) + 1);
+                }
+            }
+        }
+        model.addAttribute("surveyList", surveyList);
 
-	@RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.POST)
-	public ModelAndView selectVeteransForBatchCreate(
-			@CurrentUser EscreenUser escreenUser, Model model,
-			@ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
-			BindingResult result) {
+        int[] checkIndicator = new int[surveyList.size()];
 
-		Integer selectedBatteryId = editVeteranAssessmentFormBean
-				.getSelectedBatteryId();
-		Integer selectedClinicId = editVeteranAssessmentFormBean
-				.getSelectedClinicId();
-		Integer selectedClinicianId = editVeteranAssessmentFormBean
-				.getSelectedClinicianId();
-		Integer selectedNoteTitleId = editVeteranAssessmentFormBean
-				.getSelectedNoteTitleId();
-		
+        for (int i = 0; i < surveyList.size(); i++) {
+            int checked = 0;
+            SurveyDto s = surveyList.get(i);
+            if (preselectedSurveys.containsKey(s.getSurveyId())) {
+                int num = preselectedSurveys.get(s.getSurveyId());
+                if (num == vetIens.length) {
+                    checked = 2;
+                } else {
+                    checked = 1;
+                }
+            }
+            checkIndicator[i] = checked;
+        }
+        logger.info("Check indicators: " + checkIndicator);
+        model.addAttribute("dueClinicalReminders", checkIndicator);
+        return clinicianId==null?"dashboard/editVeteransAssessment":"dashboard/editVeteransAssessmentTail";
+    }
 
-		if (selectedBatteryId == null || selectedClinicId == null
-				|| selectedClinicianId == null || selectedNoteTitleId == null) {
-			result.reject("selectedBatteryId");
+    /**
+     * Returns the backing bean for the form.
+     *
+     * @return
+     */
+    @ModelAttribute("selectVeteranFormBean")
+    public VeteranClinicApptSearchFormBean getSelectVeteranFormBean() {
+        logger.debug("Creating new SelectVeteranFormBean");
+        return new VeteranClinicApptSearchFormBean();
+    }
 
-			throw new IllegalArgumentException("Required ");
-		}
+    /**
+     * Initialize and setup page.
+     *
+     * @param selectVeteranFormBean
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/selectVeterans", method = RequestMethod.GET)
+    public String setUpPageSelectVeteran(
+            @CurrentUser EscreenUser escreenUser,
+            @ModelAttribute VeteranClinicApptSearchFormBean selectVeteranFormBean,
+            Model model) {
 
-		List<VeteranWithClinicalReminderFlag> vets = (List<VeteranWithClinicalReminderFlag>)model.asMap().get("veterans");
-		List<BatchBatteryCreateResult> results = batchCreateDelegate
-				.batchCreate(
-						vets,
-						editVeteranAssessmentFormBean.getSelectedProgramId(),
-						selectedClinicId,
-						selectedClinicianId,
-						selectedNoteTitleId,
-						selectedBatteryId,
-						(Map<Integer, Set<Integer>>)model.asMap().get("vetSurveyMap"),
-						editVeteranAssessmentFormBean.getSelectedSurveyIdList(),
-						escreenUser);
+        model.addAttribute("isPostBack", false);
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
-		model.addAttribute("veterans", results);
-		for(BatchBatteryCreateResult r : results)
-		{
-			if(!r.getSucceed())
-			{
-				model.addAttribute("hasErrors", true);
-				break;
-			}
-		}
-		RedirectView view = new RedirectView("batchComplete");
-		view.setExposeModelAttributes(false);
-		return new ModelAndView(view, model.asMap());
-				
-	}
+        List<DropDownObject> clinicList = new ArrayList<DropDownObject>();
+        for (ClinicDto c : clinicService.getClinicDtoList()) {
+            DropDownObject o = new DropDownObject(c.getClinicIen(),
+                    c.getClinicName());
+            clinicList.add(o);
+        }
+
+        model.addAttribute("clinics", clinicList);
+        return "dashboard/selectVeterans";
+    }
+
+    @RequestMapping(value = "/batchComplete", method = RequestMethod.GET)
+    public String setupPage(@CurrentUser EscreenUser escreenUser, Model model) {
+        model.addAttribute("isPostBack", true);
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        return "dashboard/batchComplete";
+    }
+
+    @RequestMapping(value = "/editVeteransAssessment", method = RequestMethod.POST)
+    public ModelAndView selectVeteransForBatchCreate(
+            @CurrentUser EscreenUser escreenUser, Model model,
+            @ModelAttribute BatchCreateFormBean editVeteranAssessmentFormBean,
+            BindingResult result) {
+
+        Integer selectedBatteryId = editVeteranAssessmentFormBean
+                .getSelectedBatteryId();
+        Integer selectedClinicId = editVeteranAssessmentFormBean
+                .getSelectedClinicId();
+        Integer selectedClinicianId = editVeteranAssessmentFormBean
+                .getSelectedClinicianId();
+        Integer selectedNoteTitleId = editVeteranAssessmentFormBean
+                .getSelectedNoteTitleId();
+
+
+        if (selectedBatteryId == null || selectedClinicId == null
+                || selectedClinicianId == null || selectedNoteTitleId == null) {
+            result.reject("selectedBatteryId");
+
+            throw new IllegalArgumentException("Required ");
+        }
+
+        List<VeteranWithClinicalReminderFlag> vets = (List<VeteranWithClinicalReminderFlag>) model.asMap().get("veterans");
+        List<BatchBatteryCreateResult> results = batchCreateDelegate
+                .batchCreate(
+                        vets,
+                        editVeteranAssessmentFormBean.getSelectedProgramId(),
+                        selectedClinicId,
+                        selectedClinicianId,
+                        selectedNoteTitleId,
+                        selectedBatteryId,
+                        (Map<Integer, Set<Integer>>) model.asMap().get("vetSurveyMap"),
+                        editVeteranAssessmentFormBean.getSelectedSurveyIdList(),
+                        escreenUser);
+
+        model.addAttribute("veterans", results);
+        for (BatchBatteryCreateResult r : results) {
+            if (!r.getSucceed()) {
+                model.addAttribute("hasErrors", true);
+                break;
+            }
+        }
+        RedirectView view = new RedirectView("batchComplete");
+        view.setExposeModelAttributes(false);
+        return new ModelAndView(view, model.asMap());
+
+    }
 
 }

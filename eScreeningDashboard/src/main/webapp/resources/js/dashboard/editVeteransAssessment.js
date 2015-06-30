@@ -262,15 +262,39 @@ $(document).ready(function() {
 	}
 	
 	
-	/* Direction block to fix the checkboxes */
+	/* Direction block to fix the checkboxes
 	document.getElementsByClassName("directionIndeterminate")[0].indeterminate = true;
 	$(".directionIndeterminate").on("click", function(e) {
 		document.getElementsByClassName("directionIndeterminate")[0].indeterminate = true;
 	});
+	*/
 	$(".directionChecked").on("click", function(e) {
 		$(this).prop('checked',true);
 	});
-	
-	
-	
+
+	$(function () {
+		$('#selectedClinicianId').change(function () {
+			if ($('#selectedClinicianId').val() != '') {
+				// make an ajax call to editVeteranAssessment which will return surveys and also clinical reminders for the selected clinician id
+				$.ajax({
+					url: 'editVeteransAssessment',
+					type: 'GET',
+					data: 'vid=51&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
+					dataType: 'html',
+					async:true,
+					success: function (data) {
+						//console.log(data);
+						$('#output').html(data);
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						alert(errorThrown);
+					}
+				});
+			} else {
+				$('#output').html('');
+			}
+		});
+	});
+
+
 });

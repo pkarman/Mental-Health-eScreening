@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Controller
+@Controller("editVeteranAssessmentController")
 @RequestMapping(value = "/dashboard")
 public class EditVeteranAssessmentController {
 
@@ -280,7 +280,7 @@ public class EditVeteranAssessmentController {
         return programId != null ? "dashboard/editVeteranAssessmentTail" : "dashboard/editVeteranAssessment";
     }
 
-    private EscreenUser findEscreenUser(Integer clinicianId) {
+    public EscreenUser findEscreenUser(Integer clinicianId) {
         User user = userService.findUser(clinicianId);
         return (EscreenUser) userDetailsService.loadUserByUsername(user.getLoginId());
     }

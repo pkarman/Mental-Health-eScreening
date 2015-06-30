@@ -64,6 +64,7 @@ $(document).ready(function () {
                     type: 'GET',
                     data: 'vid=51&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
                     dataType: 'html',
+                    async:true,
                     success: function (data) {
                         //console.log(data);
                         $('#output').html(data);
