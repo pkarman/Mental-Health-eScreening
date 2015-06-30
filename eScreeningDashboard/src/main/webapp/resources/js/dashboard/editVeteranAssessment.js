@@ -57,20 +57,24 @@ $(document).ready(function () {
 
     $(function () {
         $('#selectedClinicianId').change(function () {
-            // make an ajax call to editVeteranAssessment which will return surveys and also clinical reminders for the selected clinician id
-            $.ajax({
-                url: 'editVeteranAssessment',
-                type: 'GET',
-                data: 'vid=51&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val()+ '&clinicId=' + $('#selectedClinicId').val()+ '&noteTitleId=' + $('#selectedNoteTitleId').val(),
-                dataType: 'html',
-                success: function (data) {
-                    console.log(data);
-                    $('#output').html(data);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert(errorThrown);
-                }
-            });
+            if ($('#selectedClinicianId').val() != '') {
+                // make an ajax call to editVeteranAssessment which will return surveys and also clinical reminders for the selected clinician id
+                $.ajax({
+                    url: 'editVeteranAssessment',
+                    type: 'GET',
+                    data: 'vid=51&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
+                    dataType: 'html',
+                    success: function (data) {
+                        //console.log(data);
+                        $('#output').html(data);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(errorThrown);
+                    }
+                });
+            } else {
+                $('#output').html('');
+            }
         });
     });
 })
