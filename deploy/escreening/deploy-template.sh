@@ -14,12 +14,11 @@ jdbcPassword=""
 
 # vista specific 
 vistaIp=""
- 
 vistaPort="" 
 vistaPrimaryStation="" 
 quickOrderIen=""
 
-# Access and verify for Proxy account
+# Proxy account credentials
 # NOTE: When entering access and verify codes directly in the config file (not using the configuration editor), if the codes contain the following special characters, they need to be entered as follows:
 #
 #		special char    enter as
@@ -28,9 +27,9 @@ quickOrderIen=""
 #		    "           &quot;
 #		    '           &apos;
 vistaAccessCode=""
-
 vistaVerifyCode="" 
+vistaDuz=""
 
-deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $quickOrderIen
+deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $quickOrderIen
 
 
