@@ -869,10 +869,10 @@
 						</goals>
 						<configuration>
 							<autocommit>true</autocommit>
-							<sqlCommand>UPDATE user SET vista_duz='${vista.duz}', vista_division='${vista.primaryStation}' WHERE user_id &lt; 100;
-</sqlCommand>
+							<sqlCommand>
+							UPDATE user SET vista_duz='${vista.duz}', vista_division='${vista.primaryStation}' WHERE cprs_verified=true;
+							</sqlCommand>
 						</configuration>
-
 					</execution>
 				</executions>
 			</plugin>
