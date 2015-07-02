@@ -66,6 +66,3 @@ INSERT INTO user(login_id,password,first_name,middle_name,last_name,email_addres
 VALUES ('deletedtechadmin', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'One', 'One', 'TechnicalAdmin', 'technicaladmin@nowhere.com', 'techncialadmin@nowhere.com', '0123456789', '0123456789', 3, 3, 0);
 INSERT INTO user(login_id,password,first_name,middle_name,last_name,email_address,email_address2,phone_number,phone_number2,user_status_id,role_id, cprs_verified) 
 VALUES ('deletedassistant', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'Pablo', 'Laik', 'Palani',  'ppalani1@test.com', 'ppalani2@test.com', '2342342323', '2342342323', 3, 5, 0);
-
-/* To provide capability to communicate with VistA */
-UPDATE user SET vista_division = '500', vista_duz = '10000000056' WHERE user_id < 100;
