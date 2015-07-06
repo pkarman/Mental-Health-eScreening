@@ -49,11 +49,9 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 		result.append("<#if (lastIndex >= 0)> \n");
 		result.append("<#list 0..lastIndex as ").append(rowIndexName).append("> \n");
 		
-		//add all child blocks
-		result = addChildren(result, avIds, assessmentVariableService);
-		
-		//close if and list loop
-		result.append("</#list>\n</#if>\n");
+		//contain all child blocks in a new StringBuilder so we isolate child question reference updates
+		StringBuilder childResults = new StringBuilder();
+		childResults = addChildren(childResults, avIds, assessmentVariableService);
 	
 		//collect all child question variable IDs and search for their use in child blocks (i.e. VAR_FORMAT)
 		//for usages of each child question, substitute a call to look up the appropriate AV by row (i.e. REPLACEMENT_FORMAT)
@@ -61,16 +59,19 @@ public class TemplateTableBlockDTO extends TemplateBaseBlockDTO {
 			if(!avId.equals(table.getContent().getId())){
 				String varValue = String.format(VAR_FORMAT, avId);
 				String replacement = String.format(REPLACEMENT_FORMAT, tableHashName, varValue, rowIndexName);
-				int foundVarIndex = result.indexOf(varValue);
+				int foundVarIndex = childResults.indexOf(varValue);
 				while(foundVarIndex > -1){
-					result.replace(foundVarIndex, foundVarIndex + varValue.length(), replacement);
+				    childResults.replace(foundVarIndex, foundVarIndex + varValue.length(), replacement);
 					//look for the next one
-					foundVarIndex = result.indexOf(varValue, foundVarIndex + replacement.length());
+					foundVarIndex = childResults.indexOf(varValue, foundVarIndex + replacement.length());
 				}
 			}
 		}
 
-		return result;
+		//append updated children and close loop and if blocks
+        return result
+            .append(childResults)
+            .append("</#list>\n</#if>\n");
 	}
 	
 	String createTableHashName(StringBuilder sb){
