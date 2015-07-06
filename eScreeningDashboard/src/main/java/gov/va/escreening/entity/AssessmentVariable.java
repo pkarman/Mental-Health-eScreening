@@ -263,6 +263,7 @@ public class AssessmentVariable implements Serializable {
         Map<String, Object> asMap = Maps.newHashMap();
         asMap.put("id", assessmentVariableId);
         asMap.put("name", displayName);
+        asMap.put("type",getAssessmentVariableTypeId().getAssessmentVariableTypeId());
         return asMap;
     }
 

@@ -150,7 +150,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	/**
 	 * recursively search that AssessmentVariable belongs to the MeasurementAnswer of passed in Measure
 	 * and measure's measure type is not select one. We want to NOT return any answers of select one
-	 *
+	 * 
 	 * @param av
 	 * @param m
 	 * @return
@@ -215,6 +215,7 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	public AssessmentVariable findById(Integer variableId) {
 		return avr.findOne(variableId);
 	}
+
 
 	@Override
     public void filterBySurvey(Survey survey, AvBuilder<?> avBldr,
