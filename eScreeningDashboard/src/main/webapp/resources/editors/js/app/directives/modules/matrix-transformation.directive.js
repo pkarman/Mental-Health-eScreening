@@ -21,13 +21,19 @@
 					MeasureService.one(scope.assessmentVariable.parentMeasureId || scope.assessmentVariable.measureId).get().then(function(measure) {
 						scope.matrixQuestions = measure.childQuestions;
 
-						/*
+						scope.matrixAnswers = [];
 						_.each(scope.matrixQuestions, function(question) {
-							question.checked = true;
+							question.hasOther= false;
+							var setAnswers = scope.matrixAnswers.length == 0;
+							_.each(question.answers, function(answer){
+								if(setAnswers && answer.type !== "other"){
+									scope.matrixAnswers.push(answer);
+								}
+								if(answer.type === "other"){
+									question.hasOther = true;
+								}
+							});
 						});
-						*/
-
-						scope.matrixAnswers = measure.childQuestions[0].answers;
 					});
 
 					scope.updateSelectedMatrixAnswers = function updateSelectedMatrixAnswers() {
@@ -36,7 +42,17 @@
 					};
 
 					scope.updateSelectedMatrixQuestions = function updateSelectedMatrixQuestions() {
-						scope.selectedMatrixQuestions = $filter('filter')(scope.matrixQuestions, {checked: true});
+						scope.selectedMatrixQuestions = [];
+						_.each(scope.matrixQuestions, function(question){
+							if(question.checked){
+								scope.selectedMatrixQuestions.push(question);
+							}
+							//clear the text contents if not needed
+							if(!question.checked || question.useOther){
+								question.outputText = '';
+							}
+						});
+						
 						scope.updateTransformation();
 					};
 
@@ -55,9 +71,14 @@
 
 						// Build an array of answers IDs from each selected question and selected answers
 						_.each(scope.selectedMatrixQuestions, function(question) {
-							_.each(question.answers, function(answer, index) {
-								if (_.indexOf(indexes, index) !== -1) {
-									answerIds.push(answer.id);
+							var index = 0;
+							_.each(question.answers, function(answer) {
+								if(answer.type !== "other"){
+									if (_.indexOf(indexes, index) !== -1) {
+										answerIds.push(answer.id);
+									}
+									//we only count indexes for non-other answers
+									index++;
 								}
 							});
 						});
@@ -65,7 +86,13 @@
 						// Build an array of selected question objects
 						_.each(scope.selectedMatrixQuestions, function(question) {
 							var obj = {};
-							obj[question.id] = question.outputText || '';
+							if(question.useOther){
+								//if this is changed update ExpressionExtentionUtil
+								obj[question.id] = "$other_value$";
+							}
+							else{
+								obj[question.id] = question.outputText || '';
+							}
 							questions.push(obj);
 						});
 

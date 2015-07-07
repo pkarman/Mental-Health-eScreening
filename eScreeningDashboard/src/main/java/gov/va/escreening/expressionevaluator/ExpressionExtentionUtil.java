@@ -40,6 +40,8 @@ import com.google.common.collect.Sets;
  */
 public class ExpressionExtentionUtil {
     public static final String DEFAULT_VALUE = "notset";
+    //if this is changed update matrix-transformation.directive.js
+    public static final String OTHER_INPUT_PLACEHOLDER = "$other_value$";
     public static final String NUMBER_FORMAT = "%s";
     
     private static final Logger logger = LoggerFactory.getLogger(ExpressionExtentionUtil.class);
@@ -373,6 +375,9 @@ public class ExpressionExtentionUtil {
                             && columnSet.contains(response.getAnswerId())){
                             
                             //append the text found in rowMeasureIdToOutputMap for the current child question
+                            if(!Strings.isNullOrEmpty(response.getOtherText())){
+                                questionOutput = questionOutput.replace(OTHER_INPUT_PLACEHOLDER, response.getOtherText());
+                            }
                             valList.add(questionOutput);
                         }
                     }

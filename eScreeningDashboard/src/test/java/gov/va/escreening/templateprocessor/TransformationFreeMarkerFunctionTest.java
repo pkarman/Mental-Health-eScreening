@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import static gov.va.escreening.constants.AssessmentConstants.STANDARD_DATE_FORMAT;
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
 import gov.va.escreening.test.TestAssessmentVariableBuilder.TableQuestionAvBuilder;
@@ -278,13 +279,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         //test that transformation still works when no veteran response is available
         List<Integer> columnAvList = avBuilder
                 .addSelectOneMatrixAv(123, "test matrix question")
-                    .addChildWithAvId(111, "q1")
-                    .addChildWithAvId(222, "q2")
-                    .addChildWithAvId(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
-                    .getColumnAvs(1); //we select the second column as the one we want the veteran to select
+                    .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
 
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -299,13 +300,13 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         //test that transformation still works when no veteran response is available
         List<Integer> columnAvList = avBuilder
                 .addSelectMultiMatrixAv(123, "test matrix question")
-                    .addChildWithAvId(111, "q1")
-                    .addChildWithAvId(222, "q2")
-                    .addChildWithAvId(333, "q3")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
                     .addColumn(null, null, null, null, null)
-                    .getColumnAvs(1); //we select the second column as the one we want the veteran to select
+                    .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
 
 
         //the map we give maps from the child questions we want to possibly show to the text we want to emit
@@ -313,6 +314,30 @@ public class TransformationFreeMarkerFunctionTest extends FreeMarkerFunctionTest
         templateText.append(Joiner.on(",").skipNulls().join(columnAvList)).append("])}");
 
         assertEquals("", render(templateText.toString(), avBuilder));
+    }
+    
+    @Test
+    public void testDelimitedMatrixQuestionsTranslationForSelectMultiMatrix_OtherChildTextGiven() throws Exception{
+        //test that transformation replaces the other text placeholder with the veteran-entered other value
+        List<Integer> columnAvList = avBuilder
+                .addSelectMultiMatrixAv(123, "test matrix question")
+                    .addChildWithMeasureId(111, "q1")
+                    .addChildWithMeasureId(222, "q2")
+                    .addChildWithMeasureId(333, "q3")
+                    .addColumn("col1", null, null, ImmutableList.of(false, false, false), Lists.newArrayList(null, "col 1 other", null))
+                    .addColumn("col2", null, null, ImmutableList.of(false, true, false), Lists.newArrayList(null, "col 2 other", null))
+                    .addColumn("col3", null, null, ImmutableList.of(false, false, false), Lists.newArrayList(null, "col 3 other", null))
+                    .getColumnAnswerIds(1); //we select the second column as the one we want the veteran to select
+
+
+        //the map we give maps from the child questions we want to possibly show to the text we want to emit
+        StringBuilder templateText = new StringBuilder("${delimitedMatrixQuestions(var123,{\"222\":\"Veteran entered ")
+            .append(ExpressionExtentionUtil.OTHER_INPUT_PLACEHOLDER)
+            .append(".\"},[")
+            .append(Joiner.on(",").skipNulls().join(columnAvList))
+            .append("])}");
+
+        assertEquals("Veteran entered col 2 other.", render(templateText.toString(), avBuilder));
     }
 
     /** TESTS for numberOfEntries translation for table questions  **/
