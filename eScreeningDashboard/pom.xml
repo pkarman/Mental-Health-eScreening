@@ -20,11 +20,17 @@
 		<jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
 		<jdbc.username>escrapp</jdbc.username>
 		<jdbc.password>CHANGE_M3</jdbc.password>
-		<vista.connector>vljtestconnector</vista.connector>
 		<quick.order.ien>51</quick.order.ien>
+		<vista.connector>vljconnector</vista.connector>
+		<vista.ip>54.235.74.13</vista.ip>
+		<vista.port>8000</vista.port>
 		<vista.primaryStation>500</vista.primaryStation>
+		<vista.accessCode>SGll8EpcOHZe9oXgwuPsFg==</vista.accessCode>
+		<vista.duz>10000000056</vista.duz>
+		<vista.verifyCode>JQ9S3/VDJAQJO39bZVcqP8q3W8JSIxt9</vista.verifyCode>
 		<sample.patient.ien>100022</sample.patient.ien>
 		<skip.db>true</skip.db>
+		<db.skip.testData>true</db.skip.testData>
 	</properties>
 	<dependencies>
 		<!-- Web Services -->
@@ -848,10 +854,24 @@
 							<goal>execute</goal>
 						</goals>
 						<configuration>
+							<skip>${db.skip.testData}</skip>
 							<orderFile>ascending</orderFile>
 							<fileset>
 								<basedir>src/test/sql</basedir>
 							</fileset>
+						</configuration>
+					</execution>
+					<execution>
+						<id>update-admin-users-with-vista-credentials</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<autocommit>true</autocommit>
+							<sqlCommand>
+							UPDATE user SET vista_duz='${vista.duz}', vista_division='${vista.primaryStation}' WHERE cprs_verified=true;
+							</sqlCommand>
 						</configuration>
 					</execution>
 				</executions>
@@ -874,12 +894,6 @@
 		</profile>
 		<profile>
 			<id>test</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>test</value>
-				</property>
-			</activation>
 			<build>
 				<finalName>${project.artifactId}-test</finalName>
 			</build>
@@ -899,16 +913,11 @@
 			</activation>
 			<properties>
 				<skip.db>false</skip.db>
+				<db.skip.testData>false</db.skip.testData>
 			</properties>
 		</profile>
 		<profile>
 			<id>demo</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>demo</value>
-				</property>
-			</activation>
 			<build>
 				<finalName>${project.artifactId}-demo</finalName>
 			</build>
@@ -920,12 +929,6 @@
 		</profile>
 		<profile>
 			<id>int</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>int</value>
-				</property>
-			</activation>
 			<build>
 				<finalName>${project.artifactId}-int</finalName>
 			</build>
@@ -937,12 +940,6 @@
 		</profile>
 		<profile>
 			<id>bug</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>bug</value>
-				</property>
-			</activation>
 			<build>
 				<finalName>${project.artifactId}-bug</finalName>
 			</build>
@@ -953,45 +950,47 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>sandiego</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>sandiego</value>
-				</property>
-			</activation>
+			<id>sdc-prod</id>
 			<build>
-				<finalName>${project.artifactId}-sd</finalName>
+				<finalName>sdc</finalName>
 			</build>
 			<properties>
-				<jdbc.url>jdbc:mysql://localhost/escreening</jdbc.url>
-				<jdbc.db>escreening</jdbc.db>
-				<log.suffix>sd</log.suffix>
-				<vista.connector>vljsdconnector</vista.connector>
-				<quick.order.ien>16267</quick.order.ien>
-				<vista.primaryStation>664</vista.primaryStation>
+				<jdbc.url>jdbc:mysql://localhost:3306/sdc-prod</jdbc.url>
+				<jdbc.db>sdc-prod</jdbc.db>
+				<log.suffix>sdc-prod</log.suffix>
 			</properties>
 		</profile>
 		<profile>
-			<id>sandiego-test</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>sandiego</value>
-				</property>
-			</activation>
+			<id>sdc-test</id>
 			<build>
-				<finalName>${project.artifactId}-sdtest</finalName>
+				<finalName>sdc-test</finalName>
 			</build>
 			<properties>
-				<jdbc.url>jdbc:mysql://localhost/escreening-test</jdbc.url>
-				<jdbc.db>escreening-test</jdbc.db>
-				<log.suffix>test</log.suffix>
-				<vista.connector>vljsdconnector</vista.connector>
-				<quick.order.ien>16267</quick.order.ien>
-				<vista.primaryStation>664</vista.primaryStation>
-				<jdbc.username>escrapp-test</jdbc.username>
-				<jdbc.password>escreeningTest</jdbc.password>
+				<jdbc.url>jdbc:mysql://localhost:3307/sdc-test</jdbc.url>
+				<jdbc.db>sdc-test</jdbc.db>
+				<log.suffix>sdc-test</log.suffix>
+			</properties>
+		</profile>
+		<profile>
+			<id>lon-prod</id>
+			<build>
+				<finalName>lon</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost:3306/lon-prod</jdbc.url>
+				<jdbc.db>lon-prod</jdbc.db>
+				<log.suffix>lon-prod</log.suffix>
+			</properties>
+		</profile>
+		<profile>
+			<id>lon-test</id>
+			<build>
+				<finalName>lon-test</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost:3307/lon-test</jdbc.url>
+				<jdbc.db>lon-test</jdbc.db>
+				<log.suffix>lon-test</log.suffix>
 			</properties>
 		</profile>
 	</profiles>

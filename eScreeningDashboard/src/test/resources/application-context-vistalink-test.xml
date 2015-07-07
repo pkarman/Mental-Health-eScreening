@@ -11,7 +11,7 @@
     <context:annotation-config  />
 
     <bean id="vistaLinkManagedConnectionFactory" class="gov.va.med.vistalink.adapter.spi.VistaLinkManagedConnectionFactory">
-        <property name="connectorJndiName" value="vljtestconnector" />
+        <property name="connectorJndiName" value="vljconnector" />
     </bean>
 
     <bean id="duzConnSpec-10000000056" class="gov.va.med.vistalink.adapter.cci.VistaLinkDuzConnectionSpec">

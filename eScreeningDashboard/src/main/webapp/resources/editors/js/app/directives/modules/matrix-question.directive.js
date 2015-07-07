@@ -15,12 +15,6 @@
 				scope.answers = [];
 				scope.selectedMHAQuestions = [];
 
-				scope.answerTypes = [
-					{ name: 'Regular', value: '' },
-					{ name: 'Other', value: 'other' },
-					{ name: 'None', value: 'none' }
-				];
-
 				scope.sortableAnswerOptions = {
 					handle: '.glyphicon-align-justify',
 					'ui-floating': false,
@@ -51,6 +45,20 @@
 					var prototypeQuestions = [];
 
 					if (question && question.childQuestions.length) {
+						
+						//set the other field on each child question
+						_.each(question.childQuestions, function(childQuestion){
+							//Although we are only adding to the head, older answers might have been added in another order
+							childQuestion.other = false;
+							//lodash's find with a property object didn't work here
+							_.each(childQuestion.answers, function(answer){
+								if(answer.type && answer.type === "other"){
+									childQuestion.other = true;
+								}
+							});
+							console.debug("other: " + childQuestion.other);
+						});
+						
 						// Create question agnostic answers
 						// Find questions with mha to use for prototype answers
 						prototypeQuestions = $filter('filter')(question.childQuestions, { mha: true} );
@@ -61,13 +69,16 @@
 						}
 
 						_.each(prototypeQuestions[0].answers, function (answer) {
-							scope.answers.push({
-								text: answer.text,
-								type: answer.type,
-								exportName: (prototypeQuestions[0].variableName && question.type === 'selectMulti') ? answer.exportName.replace(prototypeQuestions[0].variableName + '_', '') : answer.exportName,
-								calculationValue: answer.calculationValue,
-								mhaValue: answer.mhaValue || ''
-							});
+							if(answer.type !== 'other'){
+								scope.answers.push({
+									text: answer.text,
+									type: answer.type,
+									displayOrder: answer.displayOrder,
+									exportName: (prototypeQuestions[0].variableName && question.type === 'selectMulti') ? answer.exportName.replace(prototypeQuestions[0].variableName + '_', '') : answer.exportName,
+									calculationValue: answer.calculationValue,
+									mhaValue: answer.mhaValue || ''
+								});
+							}
 						});
 
 						updateMHAQuestions();
@@ -106,31 +117,65 @@
 				scope.updateQuestionAnswers = function updateQuestionAnswers () {
 
 					if (scope.answers.length && scope.question.childQuestions.length) {
-
+						
+						//update the order values
+						_.each(scope.answers, function(answer, index){
+							answer.displayOrder = index + 1;
+						});
+						
 						_.each(scope.question.childQuestions, function(question, index) {
 
 							question.displayOrder = index + 1;
 
+							//add an other answer if the question is of type other
+							/*if(question.other){
+								if(scope.answers.len == 0 || scope.answers[0].type !== 'other'){
+									scope.answers.unshift(Answer.extend({type: 'other'}));
+								}
+							}
+							else if(scope.answers[0].type === 'other'){ //if there should be no other answer remove it
+								scope.answers.shift();
+							}
+							*/
+							
+							//add an extra answer and set the index shifting to 1 if this question will have an other field added 
+							var indexShift = 0;
+							if(question.other){
+								indexShift = 1;
+								if(question.answers.len == 0 || question.answers[0].type !== 'other'){
+									question.answers.unshift(Answer.extend({type: 'other', displayOrder : 1}));
+								}		
+							}
+							else if(question.answers.length > 0 && question.answers[0].type === 'other'){
+								question.answers.shift();
+							}
+							
+							//shorten the answers if there are too many
+							if(question.answers.length - indexShift > scope.answers.length){
+								question.answers.splice(scope.answers.length, question.answers.length - scope.answers.length);
+							}
+							
 							// Remove tertiary childQuestions array
 							// Delete question.childQuestions
 							_.each(scope.answers, function(answer, j) {
-
-								if (!question.answers[j]) {
+								var questionAnswerIndex = j + indexShift;
+								
+								if (!question.answers[questionAnswerIndex]) {
 									question.answers.push(_.clone(answer));
 								}
 
-								_.merge(question.answers[j], scope.answers[j]);
+								_.merge(question.answers[questionAnswerIndex], scope.answers[j]);
 
 								// Remove mhaAnswer from answers associated to questions without MHA
 								if (!question.mha) {
-									delete question.answers[j].mhaValue;
+									delete question.answers[questionAnswerIndex].mhaValue;
 								}
 
 								if (question.type === 'selectMulti') {
-									question.answers[j].exportName = answer.exportName;
+									question.answers[questionAnswerIndex].exportName = answer.exportName;
 								}
-
-								question.answers[j].displayOrder = j + 1;
+								
+								question.answers[questionAnswerIndex].displayOrder = questionAnswerIndex + 1;
 							});
 						});
 					}
