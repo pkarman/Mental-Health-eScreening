@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Strings;
+
 @Transactional(noRollbackFor = {CouldNotResolveVariableException.class,
         AssessmentVariableInvalidValueException.class,
         UnsupportedOperationException.class,
@@ -127,7 +129,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 		case AssessmentConstants.MEASURE_TYPE_SELECT_ONE:
                 variableDto = resolveSelectOneAssessmentVariableQuestion(
                         assessmentVariable, 
-                        responses, params);
+                        responses, params, false);
                 break;
 		case AssessmentConstants.MEASURE_TYPE_SELECT_MULTI:
                 variableDto = resolveSelectMultiAssessmentVariableQuestion(
@@ -171,20 +173,20 @@ public class MeasureAssessmentVariableResolverImpl implements
     private AssessmentVariableDto resolveSelectOneAssessmentVariableQuestion(
             AssessmentVariable assessmentVariable, 
             List<Answer> responses,
-            ResolverParameters params) {
+            ResolverParameters params, 
+            boolean getAll) {
 
 		AssessmentVariableDto questionVariableDto = new AssessmentVariableDto(assessmentVariable);
 
         // loop to find the first true value then process the answer
         for (Answer response : responses) {
-            if (response.isTrue()) {
+            if(response.isTrue() || !Strings.isNullOrEmpty(response.getOtherAnswerResponse())){
 				
 				addResolvedAnswerTo(questionVariableDto, response, params);
 				
-				//commenting out these because the question should not have these set only the child answer
-				//questionVariableDto.setAnswerId(answerVariableDto.getAnswerId());
-				//questionVariableDto.setValue(answerVariableDto.getCalculationValue());
-                break; // found what we were looking for
+				if(!getAll){
+				    break; // found what we were looking for
+				}
             }
         }
 
@@ -200,7 +202,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 
         // loop to find all of the true values then add them to the collection
         for (Answer response : responses) {
-            if (response.isTrue()) {
+            if (response.isTrue() || !Strings.isNullOrEmpty(response.getOtherAnswerResponse())) {
 				
                 // call the answer level to resolve the value
 				addResolvedAnswerTo(questionVariableDto, response, params);
@@ -340,7 +342,7 @@ public class MeasureAssessmentVariableResolverImpl implements
 			parentAvDto.getChildren().add( 
 					resolveSelectOneAssessmentVariableQuestion(
 					        childMeasure.getAssessmentVariable(),
-					        childResponses, params));
+					        childResponses, params, true));
 		}
 	}
 	
