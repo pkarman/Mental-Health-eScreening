@@ -79,13 +79,13 @@ public class TemplateBlockFreeMarkerTranslationTest {
 			
 			List<INode> children = new ArrayList<>();
 			INode child1 = mock(INode.class);
-			when(child1.appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class))).thenReturn(sb);
+			when(child1.appendFreeMarkerFormat(any(StringBuilder.class), eq(ids), any(AssessmentVariableService.class))).thenReturn(sb);
 			children.add(child1);
 			block.setChildren(children);
 			
 			block.appendFreeMarkerFormat(sb, ids, createServiceForBlock(block));
 			
-			verify(child1).appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class));
+			verify(child1).appendFreeMarkerFormat(any(StringBuilder.class), eq(ids), any(AssessmentVariableService.class));
 		}
 		
 		/**
@@ -123,7 +123,7 @@ public class TemplateBlockFreeMarkerTranslationTest {
 					+"more content" + var111
 					+"even more content"+ var222 + "lastContent");
 			
-			when(child1.appendFreeMarkerFormat(eq(sb), eq(ids), any(AssessmentVariableService.class))).thenReturn(childContent);
+			when(child1.appendFreeMarkerFormat(any(StringBuilder.class), eq(ids), any(AssessmentVariableService.class))).thenReturn(childContent);
 			children.add(child1);
 			block.setChildren(children);
 			
