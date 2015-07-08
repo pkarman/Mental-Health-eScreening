@@ -150,7 +150,11 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 	/**
 	 * recursively search that AssessmentVariable belongs to the MeasurementAnswer of passed in Measure
 	 * and measure's measure type is not select one. We want to NOT return any answers of select one
+<<<<<<< HEAD
 	 *
+=======
+	 * 
+>>>>>>> t917
 	 * @param av
 	 * @param m
 	 * @return
