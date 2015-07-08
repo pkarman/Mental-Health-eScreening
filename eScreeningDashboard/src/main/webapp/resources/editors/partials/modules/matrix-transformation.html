@@ -32,9 +32,23 @@
 						<input type="checkbox" id="{{ question.id }}" ng-model="question.checked" ng-change="updateSelectedMatrixQuestions()">
 						<label for="{{ question.id }}" ng-bind="question.variableName"></label>
 					</div>
-					<div class="form-group">
-						<label for="TextInput">Output Text</label>
-						<input type="text" id="TextInput" class="form-control" placeholder="Enter Output Text" ng-model="question.outputText" ng-required="question.checked" ng-keyup="updateTransformation()" ng-trim="false">
+					<div class="form-group" >
+						<label for="{{ question.id }}_text" ng-disabled="!question.checked || question.useOther">Output Text</label>
+						<input type="text" id="{{ question.id }}_text" class="form-control" placeholder="Enter Output Text" 
+							ng-disabled="!question.checked || question.useOther"
+							ng-model="question.outputText" 
+							ng-required="!question.useOther && question.checked" 
+							ng-keyup="updateTransformation()" 
+							ng-trim="false"
+							tooltip="{{question.hasOther ? 'Enter $other_value$ where the Other text should be inserted' : ''}}"
+							tooltip-placement="right">
+					</div>
+					<div class="checkbox" ng-if="question.hasOther">
+						<input type="checkbox" id="{{ question.id }}_other" 
+							ng-disabled="!question.checked"
+							ng-model="question.useOther" 
+							ng-change="updateSelectedMatrixQuestions()">
+						<label for="{{ question.id }}_other" ng-disabled="!question.checked">Output other value</label>
 					</div>
 				</li>
 			</ul>
@@ -42,7 +56,8 @@
 	</div>
 
 	<div class="text-right">
-		<button type="button" class="btn btn-primary" ng-click="applyTransformations({this: this});" ng-disabled="matrixForm.$invalid || !selectedMatrixQuestions.length">Insert</button>
-		<button type="button" class="btn btn-default" ng-click="dismiss()">Cancel</button>
+		<button type="button" class="btn btn-primary" 
+			ng-click="applyTransformations({this: this});" 
+			ng-disabled="matrixForm.$invalid || !selectedMatrixQuestions.length || !selectedMatrixAnswers.length">Insert</button>
 	</div>
 </form>

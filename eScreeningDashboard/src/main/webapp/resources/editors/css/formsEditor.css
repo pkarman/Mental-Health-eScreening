@@ -52,3 +52,7 @@
 		border-color: #adadad;
 	}
 }
+
+label[disabled]{
+	color: #999;
+}
