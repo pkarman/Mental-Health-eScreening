@@ -367,17 +367,15 @@ public class ExpressionExtentionUtil {
                     && !question.getChildren().isEmpty()){
                 String questionOutput = rowMeasureIdToOutputMap.get(question.getMeasureId().toString());
                 if(!Strings.isNullOrEmpty(questionOutput)){
-                    List<AssessmentVariableDto> responses = getSelectedResponses(question);
+                    MatrixChildResponse questionResponse = getMatrixChildResponse(question);
                     
                     //check question's response(s) to see one if one of them is in columnAnswerIds
-                    for(AssessmentVariableDto response : responses){
+                    for(AssessmentVariableDto response : questionResponse.trueResponses){
                         if(response.getAnswerId() != null 
                             && columnSet.contains(response.getAnswerId())){
                             
                             //append the text found in rowMeasureIdToOutputMap for the current child question
-                            if(!Strings.isNullOrEmpty(response.getOtherText())){
-                                questionOutput = questionOutput.replace(OTHER_INPUT_PLACEHOLDER, response.getOtherText());
-                            }
+                            questionOutput = questionOutput.replace(OTHER_INPUT_PLACEHOLDER, questionResponse.otherValue);
                             valList.add(questionOutput);
                         }
                     }
@@ -666,7 +664,7 @@ public class ExpressionExtentionUtil {
     public boolean matrixHasResult(AssessmentVariableDto matrix){
         if(matrix != null && matrix.getChildren() != null){
             for(AssessmentVariableDto question : matrix.getChildren()){
-                if(!getSelectedResponses(question).isEmpty()){
+                if(!getMatrixChildResponse(question).trueResponses.isEmpty()){
                     return true;
                 }
             }
@@ -790,20 +788,41 @@ public class ExpressionExtentionUtil {
     }
     
     /**
-     * @return the list of AV objects containing for the select responses (i.e. the options set to true by the veteran).
-     * The var given can be single or multi select.
+     * @param The var given can be single or multi select.
+     * @return a MatrixChildResponse with the list of AV objects containing for the select (true) responses and an 
+     * other text if one of the false responses had an Other value. 
+     * Note: The value of a response can be set to false if this is the child of a matrix question. 
+     * This is because matrix child questions which have an other field set their value to false if they have 
+     * an Other value and true otherwise. 
      */
-    private List<AssessmentVariableDto> getSelectedResponses(AssessmentVariableDto var){
+    private MatrixChildResponse getMatrixChildResponse(AssessmentVariableDto var){
         if(var != null && var.getChildren() != null){
-            List<AssessmentVariableDto> result = new ArrayList<>(var.getChildren().size());
+            MatrixChildResponse response = new MatrixChildResponse(var.getChildren().size());
             for(AssessmentVariableDto answer : var.getChildren()){
                 if("true".equals(answer.getValue())){
-                    result.add(answer);
+                    response.trueResponses.add(answer);
+                }
+                else if(!Strings.isNullOrEmpty(answer.getOtherValue())){
+                    response.otherValue = answer.getOtherValue();
                 }
             }
-            return result;
+            return response;
         }
-        return Collections.emptyList();
+        return new MatrixChildResponse(0);
+    }
+    
+    /**
+     * Simple class to hold a list of true responses and an other value to be used by a matrix row (i.e. question)
+     * @author Robin Carnow
+     *
+     */
+    private static class MatrixChildResponse{
+        private String otherValue = "";
+        private List<AssessmentVariableDto> trueResponses;
+        
+        private MatrixChildResponse(int size){
+            trueResponses = new ArrayList<>(size);
+        }
     }
     
     /**

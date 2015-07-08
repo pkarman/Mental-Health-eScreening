@@ -39,7 +39,9 @@
 							ng-model="question.outputText" 
 							ng-required="!question.useOther && question.checked" 
 							ng-keyup="updateTransformation()" 
-							ng-trim="false">
+							ng-trim="false"
+							tooltip="{{question.hasOther ? 'Enter $other_value$ where the Other text should be inserted' : ''}}"
+							tooltip-placement="right">
 					</div>
 					<div class="checkbox" ng-if="question.hasOther">
 						<input type="checkbox" id="{{ question.id }}_other" 
