@@ -15,6 +15,7 @@ import gov.va.escreening.service.AssessmentEngineService;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -47,9 +48,15 @@ public class AssessmentEngineController {
 	@Autowired
 	private AssessmentEngineService assessmentEngineService;
 
-	@RequestMapping(value = "/start", method = RequestMethod.GET)
-	public String setupForm(Model model) {
+	@RequestMapping(value = "/start", method = RequestMethod.POST)
+	public String setupForm(Model model,  HttpServletResponse response) {
 		logger.debug("In setupForm (get to assessment/start)");
+		
+		//make sure this is not cached by browser
+		response.setDateHeader("Expires", 0);
+		response.setHeader("Cache-Control", "no-store");
+		response.setHeader("Pragma", "no-cache");
+		
 		try {
 			assessmentDelegate.ensureValidAssessmentContext();
 
@@ -75,11 +82,16 @@ public class AssessmentEngineController {
 		return ImmutableMap.of("message", Strings.nullToEmpty(message));
 	}
 
-	@RequestMapping(value = "/end", method = RequestMethod.GET, headers = { "content-type=application/json; charset=utf-8" })
+	@RequestMapping(value = "/end", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
-	public Map<String,String> getCompletionData(HttpSession session) throws IllegalSystemStateException {
+	public Map<String,String> getCompletionData(HttpSession session, HttpServletResponse response) throws IllegalSystemStateException {
 		logger.debug("In getCompletionData");
 		assessmentDelegate.ensureValidAssessmentContext();
+
+		response.setDateHeader("Expires", 0);
+		response.setHeader("Cache-Control", "no-store");
+		response.setHeader("Pragma", "no-cache");
+		
 		assessmentDelegate.markAssessmentAsComplete();
 
 		String message = assessmentDelegate.getCompletionMessage();

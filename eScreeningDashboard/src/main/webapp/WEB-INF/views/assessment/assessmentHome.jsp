@@ -55,9 +55,9 @@
                         Loading...
                       </div>
                         <div class="startAssessmentButton">
-                            <a href="start" class="startAssessment">
-                                <input id="startAssessmentButton" class="indexButtons inputButton startAssessmentButton" type="button" value="Start Assessment">
-                            </a>
+                            <form action="start" method="post">
+                                <input id="startAssessmentButton" class="indexButtons inputButton startAssessmentButton" type="submit" value="Start Assessment">
+                            </form>
                     	</div>
                     	<br /><br />
                         <s:url var="imgUrl"
