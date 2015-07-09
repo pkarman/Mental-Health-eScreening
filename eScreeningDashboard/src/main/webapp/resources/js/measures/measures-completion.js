@@ -78,7 +78,7 @@ function showSkipNavigationButtons(currPageJSON) {
 function showLastPageCall() {
 	$("#backBtn").css("visibility", "hidden");
 	$.ajax({
-		  type: "GET",
+		  type: "POST",
 		  url: "end",
 	      dataType: 'json',
 	      contentType: "application/json; charset=utf-8",

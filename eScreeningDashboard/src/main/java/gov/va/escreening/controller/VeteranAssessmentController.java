@@ -2,7 +2,7 @@ package gov.va.escreening.controller;
 
 import gov.va.escreening.delegate.AssessmentDelegate;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +21,15 @@ public class VeteranAssessmentController {
     @Autowired
     private AssessmentDelegate assessmentDelegate;
 
-    @RequestMapping(value = "/home", method = RequestMethod.GET)
-    public String setupAssessmentHomeForm(Model model, HttpServletRequest request) {
+    @RequestMapping(value = "/home", method = RequestMethod.POST)
+    public String setupAssessmentHomeForm(Model model, HttpServletResponse response) {
 
         logger.debug("setupAssessmentHomeForm called");
-
+        
+        response.setDateHeader("Expires", 0);
+        response.setHeader("Cache-Control", "no-store");
+        response.setHeader("Pragma", "no-cache");
+        
         model.addAttribute("veteranFullName", assessmentDelegate.getVeteranFullName());
 
         assessmentDelegate.ensureValidAssessmentContext();
