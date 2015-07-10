@@ -43,6 +43,7 @@ $(document).ready(function () {
                     for (row in data) {
                         $('#selectedClinicianId').append($('<option></option>').attr('value', data[row].stateId).text(data[row].stateName));
                     }
+                    showModulesNow();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     //alert(errorThrown);
@@ -54,28 +55,37 @@ $(document).ready(function () {
         });
     });
 
+    function showModulesNow() {
+        if ($('#selectedProgramId').val() != '' &&
+            $('#selectedClinicId').val() != '' &&
+            $('#selectedNoteTitleId').val() != '' &&
+            $('#selectedClinicianId').val() != '') {
+            // make an ajax call to editVeteranAssessment which will return surveys and also clinical reminders for the selected clinician id
+            $.ajax({
+                url: 'editVeteranAssessment',
+                type: 'GET',
+                data: 'vid=' + $('#veteranId').val() + '&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
+                dataType: 'html',
+                async: true,
+                success: function (data) {
+                    //console.log(data);
+                    $('#output').html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        } else {
+            $('#output').html('');
+        }
+    }
 
     $(function () {
         $('#selectedClinicianId').change(function () {
-            if ($('#selectedClinicianId').val() != '') {
-                // make an ajax call to editVeteranAssessment which will return surveys and also clinical reminders for the selected clinician id
-                $.ajax({
-                    url: 'editVeteranAssessment',
-                    type: 'GET',
-                    data: 'vid='+ $('#veteranId').val() + '&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
-                    dataType: 'html',
-                    async:true,
-                    success: function (data) {
-                        //console.log(data);
-                        $('#output').html(data);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        alert(errorThrown);
-                    }
-                });
-            } else {
-                $('#output').html('');
-            }
+            showModulesNow();
         });
     });
+
+    // try to load all modules when you land on the page
+    showModulesNow();
 })
