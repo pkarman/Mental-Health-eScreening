@@ -218,10 +218,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
 
 
     private void saveVeteranAssessmentToVistaFailed(SaveToVistaContext ctxt, String errMsgKey, Exception exception) {
-        String errMsg = null;
-        if (exception != null) {
-            errMsg = Throwables.getRootCause(exception).getMessage();
-        }
+        String errMsg = Throwables.getStackTraceAsString(exception);
         CallResult callResult = new CallResult(true, messageSource.getMessage(errMsgKey, null, null), errMsg);
         logger.error(String.format("saveVeteranAssessmentToVistaFailed: vaid %s could not be saved to Vista. UserMsg=%s. SystemMsg=%s", ctxt.getVeteranAssessmentId(), callResult.getUserMessage(), callResult.getSystemMessage()));
         ctxt.addCallResult(callResult);
