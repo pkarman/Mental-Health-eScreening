@@ -36,7 +36,7 @@ import java.util.*;
 @Service("vistaDelegate")
 public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(VistaDelegateImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(VistaDelegateImpl.class);
     @Resource(name = "surveyResponsesHelper")
     SurveyResponsesHelper surveyResponsesHelper;
     @Resource(name = "rpcConnectionProvider")
@@ -69,47 +69,87 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     @Override
     public void saveVeteranAssessmentToVista(SaveToVistaContext ctxt) throws VistaLinkClientException {
 
+        Integer vaId = ctxt.getVeteranAssessmentId();
+
         VeteranAssessment veteranAssessment = checkVeteranAssessment(ctxt);
+        logger.debug("sva2vista:SaveToVistaContext after checkVeteranAssessment:{}", ctxt);
+        logger.debug("sva2vista:VeteranAssessment returned by checkVeteranAssessment:{}", veteranAssessment);
         if (ctxt.opFailed(SaveToVistaContext.PendingOperation.veteran)) {
             return;
         }
 
         final VistaLinkClientStrategy vistaLinkClientStrategy = rpcConnectionProvider.createVistaLinkClientStrategy(ctxt.getEscUserId(), "", "OR CPRS GUI CHART");
-        final VistaLinkClient vistaLinkClient = vistaLinkClientStrategy.getClient();
-        Long patientIEN = Long.parseLong(veteranAssessment.getVeteran().getVeteranIen());
+        logger.debug("sva2vista:vaid:{}--VistaLinkClientStrategy:{}", vaId, vistaLinkClientStrategy);
 
-        // Get Mental Health Assessments
-        saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, ctxt);
+        final VistaLinkClient vistaLinkClient = vistaLinkClientStrategy.getClient();
+        logger.debug("sva2vista:vaid:{}--VistaLinkClient:{}", vaId, vistaLinkClient);
+        Long patientIEN = Long.parseLong(veteranAssessment.getVeteran().getVeteranIen());
+        logger.debug("sva2vista:vaid:{}--patientIEN:{}", vaId, patientIEN);
+
+        {
+            // Get Mental Health Assessments
+            saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, ctxt);
+            logger.debug("sva2vista:SaveToVistaContext after saveMentalHealthAssessments:{}", ctxt);
+        }
 
         // Generate CPRS Note based on the responses to the survey
         // questions.
         Long locationIEN = Long.parseLong(veteranAssessment.getClinic().getVistaIen());
+        logger.debug("sva2vista:vaid:{}--locationIEN:{}", vaId, locationIEN);
+
         Boolean inpatientStatus = vistaLinkClient.findPatientDemographics(patientIEN).getInpatientStatus();
+        logger.debug("sva2vista:vaid:{}--inpatientStatus:{}", vaId, inpatientStatus);
+
         VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, locationIEN, inpatientStatus);
+        logger.debug("sva2vista:vaid:{}--encounterServiceCategory:{}", vaId, encounterServiceCategory);
+
         Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
+        logger.debug("sva2vista:vaid:{}--visitDateTime:{}", vaId, visitDateTime);
+
         String visitDate = VistaUtils.convertToVistaDateString(visitDateTime, VistaDateFormat.MMddHHmmss);
+        logger.debug("sva2vista:vaid:{}--visitDate:{}", vaId, visitDate);
+
         String visitStr = findVisitStr(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
+        logger.debug("sva2vista:vaid:{}--visitStr:{}", vaId, visitStr);
+
         String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
+        logger.debug("sva2vista:vaid:{}--visitString:{}", vaId, visitString);
 
-        VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, ctxt);
-
-        if(progressNote != null && progressNote.getIEN() != null){
-            // Do Health Factors
-            saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
-            if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
-                return;
+        {
+            VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, ctxt);
+            logger.debug("sva2vista:vaid:{}--VistaProgressNote:{}", vaId, progressNote);
+            if (progressNote != null && progressNote.getIEN() != null) {
+                // Do Health Factors
+                saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
+                logger.debug("sva2vista:vaid:{}--saveMentalHealthFactors:{}", vaId, ctxt);
+                if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
+                    return;
+                }
             }
         }
-        
-        // save TBI Consult request
-        saveTbiConsultRequest(veteranAssessment, vistaLinkClient, ctxt);
 
-        savePainScale(veteranAssessment, visitDate, vistaLinkClient, ctxt);
-        
-        // save this activity in audit log
-        VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
-        veteranAssessmentAuditLogRepository.update(auditLogEntry);
-        assessmentEngineService.transitionAssessmentStatusTo(veteranAssessment.getVeteranAssessmentId(), AssessmentStatusEnum.FINALIZED);
+        {
+            // save TBI Consult request
+            saveTbiConsultRequest(veteranAssessment, vistaLinkClient, ctxt);
+            logger.debug("sva2vista:vaid:{}--saveTbiConsultRequest:{}", vaId, ctxt);
+        }
+
+        {
+            savePainScale(veteranAssessment, visitDate, vistaLinkClient, ctxt);
+            logger.debug("sva2vista:vaid:{}--savePainScale:{}", vaId, ctxt);
+        }
+
+        {
+            // save this activity in audit log
+            VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
+            logger.debug("sva2vista:vaid:{}--VeteranAssessmentAuditLog:{}", vaId, ctxt);
+            veteranAssessmentAuditLogRepository.update(auditLogEntry);
+            logger.debug("sva2vista:vaid:{}--audit entry log saved successfully", vaId);
+        }
+        {
+            assessmentEngineService.transitionAssessmentStatusTo(veteranAssessment.getVeteranAssessmentId(), AssessmentStatusEnum.FINALIZED);
+            logger.debug("sva2vista:vaid:{}--transitionAssessmentStatusTo FINALIZED", vaId);
+        }
     }
 
     private void savePainScale(VeteranAssessment veteranAssessment, String visitDate, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {
@@ -118,6 +158,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     }
 
     private VeteranAssessment checkVeteranAssessment(SaveToVistaContext ctxt) {
+        logger.debug("sva2vista:vaid:{}--checkVeteranAssessment:{}", ctxt);
         VeteranAssessment veteranAssessment = null;
         if (!ctxt.getEscUserId().getCprsVerified()) {
             ctxt.addUserError(SaveToVistaContext.PendingOperation.veteran, msg(SaveToVistaContext.MsgKey.usr_err_vet__verification));
@@ -178,7 +219,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
-                logger.debug("TBI Consult Response {}", vistaResponse);
+                logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
         } catch (Exception e) {

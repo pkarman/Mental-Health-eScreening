@@ -21,7 +21,7 @@
 
 	<!-- Application Loggers -->
 	<logger name="gov.va.escreening">
-		<level value="INFO" />
+		<level value="DEBUG" />
 	</logger>
 
 	<logger name="gov.va.escreening.interceptor">

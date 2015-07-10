@@ -1,5 +1,6 @@
 package gov.va.escreening.delegate;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
@@ -7,6 +8,8 @@ import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.dto.CallResult;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentEngineService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -15,12 +18,22 @@ import java.util.Map;
  * Created by munnoo on 5/13/15.
  */
 public class SaveToVistaContext {
+    private final Logger logger = LoggerFactory.getLogger(SaveToVistaContext.class);
+
     private final int veteranAssessmentId;
     private final EscreenUser escreenUser;
     private final AssessmentEngineService assessmentEngineService;
     private Table<PendingOperation, MsgType, String> msgsTbl = HashBasedTable.create();
     private List<PendingOperation> pendingOperations = Lists.newArrayList(PendingOperation.values());
     private List<CallResult> callResults = Lists.newArrayList();
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("veteranAssessmentId", veteranAssessmentId)
+                .add("pendingOperations", pendingOperations)
+                .toString();
+    }
 
     public SaveToVistaContext(int veteranAssessmentId, EscreenUser escreenUser, AssessmentEngineService assessmentEngineService) {
         this.veteranAssessmentId = veteranAssessmentId;
@@ -83,6 +96,7 @@ public class SaveToVistaContext {
     }
 
     public void requestDone(PendingOperation pendingOperationName) {
+        logger.debug("done requested by {}, current pending operations {}", pendingOperationName, this.pendingOperations);
         if (!hasErrors(pendingOperationName)) {
             this.pendingOperations.remove(pendingOperationName);
         }
@@ -103,7 +117,9 @@ public class SaveToVistaContext {
         errorFree &= msgTypeMap.get(MsgType.failMsg) == null || msgTypeMap.get(MsgType.failMsg).isEmpty();
         errorFree &= msgTypeMap.get(MsgType.usrErr) == null || msgTypeMap.get(MsgType.usrErr).isEmpty();
 
-        return !errorFree;
+        boolean hasErrors=!errorFree;
+        logger.debug("hasErrors: MsgTypes for PendingOperation {} are {}",po, msgTypeMap);
+        return hasErrors;
     }
 
     public List<PendingOperation> getPendingOperations() {
