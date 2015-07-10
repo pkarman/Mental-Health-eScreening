@@ -64,7 +64,7 @@ $(document).ready(function () {
             $.ajax({
                 url: 'editVeteranAssessment',
                 type: 'GET',
-                data: 'vid=' + $('#veteranId').val() + '&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
+                data: 'vid=' + $('#veteranId').val() +'&vaid=' + $('#veteranAssessmentId').val() + '&clinicianId=' + $('#selectedClinicianId').val() + '&programId=' + $('#selectedProgramId').val() + '&clinicId=' + $('#selectedClinicId').val() + '&noteTitleId=' + $('#selectedNoteTitleId').val(),
                 dataType: 'html',
                 async: true,
                 success: function (data) {
