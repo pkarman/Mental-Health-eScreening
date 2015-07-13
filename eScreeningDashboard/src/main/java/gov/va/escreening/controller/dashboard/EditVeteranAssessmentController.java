@@ -8,8 +8,10 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.entity.Program;
+import gov.va.escreening.entity.User;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.EditVeteranAssessmentFormBean;
+import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentAlreadyExistException;
@@ -21,12 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,465 +39,480 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Controller
+@Controller("editVeteranAssessmentController")
 @RequestMapping(value = "/dashboard")
 public class EditVeteranAssessmentController {
 
-	private static final Logger logger = LoggerFactory.getLogger(EditVeteranAssessmentController.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditVeteranAssessmentController.class);
+    @Resource(name = "userDetailsService")
+    UserDetailsService userDetailsService;
+    private CreateAssessmentDelegate createAssessmentDelegate;
+    private UserService userService;
 
-	private CreateAssessmentDelegate createAssessmentDelegate;
-	private UserService userService;
+    public EditVeteranAssessmentController() {
+        // Default constructor.
+    }
 
-	@Autowired
-	public void setCreateAssessmentDelegate(
-			CreateAssessmentDelegate createAssessmentDelegate) {
-		this.createAssessmentDelegate = createAssessmentDelegate;
-	}
+    @Autowired
+    public void setCreateAssessmentDelegate(
+            CreateAssessmentDelegate createAssessmentDelegate) {
+        this.createAssessmentDelegate = createAssessmentDelegate;
+    }
 
-	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
-	public EditVeteranAssessmentController() {
-		// Default constructor.
-	}
+    /**
+     * Returns the backing bean for the form.
+     *
+     * @return
+     */
+    @ModelAttribute
+    public EditVeteranAssessmentFormBean getEditVeteranAssessmentFormBean() {
+        logger.debug("Creating new EditVeteranAssessmentFormBean");
+        return new EditVeteranAssessmentFormBean();
+    }
 
-	/**
-	 * Returns the backing bean for the form.
-	 * 
-	 * @return
-	 */
-	@ModelAttribute
-	public EditVeteranAssessmentFormBean getEditVeteranAssessmentFormBean() {
-		logger.debug("Creating new EditVeteranAssessmentFormBean");
-		return new EditVeteranAssessmentFormBean();
-	}
+    /**
+     * Called when the Create Battery page is opened (new or not)
+     *
+     * @param model
+     * @param editVeteranAssessmentFormBean
+     * @param veteranAssessmentId
+     * @param veteranId
+     * @param escreenUser
+     * @return
+     */
+    @RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.GET)
+    public String setupPage(
+            Model model,
+            @ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+            @RequestParam(value = "vaid", required = false) Integer veteranAssessmentId,
+            @RequestParam(value = "vid", required = false) Integer veteranId,
+            @RequestParam(value = "clinicianId", required = false) Integer clinicianId,
+            @RequestParam(value = "clinicId", required = false) Integer clinicId,
+            @RequestParam(value = "noteTitleId", required = false) Integer noteTitleId,
+            @RequestParam(value = "programId", required = false) Integer programId,
+            @CurrentUser EscreenUser escreenUser) {
 
-	/**
-	 * Called when the Create Battery page is opened (new or not)
-	 * @param model
-	 * @param editVeteranAssessmentFormBean
-	 * @param veteranAssessmentId
-	 * @param veteranId
-	 * @param escreenUser
-	 * @return
-	 */
-	@RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.GET)
-	public String setupPage(
-			Model model,
-			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
-			@RequestParam(value = "vaid", required = false) Integer veteranAssessmentId,
-			@RequestParam(value = "vid", required = false) Integer veteranId,
-			@CurrentUser EscreenUser escreenUser) {
+        logger.debug("Using the assessment dashboard mapping");
 
-		logger.debug("Using the assessment dashboard mapping");
+        if (veteranId == null && veteranAssessmentId == null) {
+            throw new IllegalArgumentException("Both Veteran Assessment ID and Veteran ID are missing.");
+        }
 
-		if (veteranId == null && veteranAssessmentId == null) {
-			throw new IllegalArgumentException("Both Veteran Assessment ID and Veteran ID are missing.");
-		}
+        boolean isCreateMode = false;
+        boolean isReadOnly = false;
+        String veteranAssessmentStatus = AssessmentStatusEnum.CLEAN.name();
+        Date dateCreated = null;
+        Date dateCompleted = null;
 
-		boolean isCreateMode = false;
-		boolean isReadOnly = false;
-		String veteranAssessmentStatus = AssessmentStatusEnum.CLEAN.name();
-		Date dateCreated = null;
-		Date dateCompleted = null;
+        // Determine if we should preselect modules.
+        if (veteranAssessmentId == null) {
+            isCreateMode = true;
+            isReadOnly = false;
+            veteranAssessmentStatus = StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase());
+        }
 
-		// Determine if we should preselect modules.
-		if (veteranAssessmentId == null) {
-			isCreateMode = true;
-			isReadOnly = false;
-			veteranAssessmentStatus = StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase());
-		}
+        // 1. Get the veteran assessment
+        VeteranAssessment veteranAssessment = null;
 
-		// 1. Get the veteran assessment
-		VeteranAssessment veteranAssessment = null;
+        if (veteranAssessmentId != null) {
+            veteranAssessment = createAssessmentDelegate.getVeteranAssessmentByVeteranAssessmentId(veteranAssessmentId);
 
-		if (veteranAssessmentId != null) {
-			veteranAssessment = createAssessmentDelegate.getVeteranAssessmentByVeteranAssessmentId(veteranAssessmentId);
+            if (veteranAssessment == null) {
+                throw new IllegalArgumentException("Veteran Assessment is null: " + veteranAssessmentId);
+            }
 
-			if (veteranAssessment == null) {
-				throw new IllegalArgumentException("Veteran Assessment is null: " + veteranAssessmentId);
-			}
+            isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(veteranAssessmentId);
+            veteranAssessmentStatus = veteranAssessment.getAssessmentStatus().getName();
+            dateCreated = veteranAssessment.getDateCreated();
+            dateCompleted = veteranAssessment.getDateCompleted();
 
-			isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(veteranAssessmentId);
-			veteranAssessmentStatus = veteranAssessment.getAssessmentStatus().getName();
-			dateCreated = veteranAssessment.getDateCreated();
-			dateCompleted = veteranAssessment.getDateCompleted();
+            veteranId = veteranAssessment.getVeteran().getVeteranId();
+        }
 
-			veteranId = veteranAssessment.getVeteran().getVeteranId();
-		}
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        model.addAttribute("isCreateMode", isCreateMode);
+        model.addAttribute("isReadOnly", isReadOnly);
+        model.addAttribute("dateCreated", dateCreated);
+        model.addAttribute("dateCompleted", dateCompleted);
+        model.addAttribute("veteranAssessmentStatus", veteranAssessmentStatus);
 
-		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-		model.addAttribute("isCreateMode", isCreateMode);
-		model.addAttribute("isReadOnly", isReadOnly);
-		model.addAttribute("dateCreated", dateCreated);
-		model.addAttribute("dateCompleted", dateCompleted);
-		model.addAttribute("veteranAssessmentStatus", veteranAssessmentStatus);
+        // Set these properties to be used during postback.
+        editVeteranAssessmentFormBean.setVeteranAssessmentId(veteranAssessmentId);
+        editVeteranAssessmentFormBean.setVeteranId(veteranId);
 
-		// Set these properties to be used during postback.
-		editVeteranAssessmentFormBean.setVeteranAssessmentId(veteranAssessmentId);
-		editVeteranAssessmentFormBean.setVeteranId(veteranId);
+        // 2. Get veteran
+        VeteranDto veteranDto = createAssessmentDelegate.getVeteranFromDatabase(veteranId);
+        model.addAttribute("veteran", veteranDto);
 
-		// 2. Get veteran
-		VeteranDto veteranDto = createAssessmentDelegate.getVeteranFromDatabase(veteranId);
-		model.addAttribute("veteran", veteranDto);
+        // 4. Get all programs.
+        List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
+        model.addAttribute("programList", programList);
 
-		// 4. Get all programs.
-		List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
-		model.addAttribute("programList", programList);
+        // 5. Get all battery list.
+        List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
+        model.addAttribute("batteryList", batteryList);
 
-		// 5. Get all battery list.
-		List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
-		model.addAttribute("batteryList", batteryList);
+        Map<String, String> programsMap = createProgramsMap(batteryList);
+        model.addAttribute("programsMap", programsMap);
 
-		Map<String, String> programsMap = createProgramsMap(batteryList);
-		model.addAttribute("programsMap", programsMap);
+        // 6. Get all battery survey list.
+        List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
+        model.addAttribute("batterySurveyList", batterySurveyList);
 
-		// 6. Get all battery survey list.
-		List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
-		model.addAttribute("batterySurveyList", batterySurveyList);
+        // 7. Get all the modules (surveys) that can be assigned
+        List<SurveyDto> surveyList = isCreateMode ? createAssessmentDelegate.getSurveyList() : createAssessmentDelegate.getSurveyListUnionAssessment(veteranAssessmentId);
 
-		// 7. Get all the modules (surveys) that can be assigned
-		List<SurveyDto> surveyList = isCreateMode ? createAssessmentDelegate.getSurveyList() : createAssessmentDelegate.getSurveyListUnionAssessment(veteranAssessmentId);
-		
-		// 8. Populate survey list with list of batteries it is associated with
-		// to make it easier in view.
-		for (BatterySurveyDto batterySurvey : batterySurveyList) {
+        // 8. Populate survey list with list of batteries it is associated with
+        // to make it easier in view.
+        for (BatterySurveyDto batterySurvey : batterySurveyList) {
 
-			BatteryDto batteryDto = new BatteryDto(batterySurvey.getBatteryId(), batterySurvey.getBatteryName());
+            BatteryDto batteryDto = new BatteryDto(batterySurvey.getBatteryId(), batterySurvey.getBatteryName());
 
-			for (SurveyDto survey : surveyList) {
-				if (survey.getSurveyId().intValue() == batterySurvey.getSurveyId().intValue()) {
-					if (survey.getBatteryList() == null) {
-						survey.setBatteryList(new ArrayList<BatteryDto>());
-					}
+            for (SurveyDto survey : surveyList) {
+                if (survey.getSurveyId().intValue() == batterySurvey.getSurveyId().intValue()) {
+                    if (survey.getBatteryList() == null) {
+                        survey.setBatteryList(new ArrayList<BatteryDto>());
+                    }
 
-					survey.getBatteryList().add(batteryDto);
-					break;
-				}
-			}
-		}
-		model.addAttribute("surveyList", surveyList);
+                    survey.getBatteryList().add(batteryDto);
+                    break;
+                }
+            }
+        }
+        model.addAttribute("surveyList", surveyList);
 
-		// 9. Get selected program
-		if (veteranAssessment != null && veteranAssessment.getProgram() != null) {
-			editVeteranAssessmentFormBean.setSelectedProgramId(veteranAssessment.getProgram().getProgramId());
+        // 9. Get selected program
+        if (programId != null || (veteranAssessment != null && veteranAssessment.getProgram() != null)) {
+            Integer pid = programId != null ? programId : veteranAssessment.getProgram().getProgramId();
+            editVeteranAssessmentFormBean.setSelectedProgramId(pid);
 
-			// Get all clinic list since we have a program.
-			List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(veteranAssessment.getProgram().getProgramId());
-			model.addAttribute("clinicList", clinicList);
+            // Get all clinic list since we have a program.
+            List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(pid);
+            model.addAttribute("clinicList", clinicList);
+            editVeteranAssessmentFormBean.setSelectedClinicId(clinicId);
 
-			List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(veteranAssessment.getProgram().getProgramId());
-			model.addAttribute("noteTitleList", noteTitleList);
+            List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(pid);
+            model.addAttribute("noteTitleList", noteTitleList);
+            editVeteranAssessmentFormBean.setSelectedNoteTitleId(noteTitleId);
 
-			// Get all clinician list since we have a clinic.
-			List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(veteranAssessment.getProgram().getProgramId());
-			model.addAttribute("clinicianList", clinicianList);
-		}
+            // Get all clinician list since we have a clinic.
+            List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(pid);
+            model.addAttribute("clinicianList", clinicianList);
+            editVeteranAssessmentFormBean.setSelectedClinicianId(clinicianId);
+        }
 
-		// 10. Get selected clinic
-		if (veteranAssessment != null && veteranAssessment.getClinic() != null) {
-			editVeteranAssessmentFormBean.setSelectedClinicId(veteranAssessment.getClinic().getClinicId());
-		}
+        // 10. Get selected clinic
+        if (veteranAssessment != null && veteranAssessment.getClinic() != null) {
+            editVeteranAssessmentFormBean.setSelectedClinicId(veteranAssessment.getClinic().getClinicId());
+        }
 
-		// 11. Get selected clinician
-		if (veteranAssessment != null && veteranAssessment.getClinician() != null) {
-			editVeteranAssessmentFormBean.setSelectedClinicianId(veteranAssessment.getClinician().getUserId());
-		}
+        // 11. Get selected clinician
+        if (veteranAssessment != null && veteranAssessment.getClinician() != null) {
+            editVeteranAssessmentFormBean.setSelectedClinicianId(veteranAssessment.getClinician().getUserId());
+        }
 
-		// 12. Get selected note title
-		if (veteranAssessment != null && veteranAssessment.getNoteTitle() != null) {
-			editVeteranAssessmentFormBean.setSelectedNoteTitleId(veteranAssessment.getNoteTitle().getNoteTitleId());
-		}
+        // 12. Get selected note title
+        if (veteranAssessment != null && veteranAssessment.getNoteTitle() != null) {
+            editVeteranAssessmentFormBean.setSelectedNoteTitleId(veteranAssessment.getNoteTitle().getNoteTitleId());
+        }
 
-		// 13. Get selected battery
-		if (veteranAssessment != null && veteranAssessment.getBattery() != null) {
-			editVeteranAssessmentFormBean.setSelectedBatteryId(veteranAssessment.getBattery().getBatteryId());
-		}
+        // 13. Get selected battery
+        if (veteranAssessment != null && veteranAssessment.getBattery() != null) {
+            editVeteranAssessmentFormBean.setSelectedBatteryId(veteranAssessment.getBattery().getBatteryId());
+        }
 
-		// 14. Get the full name of the created by user.
-		if (veteranAssessment != null && veteranAssessment.getCreatedByUser() != null) {
-			model.addAttribute("createdByUser", userService.getFullName(veteranAssessment.getCreatedByUser()));
-		}
+        // 14. Get the full name of the created by user.
+        if (veteranAssessment != null && veteranAssessment.getCreatedByUser() != null) {
+            model.addAttribute("createdByUser", userService.getFullName(veteranAssessment.getCreatedByUser()));
+        }
 
-		// 15. Get all the surveys already assigned to this veteran assessment.
-		List<SurveyDto> veteranAssessmentSurveyList = null;
+        // 15. Get all the surveys already assigned to this veteran assessment.
+        List<SurveyDto> veteranAssessmentSurveyList = null;
 
         if (!isCreateMode) {
             veteranAssessmentSurveyList = createAssessmentDelegate.getVeteranAssessmentSurveyList(veteranAssessmentId);
         }
 
-		if (veteranAssessmentSurveyList != null && veteranAssessmentSurveyList.size() > 0) {
+        if (veteranAssessmentSurveyList != null && veteranAssessmentSurveyList.size() > 0) {
 
-			for (SurveyDto survey : veteranAssessmentSurveyList) {
-				editVeteranAssessmentFormBean.getSelectedSurveyIdList().add(survey.getSurveyId());
-			}
-		}
+            for (SurveyDto survey : veteranAssessmentSurveyList) {
+                editVeteranAssessmentFormBean.getSelectedSurveyIdList().add(survey.getSurveyId());
+            }
+        }
 
-		// 14. If the veteran has already been mapped to a VistA record, then we
-		// can look up clinical reminders for the
-		// veteran. This will pre-select or auto assign modules (surveys).
-		if (escreenUser.getCprsVerified() && StringUtils.isNotBlank(veteranDto.getVeteranIen())) {
+        // 14. If the veteran has already been mapped to a VistA record, then we
+        // can look up clinical reminders for the
+        // veteran. This will pre-select or auto assign modules (surveys).
+        // the eScreenUser will be changed from the user who is logged in to the clinician. The Notes will be pulled for the clinician
 
-			Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate.getPreSelectedSurveyMap(escreenUser, veteranDto.getVeteranIen());
+        EscreenUser clinicianUser = clinicianId != null ? findEscreenUser(clinicianId) : escreenUser;
+        if (clinicianUser.getCprsVerified() && StringUtils.isNotBlank(veteranDto.getVeteranIen())) {
 
-			// For each survey, pre-select it and also indicate reason in the
-			// note.
-			if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
-				for (int i = 0; i < surveyList.size(); ++i) {
-					Integer surveyId = surveyList.get(i).getSurveyId();
+            Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate.getPreSelectedSurveyMap(clinicianUser, veteranDto.getVeteranIen());
 
-					// Preselect it and populate note field.
-					if (autoAssignedSurveyMap.containsKey(surveyId)) {
+            // For each survey, pre-select it and also indicate reason in the
+            // note.
+            if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
+                for (int i = 0; i < surveyList.size(); ++i) {
+                    Integer surveyId = surveyList.get(i).getSurveyId();
 
-						// Only auto assign for 'create mode'.
-						if (isCreateMode) {
-							if (!editVeteranAssessmentFormBean.getSelectedSurveyIdList().contains(surveyId)) {
-								editVeteranAssessmentFormBean.getSelectedSurveyIdList().add(surveyId);
-							}
-						}
+                    // Preselect it and populate note field.
+                    if (autoAssignedSurveyMap.containsKey(surveyId)) {
 
-						surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
-					}
-				}
-			}
-		}
+                        // Only auto assign for 'create mode'.
+                        if (isCreateMode) {
+                            if (!editVeteranAssessmentFormBean.getSelectedSurveyIdList().contains(surveyId)) {
+                                editVeteranAssessmentFormBean.getSelectedSurveyIdList().add(surveyId);
+                            }
+                        }
 
-		return "dashboard/editVeteranAssessment";
-	}
-	
-	private Map<String, String> createProgramsMap(
-			List<DropDownObject> batteryList) {
-		Map<String, String> pm = new HashMap<String, String>();
+                        surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
+                    }
+                }
+            }
+        }
 
-		for (DropDownObject b : batteryList) {
-			List<Program> ps = createAssessmentDelegate.getProgramsForBattery(Integer.parseInt(b.getStateId()));
-			StringBuilder sb = new StringBuilder();
-			for (Program p : ps) {
-				sb.append("program_" + p.getProgramId()).append(" ");
-			}
-			pm.put(b.getStateId(), sb.toString());
-		}
-		return pm;
-	}
+        return programId != null ? "dashboard/editVeteranAssessmentTail" : "dashboard/editVeteranAssessment";
+    }
 
-	@RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.POST, params = "saveButton")
-	public String processPage(
-			Model model,
-			@Valid @ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
-			BindingResult result,
-			// RedirectAttributes redirectAttributes,
-			@RequestParam(value = "vaid", required = false) Integer veteranAssessmentId,
-			@RequestParam(value = "vid", required = false) Integer veteranId,
-			@CurrentUser EscreenUser escreenUser) {
+    public EscreenUser findEscreenUser(Integer clinicianId) {
+        User user = userService.findUser(clinicianId);
+        return (EscreenUser) userDetailsService.loadUserByUsername(user.getLoginId());
+    }
 
-		logger.debug(editVeteranAssessmentFormBean.toString());
+    private Map<String, String> createProgramsMap(
+            List<DropDownObject> batteryList) {
+        Map<String, String> pm = new HashMap<String, String>();
 
-		// First check if the Veteran stated taking the assessment while the
-		// staff member was trying to edit the data.
-		if (editVeteranAssessmentFormBean.getSelectedProgramId() != null) {
+        for (DropDownObject b : batteryList) {
+            List<Program> ps = createAssessmentDelegate.getProgramsForBattery(Integer.parseInt(b.getStateId()));
+            StringBuilder sb = new StringBuilder();
+            for (Program p : ps) {
+                sb.append("program_" + p.getProgramId()).append(" ");
+            }
+            pm.put(b.getStateId(), sb.toString());
+        }
+        return pm;
+    }
 
-			boolean isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(editVeteranAssessmentFormBean.getVeteranAssessmentId());
+    @RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.POST, params = "saveButton")
+    public String processPage(
+            Model model,
+            @Valid @ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+            BindingResult result,
+            // RedirectAttributes redirectAttributes,
+            @RequestParam(value = "vaid", required = false) Integer veteranAssessmentId,
+            @RequestParam(value = "vid", required = false) Integer veteranId,
+            @CurrentUser EscreenUser escreenUser) {
 
-			if (isReadOnly) {
-				result.reject("dashboard.createBattery.nolongereditable", "The veteran has started taking the Battery, and this Battery is no longer editable.");
-			}
-		}
+        logger.debug(editVeteranAssessmentFormBean.toString());
 
-		// If there is an error, return the same view.
-		if (result.hasErrors()) {
+        // First check if the Veteran stated taking the assessment while the
+        // staff member was trying to edit the data.
+        if (editVeteranAssessmentFormBean.getSelectedProgramId() != null) {
 
-			if (veteranId == null && veteranAssessmentId == null) {
-				throw new IllegalArgumentException("Both Veteran Assessment ID and Veteran ID are missing.");
-			}
+            boolean isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(editVeteranAssessmentFormBean.getVeteranAssessmentId());
 
-			boolean isCreateMode = false;
-			boolean isReadOnly = false;
-			String veteranAssessmentStatus = AssessmentStatusEnum.CLEAN.name();
-			Date dateCreated = null;
-			Date dateCompleted = null;
+            if (isReadOnly) {
+                result.reject("dashboard.createBattery.nolongereditable", "The veteran has started taking the Battery, and this Battery is no longer editable.");
+            }
+        }
 
-			// Determine if we should preselect modules.
-			if (veteranAssessmentId == null) {
-				isCreateMode = true;
-				isReadOnly = false;
-				veteranAssessmentStatus = StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase());
-			}
+        // If there is an error, return the same view.
+        if (result.hasErrors()) {
 
-			// 1. Get the veteran assessment
-			VeteranAssessment veteranAssessment = null;
+            if (veteranId == null && veteranAssessmentId == null) {
+                throw new IllegalArgumentException("Both Veteran Assessment ID and Veteran ID are missing.");
+            }
 
-			if (veteranAssessmentId != null) {
-				veteranAssessment = createAssessmentDelegate.getVeteranAssessmentByVeteranAssessmentId(veteranAssessmentId);
+            boolean isCreateMode = false;
+            boolean isReadOnly = false;
+            String veteranAssessmentStatus = AssessmentStatusEnum.CLEAN.name();
+            Date dateCreated = null;
+            Date dateCompleted = null;
 
-				if (veteranAssessment == null) {
-					throw new IllegalArgumentException("Veteran Assessment is null: " + veteranAssessmentId);
-				}
+            // Determine if we should preselect modules.
+            if (veteranAssessmentId == null) {
+                isCreateMode = true;
+                isReadOnly = false;
+                veteranAssessmentStatus = StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase());
+            }
 
-				isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(veteranAssessmentId);
-				veteranAssessmentStatus = veteranAssessment.getAssessmentStatus().getName();
-				dateCreated = veteranAssessment.getDateCreated();
-				dateCompleted = veteranAssessment.getDateCompleted();
+            // 1. Get the veteran assessment
+            VeteranAssessment veteranAssessment = null;
 
-				veteranId = veteranAssessment.getVeteran().getVeteranId();
-			}
+            if (veteranAssessmentId != null) {
+                veteranAssessment = createAssessmentDelegate.getVeteranAssessmentByVeteranAssessmentId(veteranAssessmentId);
 
-			resetPage(model, editVeteranAssessmentFormBean, veteranId,
-					escreenUser, isCreateMode, isReadOnly,
-					veteranAssessmentStatus, dateCreated, dateCompleted,
-					veteranAssessment);
+                if (veteranAssessment == null) {
+                    throw new IllegalArgumentException("Veteran Assessment is null: " + veteranAssessmentId);
+                }
 
-			return "dashboard/editVeteranAssessment";
-		}
+                isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(veteranAssessmentId);
+                veteranAssessmentStatus = veteranAssessment.getAssessmentStatus().getName();
+                dateCreated = veteranAssessment.getDateCreated();
+                dateCompleted = veteranAssessment.getDateCompleted();
 
-		if (editVeteranAssessmentFormBean.getVeteranAssessmentId() != null) {
+                veteranId = veteranAssessment.getVeteran().getVeteranId();
+            }
 
-			boolean isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(editVeteranAssessmentFormBean.getVeteranAssessmentId());
+            resetPage(model, editVeteranAssessmentFormBean, veteranId,
+                    escreenUser, isCreateMode, isReadOnly,
+                    veteranAssessmentStatus, dateCreated, dateCompleted,
+                    veteranAssessment);
 
-			if (isReadOnly) {
-				throw new IllegalArgumentException("Veteran Assessment is in a Read Only state but somehow tried to edit : " + editVeteranAssessmentFormBean.getVeteranAssessmentId());
-			}
+            return "dashboard/editVeteranAssessment";
+        }
 
-			// Edit
-			createAssessmentDelegate.editVeteranAssessment(escreenUser, editVeteranAssessmentFormBean.getVeteranAssessmentId(), editVeteranAssessmentFormBean.getSelectedProgramId(), editVeteranAssessmentFormBean.getSelectedClinicId(), editVeteranAssessmentFormBean.getSelectedClinicianId(), editVeteranAssessmentFormBean.getSelectedNoteTitleId(), editVeteranAssessmentFormBean.getSelectedBatteryId(), editVeteranAssessmentFormBean.getSelectedSurveyIdList());
+        if (editVeteranAssessmentFormBean.getVeteranAssessmentId() != null) {
 
-			model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
-			return "redirect:/dashboard/veteranDetail";
-		} else {
-			// Add
-			try
-			{
-			createAssessmentDelegate.createVeteranAssessment(escreenUser, editVeteranAssessmentFormBean.getVeteranId(), editVeteranAssessmentFormBean.getSelectedProgramId(), editVeteranAssessmentFormBean.getSelectedClinicId(), editVeteranAssessmentFormBean.getSelectedClinicianId(), editVeteranAssessmentFormBean.getSelectedNoteTitleId(), editVeteranAssessmentFormBean.getSelectedBatteryId(), editVeteranAssessmentFormBean.getSelectedSurveyIdList());
+            boolean isReadOnly = createAssessmentDelegate.isVeteranAssessmentReadOnly(editVeteranAssessmentFormBean.getVeteranAssessmentId());
 
-			model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
-			model.addAttribute("ibc", true);
-			return "redirect:/dashboard/veteranDetail";
-			}
-			catch(AssessmentAlreadyExistException ex)
-			{
-				result.reject("dashboard.createBattery.alreadyExist", "The Veteran already has an assessment with this program");
-				
-				resetPage(model, editVeteranAssessmentFormBean, veteranId, escreenUser, true, false, 
-						StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase()),
-						null,null,null);
-				
-				return "dashboard/editVeteranAssessment";
-			}
-		}
-	}
+            if (isReadOnly) {
+                throw new IllegalArgumentException("Veteran Assessment is in a Read Only state but somehow tried to edit : " + editVeteranAssessmentFormBean.getVeteranAssessmentId());
+            }
 
-	public void resetPage(Model model,
-			EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
-			Integer veteranId, EscreenUser escreenUser, boolean isCreateMode,
-			boolean isReadOnly, String veteranAssessmentStatus,
-			Date dateCreated, Date dateCompleted,
-			VeteranAssessment veteranAssessment) {
-		model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
-		model.addAttribute("isCreateMode", isCreateMode);
-		model.addAttribute("isReadOnly", isReadOnly);
-		model.addAttribute("dateCreated", dateCreated);
-		model.addAttribute("dateCompleted", dateCompleted);
-		model.addAttribute("veteranAssessmentStatus", veteranAssessmentStatus);
+            // Edit
+            createAssessmentDelegate.editVeteranAssessment(escreenUser, editVeteranAssessmentFormBean.getVeteranAssessmentId(), editVeteranAssessmentFormBean.getSelectedProgramId(), editVeteranAssessmentFormBean.getSelectedClinicId(), editVeteranAssessmentFormBean.getSelectedClinicianId(), editVeteranAssessmentFormBean.getSelectedNoteTitleId(), editVeteranAssessmentFormBean.getSelectedBatteryId(), editVeteranAssessmentFormBean.getSelectedSurveyIdList());
 
-		// Set these properties to be used during postback.
-		// editVeteranAssessmentFormBean.setVeteranAssessmentId(veteranAssessmentId);
-		// editVeteranAssessmentFormBean.setVeteranId(veteranId);
+            model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
+            return "redirect:/dashboard/veteranDetail";
+        } else {
+            // Add
+            try {
+                createAssessmentDelegate.createVeteranAssessment(escreenUser, editVeteranAssessmentFormBean.getVeteranId(), editVeteranAssessmentFormBean.getSelectedProgramId(), editVeteranAssessmentFormBean.getSelectedClinicId(), editVeteranAssessmentFormBean.getSelectedClinicianId(), editVeteranAssessmentFormBean.getSelectedNoteTitleId(), editVeteranAssessmentFormBean.getSelectedBatteryId(), editVeteranAssessmentFormBean.getSelectedSurveyIdList());
 
-		// 2. Get veteran
-		VeteranDto veteranDto = createAssessmentDelegate.getVeteranFromDatabase(veteranId);
-		model.addAttribute("veteran", veteranDto);
+                model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
+                model.addAttribute("ibc", true);
+                return "redirect:/dashboard/veteranDetail";
+            } catch (AssessmentAlreadyExistException ex) {
+                result.reject("dashboard.createBattery.alreadyExist", "The Veteran already has an assessment with this program");
 
-		// 4. Get all programs.
-		List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
-		model.addAttribute("programList", programList);
+                resetPage(model, editVeteranAssessmentFormBean, veteranId, escreenUser, true, false,
+                        StringUtils.capitalize(AssessmentStatusEnum.CLEAN.name().toLowerCase()),
+                        null, null, null);
 
-		// 5. Get all battery list.
-		List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
-		model.addAttribute("batteryList", batteryList);
+                return "dashboard/editVeteranAssessment";
+            }
+        }
+    }
 
-		Map<String, String> programsMap = createProgramsMap(batteryList);
-		model.addAttribute("programsMap", programsMap);
+    public void resetPage(Model model,
+                          EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+                          Integer veteranId, EscreenUser escreenUser, boolean isCreateMode,
+                          boolean isReadOnly, String veteranAssessmentStatus,
+                          Date dateCreated, Date dateCompleted,
+                          VeteranAssessment veteranAssessment) {
+        model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
+        model.addAttribute("isCreateMode", isCreateMode);
+        model.addAttribute("isReadOnly", isReadOnly);
+        model.addAttribute("dateCreated", dateCreated);
+        model.addAttribute("dateCompleted", dateCompleted);
+        model.addAttribute("veteranAssessmentStatus", veteranAssessmentStatus);
 
-		// 6. Get all battery survey list.
-		List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
-		model.addAttribute("batterySurveyList", batterySurveyList);
+        // Set these properties to be used during postback.
+        // editVeteranAssessmentFormBean.setVeteranAssessmentId(veteranAssessmentId);
+        // editVeteranAssessmentFormBean.setVeteranId(veteranId);
 
-		// 7. Get all the modules (surveys) that can be assigned
-		List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
+        // 2. Get veteran
+        VeteranDto veteranDto = createAssessmentDelegate.getVeteranFromDatabase(veteranId);
+        model.addAttribute("veteran", veteranDto);
 
-		// 8. Populate survey list with list of batteries it is associated
-		// with to make it easier in view.
-		for (BatterySurveyDto batterySurvey : batterySurveyList) {
+        // 4. Get all programs.
+        List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
+        model.addAttribute("programList", programList);
 
-			BatteryDto batteryDto = new BatteryDto(batterySurvey.getBatteryId(), batterySurvey.getBatteryName());
+        // 5. Get all battery list.
+        List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
+        model.addAttribute("batteryList", batteryList);
 
-			for (SurveyDto survey : surveyList) {
-				if (survey.getSurveyId().intValue() == batterySurvey.getSurveyId().intValue()) {
-					if (survey.getBatteryList() == null) {
-						survey.setBatteryList(new ArrayList<BatteryDto>());
-					}
+        Map<String, String> programsMap = createProgramsMap(batteryList);
+        model.addAttribute("programsMap", programsMap);
 
-					survey.getBatteryList().add(batteryDto);
-					break;
-				}
-			}
-		}
-		model.addAttribute("surveyList", surveyList);
+        // 6. Get all battery survey list.
+        List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
+        model.addAttribute("batterySurveyList", batterySurveyList);
 
-		// 9. Get selected program
-		if (editVeteranAssessmentFormBean.getSelectedProgramId() != null) {
+        // 7. Get all the modules (surveys) that can be assigned
+        List<SurveyDto> surveyList = createAssessmentDelegate.getSurveyList();
 
-			// Get all clinic list since we have a program.
-			List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(editVeteranAssessmentFormBean.getSelectedProgramId());
-			model.addAttribute("clinicList", clinicList);
+        // 8. Populate survey list with list of batteries it is associated
+        // with to make it easier in view.
+        for (BatterySurveyDto batterySurvey : batterySurveyList) {
 
-			List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(editVeteranAssessmentFormBean.getSelectedProgramId());
-			model.addAttribute("noteTitleList", noteTitleList);
+            BatteryDto batteryDto = new BatteryDto(batterySurvey.getBatteryId(), batterySurvey.getBatteryName());
 
-			// Get all clinician list since we have a clinic.
-			List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(editVeteranAssessmentFormBean.getSelectedProgramId());
-			model.addAttribute("clinicianList", clinicianList);
-		}
+            for (SurveyDto survey : surveyList) {
+                if (survey.getSurveyId().intValue() == batterySurvey.getSurveyId().intValue()) {
+                    if (survey.getBatteryList() == null) {
+                        survey.setBatteryList(new ArrayList<BatteryDto>());
+                    }
 
-		// 14. Get the full name of the created by user.
-		if (veteranAssessment != null && veteranAssessment.getCreatedByUser() != null) {
-			model.addAttribute("createdByUser", userService.getFullName(veteranAssessment.getCreatedByUser()));
-		}
+                    survey.getBatteryList().add(batteryDto);
+                    break;
+                }
+            }
+        }
+        model.addAttribute("surveyList", surveyList);
 
-		// 15. If the veteran has already been mapped to a VistA record,
-		// then we can look up clinical reminders for
-		// the veteran. This will pre-select or auto assign modules
-		// (surveys).
-		if (escreenUser.getCprsVerified() && StringUtils.isNotBlank(veteranDto.getVeteranIen())) {
+        // 9. Get selected program
+        if (editVeteranAssessmentFormBean.getSelectedProgramId() != null) {
 
-			Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate.getPreSelectedSurveyMap(escreenUser, veteranDto.getVeteranIen());
+            // Get all clinic list since we have a program.
+            List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(editVeteranAssessmentFormBean.getSelectedProgramId());
+            model.addAttribute("clinicList", clinicList);
 
-			// For each survey, pre-select it and also indicate reason in
-			// the note.
-			if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
-				for (int i = 0; i < surveyList.size(); ++i) {
-					Integer surveyId = surveyList.get(i).getSurveyId();
+            List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(editVeteranAssessmentFormBean.getSelectedProgramId());
+            model.addAttribute("noteTitleList", noteTitleList);
 
-					// Preselect it and populate note field.
-					if (autoAssignedSurveyMap.containsKey(surveyId)) {
-						surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
-					}
-				}
-			}
-		}
-	}
+            // Get all clinician list since we have a clinic.
+            List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(editVeteranAssessmentFormBean.getSelectedProgramId());
+            model.addAttribute("clinicianList", clinicianList);
+        }
 
-	@RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.POST, params = "cancelButton")
-	public String processCancelPage(
-			Model model,
-			@ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
-			@CurrentUser EscreenUser escreenUser) {
+        // 14. Get the full name of the created by user.
+        if (veteranAssessment != null && veteranAssessment.getCreatedByUser() != null) {
+            model.addAttribute("createdByUser", userService.getFullName(veteranAssessment.getCreatedByUser()));
+        }
 
-		logger.debug(editVeteranAssessmentFormBean.toString());
+        // 15. If the veteran has already been mapped to a VistA record,
+        // then we can look up clinical reminders for
+        // the veteran. This will pre-select or auto assign modules
+        // (surveys).
+        if (escreenUser.getCprsVerified() && StringUtils.isNotBlank(veteranDto.getVeteranIen())) {
 
-		model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
-		return "redirect:/dashboard/veteranDetail";
-	}
+            Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate.getPreSelectedSurveyMap(escreenUser, veteranDto.getVeteranIen());
+
+            // For each survey, pre-select it and also indicate reason in
+            // the note.
+            if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
+                for (int i = 0; i < surveyList.size(); ++i) {
+                    Integer surveyId = surveyList.get(i).getSurveyId();
+
+                    // Preselect it and populate note field.
+                    if (autoAssignedSurveyMap.containsKey(surveyId)) {
+                        surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
+                    }
+                }
+            }
+        }
+    }
+
+    @RequestMapping(value = "/editVeteranAssessment", method = RequestMethod.POST, params = "cancelButton")
+    public String processCancelPage(
+            Model model,
+            @ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
+            @CurrentUser EscreenUser escreenUser) {
+
+        logger.debug(editVeteranAssessmentFormBean.toString());
+
+        model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
+        return "redirect:/dashboard/veteranDetail";
+    }
 
 }
