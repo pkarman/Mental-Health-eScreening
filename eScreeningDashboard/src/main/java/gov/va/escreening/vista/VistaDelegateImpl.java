@@ -202,8 +202,8 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                 }
             }
         } else {
-            logger.warn(String.format("No Appointment list found for division %s, vpid %s, duz %s, start dt %s, end dt %s, veteranIen %s", user.getVistaDivision(),
-                    user.getVistaVpid(), user.getVistaDuz(), assessAppt.getAppointmentDate(), c.getTime(), vetIen));
+            logger.warn("No Appointment list found for start date {}, end date {}, veteran IEN {}, using user with ID {}", 
+                    new Object[] {assessAppt.getAppointmentDate(), c.getTime(), vetIen, user.getUserId()});
         }
 
         if (picked != null) {
