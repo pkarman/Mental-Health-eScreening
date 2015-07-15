@@ -444,6 +444,11 @@
 					<source>1.7</source>
 					<target>1.7</target>
 					<compilerArgument>-Xlint:all</compilerArgument>
+					<!-- If you need to build for an earlier version use this 
+					<compilerArguments>
+						<bootclasspath>${env.TARGET_HOME}/lib/rt.jar</bootclasspath> 
+					</compilerArguments>
+					-->
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 				</configuration>
