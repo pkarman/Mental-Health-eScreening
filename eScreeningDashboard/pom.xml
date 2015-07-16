@@ -28,6 +28,7 @@
 		<vista.accessCode>SGll8EpcOHZe9oXgwuPsFg==</vista.accessCode>
 		<vista.duz>10000000056</vista.duz>
 		<vista.verifyCode>JQ9S3/VDJAQJO39bZVcqP8q3W8JSIxt9</vista.verifyCode>
+		<vista.encrypt>true</vista.encrypt>
 		<sample.patient.ien>100022</sample.patient.ien>
 		<skip.db>true</skip.db>
 		<db.skip.testData>true</db.skip.testData>
