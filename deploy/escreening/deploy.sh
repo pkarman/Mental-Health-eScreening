@@ -12,8 +12,8 @@
 # deployed. So for this simple way of tracking changes between deployments to work, we
 # have to have a release directory for each profile.
 
-if [ $# != 12 ]; then
-	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode quickOrderIen\n"
+if [ $# != 13 ]; then
+	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen\n"
 	exit 1;
 fi
 
@@ -29,9 +29,9 @@ vistaPrimaryStation=$8
 vistaAccessCode=$9
 vistaVerifyCode=${10}
 vistaDuz=${11}
-quickOrderIen=${12}
+vistaEncrypted=${12}
+quickOrderIen=${13}
 
-#printf "\n$jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $quickOrderIen\n"
 
 webapps_dir="$INSTANCES_DIR/$instance/webapps"
 
@@ -83,7 +83,7 @@ if [ "$rebuildDb" == "YeS" ]; then
 fi
 
 printf "\nBuilding WAR...\n\n"
-mvn  clean package -P$profile -DskipTests \
+mvn --quiet clean package -P$profile -DskipTests \
 "-Djdbc.username=$jdbcUsername" \
 "-Djdbc.password=$jdbcPassword" \
 "-Dvista.ip=$vistaIp" \
@@ -91,7 +91,8 @@ mvn  clean package -P$profile -DskipTests \
 "-Dvista.primaryStation=$vistaPrimaryStation" \
 "-Dvista.accessCode=$vistaAccessCode" \
 "-Dvista.verifyCode=$vistaVerifyCode" \
-"-Dvista.duz=$vistaDuz" "-Dquick.order.ien=$quickOrderIen" $extraParams
+"-Dvista.duz=$vistaDuz" "-Dvista.encrypt=$vistaEncrypted" \
+"-Dquick.order.ien=$quickOrderIen" $extraParams
 
 
 printf "\n\nIf there are no errors, please stop service tomcat-$instance then hit enter to continue\n\n"
