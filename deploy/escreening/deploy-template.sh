@@ -29,7 +29,8 @@ quickOrderIen=""
 vistaAccessCode=""
 vistaVerifyCode="" 
 vistaDuz=""
+vistaEncrypted=""
 
-deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $quickOrderIen
+deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $vistaEncrypted $quickOrderIen
 
 
