@@ -1220,14 +1220,14 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 				}
 				
 				Iterable<AssessmentVariableDto> dto = variableResolverSvc.resolveVariablesFor(va.getVeteranAssessmentId(), dbVariables, false);
-				AssessmentVariableDto result = dto.iterator().next();
+				AssessmentVariableDto result = (dto != null && dto.iterator().hasNext()) ? dto.iterator().next() : null;
 				
 				//TODO: Move this logic into the AssessmentVariableDto object
 				Double value = null;
-				if (result.getValue() != null) {
+				if (result != null && result.getValue() != null) {
 					value = Double.valueOf(result.getValue());
 				}
-				else if(result.getChildren() != null){
+				else if(result != null && result.getChildren() != null){
 				    double sum = 0d;
 				    boolean useSum = false;
 				    for(AssessmentVariableDto answerVariable : result.getChildren()){
