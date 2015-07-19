@@ -132,6 +132,11 @@
 									}
 									else{
 										scope.show = false;
+										if(scope.assessmentVariable.transformations && 
+												scope.assessmentVariable.transformations.length == 1 && 
+												scope.assessmentVariable.transformations[0].name === 'none'){
+											scope.assessmentVariable.transformations = [];
+										}
 									}
 									
 									scope.tableParams.reload();
