@@ -18,13 +18,13 @@ public class VistaLinkResponseException extends VistaLinkRequestException {
         logger.error(message);
     }
 
-    public VistaLinkResponseException(String message, List<Object> requestParams, String response) {
+    public VistaLinkResponseException(String message, List<? extends Object> requestParams, String response) {
         super(message, requestParams);
 
         logger.error(response);
     }
 
-    public VistaLinkResponseException(String message, List<Object> requestParams, String response, LogTypes logType) {
+    public VistaLinkResponseException(String message, List<? extends Object> requestParams, String response, LogTypes logType) {
         super(message, requestParams, logType);
         
         if(logType.equals(LogTypes.ERROR)) logger.error(response);
@@ -33,14 +33,14 @@ public class VistaLinkResponseException extends VistaLinkRequestException {
         if(logType.equals(LogTypes.INFO)) logger.info(response);
     }
 
-    public VistaLinkResponseException(String message, List requestParams, String response, Throwable throwable) {
+    public VistaLinkResponseException(String message, List<? extends Object> requestParams, String response, Throwable throwable) {
         super(message, requestParams, throwable);
-        logger.error("RPC Response: " + response);
+        logger.error("RPC Response: {}", response);
     }
 
-    public VistaLinkResponseException(String message, List requestParams, String response, LogTypes logType, Throwable throwable) {
+    public VistaLinkResponseException(String message, List<? extends Object> requestParams, String response, LogTypes logType, Throwable throwable) {
         super(message, requestParams, logType, throwable);
-        logger.error("RPC Response: " + response);
+        logger.error("RPC Response: {}", response);
 
         if(logType.equals(LogTypes.ERROR)) logger.error(response);
         if(logType.equals(LogTypes.WARNING)) logger.warn(response);
