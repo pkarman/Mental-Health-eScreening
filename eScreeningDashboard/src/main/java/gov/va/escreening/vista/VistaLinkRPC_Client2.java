@@ -586,10 +586,10 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
                 String result = rpcInvolker.invokeRpc(getConnection(),
                         getRequest(), "ORQQVI2 VITALS VAL & STORE");
-                logger.info("Save vitals result= " + result);
+                logger.info("Save vitals result= {}", result);
                 if (!result.trim().equals("1")) {
-                    logger.error("Save vitals failed");
-                    ctxt.addFailedMsg(SaveToVistaContext.PendingOperation.pain_scale, "Save Pain Scale failed");
+                    logger.error("Save vitals failed. Result: {}", result);
+                    ctxt.addFailedMsg(SaveToVistaContext.PendingOperation.pain_scale, "Save Pain Scale failed. Error: " + result);
                 } else {
                     ctxt.addSuccess(SaveToVistaContext.PendingOperation.pain_scale, "Pain scale saved successfully");
                     return true; //success
