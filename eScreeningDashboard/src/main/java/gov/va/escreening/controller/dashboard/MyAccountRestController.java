@@ -15,8 +15,6 @@ import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VistaService;
 import gov.va.escreening.validation.MyAccountFormBeanValidator;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.HashMap;
 
 import javax.annotation.Resource;
@@ -32,6 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -107,7 +106,8 @@ public class MyAccountRestController extends BaseDashboardRestController {
 
     @RequestMapping(value = "/myAccount/services/users/active/verifyVistaAccount", method = RequestMethod.POST)
     @ResponseBody
-    public HashMap<String, String> verifyVistaAccount(HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+    public HashMap<String, String> verifyVistaAccount(HttpServletRequest request, @CurrentUser EscreenUser escreenUser, 
+    		@RequestParam String accessCode, @RequestParam String verifyCode) {
 
         logger.debug("In verifyVistaAccount ");
 
@@ -116,77 +116,6 @@ public class MyAccountRestController extends BaseDashboardRestController {
         if (request.getSession().getAttribute("VISTA_VERIFY_ACCOUNT_COUNT") != null) {
             vistaVerifyAccountCount = Integer.valueOf(request.getSession().getAttribute("VISTA_VERIFY_ACCOUNT_COUNT")
                     .toString());
-        }
-        String accessCode="";
-        String verifyCode="";
-       
-        try
-        {
-        	accessCode = URLEncoder.encode(request.getParameter("accessCode"), "UTF-8")   
-       			   .replaceAll("\\%28", "(")                          
-       			   .replaceAll("\\%29", ")")   		
-       			   .replaceAll("\\+", "%20")                       
-       			   .replaceAll("\\%27", "'")
-       			   .replaceAll("\\%21", "!")
-       			   .replaceAll("\\%25", "%")
-       			   .replaceAll("\\%40", "@")
-       			   .replaceAll("\\%23", "#")
-       			   .replaceAll("\\%24", "\\$")
-       			   .replaceAll("\\%26", "&")
-       			   .replaceAll("\\%20", " ")
-				   .replaceAll("\\%2B", "+")
-				   .replaceAll("\\%5C", "\\\\")
-				   .replaceAll("\\%7C", "|")
-       			   .replaceAll("\\%7E", "~")
-				   .replaceAll("%2C", ",")
-				   .replaceAll("%3C", "<")
-				   .replaceAll("%3E", ">")
-				   .replaceAll("%3D", "=")
-				   .replaceAll("%2F", "/")
-				   .replaceAll("%22", "\"")
-				   .replaceAll("%3F", "?")
-				   .replaceAll("-", "-")
-				   .replaceAll("_", "_")
-				   .replaceAll("%5B", "[")
-				   .replaceAll("%7B", "{")
-				   .replaceAll("%5D", "]")
-				   .replaceAll("%7D", "}")
-				   .replaceAll("%60", "`");
-			
-        	verifyCode = URLEncoder.encode(request.getParameter("verifyCode"), "UTF-8")   
-      			   .replaceAll("\\%28", "(")                          
-      			   .replaceAll("\\%29", ")")   		
-      			   .replaceAll("\\+", "%20")                       
-      			   .replaceAll("\\%27", "'")
-      			   .replaceAll("\\%21", "!")
-      			   .replaceAll("\\%25", "%")
-
-      			   .replaceAll("\\%40", "@")
-      			   .replaceAll("\\%23", "#")
-      			   .replaceAll("\\%24", "\\$")
-      			   .replaceAll("\\%26", "&")
-      			   .replaceAll("\\%20", " ")
-				   .replaceAll("\\%2B", "+")
-				   .replaceAll("\\%5C", "\\\\")
-				   .replaceAll("\\%7C", "|")
-      			   .replaceAll("\\%7E", "~")
-				   .replaceAll("%2C", ",")
-				   .replaceAll("%3C", "<")
-				   .replaceAll("%3E", ">")
-				   .replaceAll("%3D", "=")
-				   .replaceAll("%2F", "/")
-				   .replaceAll("%22", "\"")
-				   .replaceAll("%3F", "?")
-				   .replaceAll("-", "-")
-				   .replaceAll("_", "_")
-				   .replaceAll("%5B", "[")
-				   .replaceAll("%7B", "{")
-				   .replaceAll("%5D", "]")
-				   .replaceAll("%7D", "}")
-				   .replaceAll("%60", "`");
-        }catch(Exception ex)
-        {
-        	logger.error("Error getting access/verify code", ex);
         }
         
         boolean hasError = false;
@@ -214,12 +143,12 @@ public class MyAccountRestController extends BaseDashboardRestController {
             catch (VistaLockedAccountException e) {
                 hasError = true;
                 userMessage = "Account is locked. Failed to verify Acess/Verify codes";
-                logger.debug("Failed to verify Acess/Verify codes. Account is locked.  " + escreenUser.getUserId());
+                logger.info("Failed to verify Acess/Verify codes. Account is locked.  " + escreenUser.getUserId());
             }
             catch (VistaVerificationAlreadyMappedException e) {
                 hasError = true;
                 userMessage = "Another account has already verified this Acess/Verify codes.";
-                logger.debug("Another account has already verified this Acess/Verify codes " + escreenUser.getUserId());
+                logger.info("Another account has already verified this Acess/Verify codes " + escreenUser.getUserId());
             }
             catch (VistaVerificationException e) {
                 hasError = true;
@@ -235,7 +164,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
 
                 request.getSession().setAttribute("VISTA_VERIFY_ACCOUNT_COUNT", vistaVerifyAccountCount);
 
-                logger.debug("Invalid Acess/Verify codes for user " + escreenUser.getUserId());
+                logger.info("Invalid Acess/Verify codes for user " + escreenUser.getUserId());
             }
             catch (VistaLinkException e) {
                 hasError = true;
