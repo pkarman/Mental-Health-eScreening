@@ -3,11 +3,15 @@ package gov.va.escreening.templateprocessor;
 import gov.va.escreening.dto.template.GraphParamsDto;
 
 import java.text.DecimalFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.Stack;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,10 +57,12 @@ public class VeteranProgressHistoryAsciiGraph {
         //iterate over intervals and recored needed values
         double minIntervalValue = Double.MAX_VALUE;
         double maxIntervalValue = graphParams.getMaxXPoint() != null ? graphParams.getMaxXPoint() : Double.MIN_VALUE;
+        Deque<Double> axisValues = new ArrayDeque<>(graphParams.getIntervals().size());
         int maxLabelWidth = 0;
         for(Entry<String,Double> intervalEntity : graphParams.getIntervals().entrySet()){
             String intervalName = intervalEntity.getKey();
             Double intervalValue = intervalEntity.getValue();
+            axisValues.add(intervalValue);
             if(intervalName.length() > maxLabelWidth){
                 maxLabelWidth = intervalName.length();
             }
@@ -68,6 +74,9 @@ public class VeteranProgressHistoryAsciiGraph {
             }
         }
         
+        if(graphParams.getMaxXPoint() != null && (axisValues.isEmpty() || !graphParams.getMaxXPoint().equals(axisValues.getLast())))
+        	axisValues.addLast(graphParams.getMaxXPoint());
+        	
         //add title
         graph.append(StringUtils.center(name, graphWidth))
             .append("\n\n");
@@ -76,7 +85,7 @@ public class VeteranProgressHistoryAsciiGraph {
         int largestYRow = (int)Math.ceil(maxIntervalValue)+1;
         int halfway = (largestYRow - (int)minIntervalValue)/2;
         for(int currentValue = largestYRow; currentValue >= minIntervalValue; currentValue--){
-            appendGraphMargin(graph, currentValue, halfway, largestYRow);
+            appendGraphMargin(graph, axisValues, currentValue, halfway, largestYRow);
             
             for(i = 0; i < historyValues.length; i++){
                 appendHistoryValue(graph, currentValue, historyValues[i]);
@@ -190,7 +199,8 @@ public class VeteranProgressHistoryAsciiGraph {
         }
     }
     
-    static private void appendGraphMargin(StringBuilder graph, int currentValue, int halfway, double largestYRow){
+    static private void appendGraphMargin(StringBuilder graph, Deque<Double> axisValues,
+    		int currentValue, int halfway, double largestYRow){
         
         if(currentValue == halfway){
             graph.append(" SCORE   ");
@@ -198,7 +208,8 @@ public class VeteranProgressHistoryAsciiGraph {
         else{
             graph.append("         ");
         }
-        if(currentValue % 5 == 0){
+        //When the axis value is between to integers we are to output a label for the row with the larger integer
+        if(!axisValues.isEmpty() && Math.ceil(axisValues.getLast().doubleValue()) >= currentValue){
             if(currentValue < 100 && currentValue > 9){
                 graph.append(" ");
             }
@@ -206,6 +217,11 @@ public class VeteranProgressHistoryAsciiGraph {
                 graph.append("  ");
             }
             graph.append(currentValue);
+            
+            //remove any values that would map to this row (case is that we have mulitple fractional values (e.g. 2.35, 2.5, 2.75) and we only want to put put once
+            while(!axisValues.isEmpty() && Math.ceil(axisValues.getLast().doubleValue()) >= currentValue){
+            	axisValues.removeLast();
+            }
         }
         else{
             graph.append("   ");
