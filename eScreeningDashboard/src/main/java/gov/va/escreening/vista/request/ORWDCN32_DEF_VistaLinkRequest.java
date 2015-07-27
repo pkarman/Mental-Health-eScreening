@@ -134,6 +134,7 @@ public class ORWDCN32_DEF_VistaLinkRequest extends VistaLinkBaseRequest<Consulta
         request.clearParams();
         request.setParams(requestParams);
 
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
 
         try {

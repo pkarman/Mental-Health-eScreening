@@ -72,6 +72,7 @@ public class ORWDXM1_BLDQRSP_VistaLinkRequest extends VistaLinkBaseRequest imple
 
 		RpcResponse response = null;
 		try {
+			if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
 			response = connection.executeRPC(request);
 			List<Map<String, Object>> resultList = getResult(response);
 			return resultList.iterator().next();

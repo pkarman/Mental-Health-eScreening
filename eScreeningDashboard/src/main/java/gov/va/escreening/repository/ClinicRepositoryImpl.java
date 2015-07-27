@@ -10,7 +10,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("clinicRepository")
 public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> implements ClinicRepository {
 
     public ClinicRepositoryImpl() {

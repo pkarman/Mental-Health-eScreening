@@ -73,6 +73,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
             RpcResponse vResp;
             try {
+                if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",rpcReq.getRpcName(),reqParams));}
                 vResp = vistaLinkConnection.executeRPC(rpcReq);
             } catch (VistaLinkFaultException e) {
                 throw new VistaLinkClientException(e);

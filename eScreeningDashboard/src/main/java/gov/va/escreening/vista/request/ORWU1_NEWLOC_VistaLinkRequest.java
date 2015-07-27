@@ -43,6 +43,7 @@ public class ORWU1_NEWLOC_VistaLinkRequest extends VistaLinkBaseRequest<String> 
         this.request.clearParams();
         this.request.setParams(requestParams);
 
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = this.connection.executeRPC(this.request);
         String[] clinicLocationArray = new String[0];
 

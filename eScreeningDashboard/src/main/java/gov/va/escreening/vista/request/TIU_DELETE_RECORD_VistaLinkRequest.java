@@ -55,6 +55,7 @@ public class TIU_DELETE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest imp
         request.clearParams();
         request.setParams(requestParams);
 
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
 
         try {

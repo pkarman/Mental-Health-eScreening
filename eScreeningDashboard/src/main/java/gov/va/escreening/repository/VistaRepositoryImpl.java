@@ -143,6 +143,7 @@ public class VistaRepositoryImpl implements VistaRepository {
                 }
             }
 
+            if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",vReq.getRpcName(),vistaRpcParamList));}
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
@@ -366,6 +367,7 @@ public class VistaRepositoryImpl implements VistaRepository {
                 }
             }
 
+            if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",vReq.getRpcName(),vistaRpcParamList));}
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
@@ -544,6 +546,7 @@ public class VistaRepositoryImpl implements VistaRepository {
             vReq.getParams().setParam(1, "string", clientIp);
             vReq.getParams().setParam(2, "string", applicationName);
 
+            if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[clientOp:%s, applicationName:%s]",vReq.getRpcName(),clientIp, applicationName));}
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
