@@ -53,6 +53,7 @@ public class TIU_LOCK_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Strin
         request.clearParams();
         request.setParams(requestParams);
 
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
         logger.debug("Lock Progress Note Response: " + response.getResults());
 
