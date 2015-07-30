@@ -75,10 +75,10 @@
                                     <form:label path="selectedAssessmentStatusId">Update Status to:</form:label>
                                     <form:select path="selectedAssessmentStatusId" cssClass="form-control">
                                         <form:option value="${veteranAssessmentInfo.assessmentStatusId}"
-                                                     label="Please Select a Status"/>
+                                                     label="Please Select a Status" selected="selected"/>
                                         <form:options items="${assessmentStatusList}" itemValue="stateId"
                                                       itemLabel="stateName"/>
-                                    </form:select>
+                                    </form:select>                                    
                                     <div class="text-right">
                                         <form:errors path="selectedAssessmentStatusId" cssClass="help-inline"/>
                                     </div>
@@ -326,34 +326,67 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <form:label path="selectedClinicId">VistA Clinic *</form:label>
-                                        <form:select path="selectedClinicId" cssClass="form-control">
-                                            <form:option value="" label="Please Select a Clinic"/>
-                                            <form:options items="${clinicList}" itemValue="stateId"
-                                                          itemLabel="stateName"/>
-                                        </form:select>
-                                        <form:errors path="selectedClinicId" cssClass="help-inline"/>
+											<c:choose>
+												<c:when test="${veteranAssessmentInfo.assessmentStatusId == 5}">
+													<br/>
+													<label>${veteranAssessmentInfo.clinicName}</label>
+													<input type="hidden" name="selectedClinicId" value="${veteranAssessmentInfo.clinicId}" />
+												</c:when>
+												<c:otherwise>
+													<form:select path="selectedClinicId"
+														cssClass="form-control disabled-link">
+														<form:option value="" label="Please Select a Clinic" />
+														<form:options items="${clinicList}" itemValue="stateId"
+															itemLabel="stateName" />
+													</form:select>
+												</c:otherwise>
+											</c:choose>
+											<form:errors path="selectedClinicId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <form:label path="selectedNoteTitleId">Note Title *</form:label>
-                                        <form:select path="selectedNoteTitleId" cssClass="form-control">
-                                            <form:option value="" label="Please Select a Note Title"/>
-                                            <form:options items="${noteTitleList}" itemValue="stateId"
-                                                          itemLabel="stateName"/>
-                                        </form:select>
-                                        <form:errors path="selectedNoteTitleId" cssClass="help-inline"/>
+											<c:choose>
+												<c:when	test="${veteranAssessmentInfo.assessmentStatusId == 5}">
+													<br />
+													<label>${veteranAssessmentInfo.noteTitleName}</label>
+													<input type="hidden" name="selectedNoteTitleId"
+														value="${veteranAssessmentInfo.noteTitleId}" />
+												</c:when>
+												<c:otherwise>
+													<form:select path="selectedNoteTitleId"
+														cssClass="form-control">
+														<form:option value="" label="Please Select a Note Title" />
+														<form:options items="${noteTitleList}" itemValue="stateId"
+															itemLabel="stateName" />
+													</form:select>
+												</c:otherwise>
+											</c:choose>
+											<form:errors path="selectedNoteTitleId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <form:label path="selectedClinicianId">Clinician *</form:label>
-                                        <form:select path="selectedClinicianId" cssClass="form-control">
-                                            <form:option value="" label="Please Select a Clinician"/>
-                                            <form:options items="${clinicianList}" itemValue="stateId"
-                                                          itemLabel="stateName"/>
-                                        </form:select>
-                                        <form:errors path="selectedClinicianId" cssClass="help-inline"/>
+											<form:label path="selectedClinicianId">Clinician *</form:label>
+											<c:choose>
+												<c:when
+													test="${veteranAssessmentInfo.assessmentStatusId == 5}">
+													<br />
+													<label>${veteranAssessmentInfo.clinicianFullName}</label>
+													<input type="hidden" name="selectedClinicianId"
+														value="${veteranAssessmentInfo.clinicianId}" />
+												</c:when>
+												<c:otherwise>
+													<form:select path="selectedClinicianId"
+														cssClass="form-control">
+														<form:option value="" label="Please Select a Clinician" />
+														<form:options items="${clinicianList}" itemValue="stateId"
+															itemLabel="stateName" />
+													</form:select>
+												</c:otherwise>
+											</c:choose>
+											<form:errors path="selectedClinicianId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                             </div>
