@@ -1437,10 +1437,16 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     @Override
     public void update(Integer veteranAssessmentId, AssessmentSummaryFormBean assessmentSummaryFormBean) {
         update(veteranAssessmentId, assessmentSummaryFormBean.getSelectedClinicId(), assessmentSummaryFormBean.getSelectedNoteTitleId(), assessmentSummaryFormBean.getSelectedClinicianId(), assessmentSummaryFormBean.getSelectedAssessmentStatusId());
-        Veteran veteran = veteranRepository.findOne(assessmentSummaryFormBean.getVeteranId());
-        logger.debug("Veteran before update {}", veteran);
-        veteran.setLastName(assessmentSummaryFormBean.getLastName());
-        veteran.setSsnLastFour(assessmentSummaryFormBean.getSsnLastFour());
-        logger.debug("Veteran after lastName & ssn last four changed {}", veteran);
+
+        // examine whether the status of assessment is clean and if veteran is not mapped with vista and if last name and last four are changed
+        String lastName=assessmentSummaryFormBean.getLastName();
+        String ssnLastFour=assessmentSummaryFormBean.getSsnLastFour();
+        if (null!=lastName && null!=ssnLastFour) {
+            Veteran veteran = veteranRepository.findOne(assessmentSummaryFormBean.getVeteranId());
+            logger.debug("Veteran before update {}", veteran);
+            veteran.setLastName(lastName);
+            veteran.setSsnLastFour(ssnLastFour);
+            logger.debug("Veteran after lastName & ssn last four changed {}", veteran);
+        }
     }
 }
