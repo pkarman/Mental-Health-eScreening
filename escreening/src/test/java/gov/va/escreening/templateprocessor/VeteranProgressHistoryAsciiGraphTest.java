@@ -2,6 +2,8 @@ package gov.va.escreening.templateprocessor;
 
 import gov.va.escreening.dto.template.GraphParamsDto;
 
+import static org.junit.Assert.*;
+
 import java.util.Map;
 
 import org.junit.Test;
@@ -54,7 +56,7 @@ public class VeteranProgressHistoryAsciiGraphTest {
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
         logger.debug(graph);
-        System.out.println(graph);
+        //System.out.println(graph);
     }
     
 
@@ -87,7 +89,7 @@ public class VeteranProgressHistoryAsciiGraphTest {
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
         logger.debug(graph);
-        System.out.println(graph);
+        //System.out.println(graph);
     }
     
     
@@ -114,6 +116,49 @@ public class VeteranProgressHistoryAsciiGraphTest {
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
         logger.debug(graph);
-        System.out.println(graph);
+        //System.out.println(graph);
+    }
+    
+    @Test
+    public void historicalGraphGenerationIntervalOnAxis(){
+        GraphParamsDto graphParams = new GraphParamsDto();
+        graphParams.setTitle("Depression Score");
+        graphParams.setFooter("*a score of 10 or greater is a positive screen");
+        graphParams.setMaxXPoint(27d);
+        graphParams.setTicks(ImmutableList.of(0d, 3.5d, 3.75d, 4d, 13d, 17d, 22d, 27d));
+        
+        Map<String, Double> intervals = Maps.newLinkedHashMap();
+        intervals.put("None", 0d);
+        intervals.put("Minimal", 3.5d);
+        intervals.put("Cool", 3.75d);
+        intervals.put("Mild", 4d); 
+        intervals.put("Moderate", 13d); 
+        intervals.put("Moderately Severe", 17d);
+        intervals.put("Severe", 22d);
+        graphParams.setIntervals(intervals);
+        
+        Map<String, Double> historicalValues = Maps.newLinkedHashMap();
+        historicalValues.put("01/03/2013 12:51:17", 5d);
+        historicalValues.put("04/20/2013 12:51:17", 10d);
+        historicalValues.put("06/21/2013 12:51:17", 15d);
+        historicalValues.put("08/22/2013 12:51:17", 20d);
+        historicalValues.put("10/20/2013 12:51:17", 22.6d);
+        historicalValues.put("03/22/2015 12:51:17", 20d);
+        historicalValues.put("05/22/2015 12:51:17", 16.09d);
+        
+        String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
+        
+        logger.debug(graph);
+        //System.out.println(graph);
+        
+        assertTrue(graph.contains(" 0|"));
+        assertFalse(graph.contains("1|"));
+        assertFalse(graph.contains(" 2|"));
+        assertFalse(graph.contains(" 3|"));
+        assertTrue(graph.contains(" 4|"));
+        assertTrue(graph.contains("13|"));
+        assertTrue(graph.contains("17|"));
+        assertTrue(graph.contains("22|"));
+        assertTrue(graph.contains("27|"));
     }
 }

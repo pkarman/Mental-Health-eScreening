@@ -32,14 +32,14 @@ public class VistaLinkRequestException extends VistaLinkClientException {
         
     }
 
-    public VistaLinkRequestException(String message, List requestParams) {
+    public VistaLinkRequestException(String message, List<? extends Object> requestParams) {
         super(message);
         
         if(message != null) logger.error(message);
         if(requestParams != null) logger.error(printRequestParams(requestParams));
     }
 
-    public VistaLinkRequestException(String message, List requestParams, LogTypes logType) {
+    public VistaLinkRequestException(String message, List<? extends Object> requestParams, LogTypes logType) {
         super(message);
 
         if(logType.equals(LogTypes.ERROR)) logger.error(message);
@@ -62,14 +62,14 @@ public class VistaLinkRequestException extends VistaLinkClientException {
         logger.error(message);
     }
 
-    public VistaLinkRequestException(String message, List requestParams, Throwable throwable) {
+    public VistaLinkRequestException(String message, List<? extends Object> requestParams, Throwable throwable) {
         super(message, throwable);
         
         logger.error(message);
         logger.error(printRequestParams(requestParams));
     }
 
-    public VistaLinkRequestException(String message, List requestParams, LogTypes logType, Throwable throwable) {
+    public VistaLinkRequestException(String message, List<? extends Object> requestParams, LogTypes logType, Throwable throwable) {
         super(message, throwable);
 
         if(logType.equals(LogTypes.ERROR)) logger.error(message);
@@ -84,7 +84,7 @@ public class VistaLinkRequestException extends VistaLinkClientException {
     }
 
 
-    private String printRequestParams(List requestParams) {
+    private String printRequestParams(List<? extends Object> requestParams) {
         StringBuilder sb = new StringBuilder("RPC Request Parameters:\n");
         int rpcRequestParamsPosition = 1;
         for(Object param: requestParams) {

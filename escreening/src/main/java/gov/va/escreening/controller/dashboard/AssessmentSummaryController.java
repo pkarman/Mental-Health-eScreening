@@ -173,6 +173,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
 
                 if (ctxt.isSuccessful()) {
                     ctxt.addCallResult(new CallResult(false, messageSource.getMessage("vista.pass.saved", null, null), null));
+                    assessmentSummaryFormBean.setSelectedAssessmentStatusId(AssessmentStatusEnum.FINALIZED.getAssessmentStatusId());
                 }
 
             } catch (IllegalStateException e) {
