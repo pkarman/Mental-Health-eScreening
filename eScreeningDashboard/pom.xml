@@ -854,6 +854,19 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>apply-deployment-content-reset</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+						 	<orderFile>ascending</orderFile>
+							<fileset>
+								<basedir>src/main/sql/deployment_content</basedir>
+							</fileset>
+						</configuration>
+					</execution>
+					<execution>
 						<id>test-data-fill</id>
 						<phase>process-test-resources</phase>
 						<goals>
