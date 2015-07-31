@@ -28,9 +28,7 @@ import gov.va.escreening.exception.TemplateProcessorException;
 import gov.va.escreening.expressionevaluator.ExpressionExtentionUtil;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.SurveySectionRepository;
-import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
-import gov.va.escreening.service.SurveyMeasureResponseService;
 import gov.va.escreening.service.TemplateService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.templateprocessor.TemplateTags.Style;
@@ -42,22 +40,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,16 +67,13 @@ import com.google.common.io.Files;
 public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 	@Autowired
-	private TemplateRepository templateRepository;
-	@Autowired
 	private VariableResolverService variableResolverService;
-	@Autowired
-	SurveySectionRepository surveySectionRepository;
-	@Autowired
-	private VeteranAssessmentRepository veteranAssessmentRepository;
 	
 	@Autowired
-	private SurveyMeasureResponseService surveyMeasureRespSvc;
+	private SurveySectionRepository surveySectionRepository;
+	
+	@Autowired
+	private VeteranAssessmentRepository veteranAssessmentRepository;
 	
 	@Autowired
 	private SurveyRepository surveyRepository;
@@ -357,7 +347,10 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
         Map<String, Double> historicalValues = assessmentService.getVeteranAssessmentVariableSeries(
                 assessment.getVeteran().getVeteranId(), 
                 graphParams.getVarId(), 
-                graphParams.getNumberOfMonths());        
+                graphParams.getNumberOfMonths());  
+        
+        if(historicalValues.size() < 2)
+        	return "";
         
         //generate graph
         String historicalGraph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph(template.getName(), graphParams, historicalValues);
