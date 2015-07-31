@@ -174,7 +174,7 @@ input[type=submit]:hover, button:hover, input[type=button]:hover{
 #nextBtn {
 	margin-right: 30px;
 }
-input[type="button"].startAssessmentButton {
+input[type="submit"].startAssessmentButton {
 	width: 500px;
 	height: 90px;
 	font-size: 22px;

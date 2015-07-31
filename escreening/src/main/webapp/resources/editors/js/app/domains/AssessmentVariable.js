@@ -92,7 +92,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			delimit: {
 				name: 'delimit',
 				displayName: 'Delimit',
-				params: [',', 'and', '', true, '']
+				params: ['', 'and ', ', ', false, '']
 			},
 			yearsFromDate: {
 				name: 'yearsFromDate',
@@ -110,7 +110,7 @@ var EScreeningDashboardApp = EScreeningDashboardApp || { models: EScreeningDashb
 			delimitTableField:	{
 				name: 'delimitTableField',
 				displayName: 'Delimited Table Field',
-				params: ['0', ',', 'and', '', true, '']
+				params: ['0', '', 'and ', ', ', false, '']
 			},
 			none:{
 				name:'none',

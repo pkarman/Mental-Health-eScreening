@@ -28,6 +28,7 @@
 		<vista.accessCode>SGll8EpcOHZe9oXgwuPsFg==</vista.accessCode>
 		<vista.duz>10000000056</vista.duz>
 		<vista.verifyCode>JQ9S3/VDJAQJO39bZVcqP8q3W8JSIxt9</vista.verifyCode>
+		<vista.encrypt>true</vista.encrypt>
 		<sample.patient.ien>100022</sample.patient.ien>
 		<skip.db>true</skip.db>
 		<db.skip.testData>true</db.skip.testData>
@@ -456,6 +457,11 @@
 					<source>${java-version}</source>
 					<target>${java-version}</target>
 					<compilerArgument>-Xlint:all</compilerArgument>
+					<!-- If you need to build for an earlier version use this 
+					<compilerArguments>
+						<bootclasspath>${env.TARGET_HOME}/lib/rt.jar</bootclasspath> 
+					</compilerArguments>
+					-->
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 				</configuration>

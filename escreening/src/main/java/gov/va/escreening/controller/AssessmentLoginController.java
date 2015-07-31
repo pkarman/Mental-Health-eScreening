@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -59,7 +61,9 @@ public class AssessmentLoginController {
 	@RequestMapping(value = "/assessmentLogin", method = RequestMethod.POST)
 	public String processForm(
 			@Valid @ModelAttribute AssessmentLoginFormBean assessmentLoginFormBean,
-			BindingResult result, Model model) {
+			BindingResult result, Model model,
+			HttpServletResponse response,
+			HttpServletRequest request) {
 
 		logger.debug("assessmentLogin called POST");
 
@@ -99,7 +103,7 @@ public class AssessmentLoginController {
 		} else if (dbVeterans.size() == 1) {
 			// We have a database record. Set the context to the database record
 			VeteranDto contextVeteran = dbVeterans.get(0);
-			return completeVeteranLogin(contextVeteran, assessmentLoginFormBean.getProgramId());
+			return completeVeteranLogin(contextVeteran, assessmentLoginFormBean.getProgramId(), response, request);
 		} else if (dbVeterans.size() > 1) {
 			// More than 1 veteran records found. See if we can filter it down to 1
 			if (!assessmentLoginFormBean.getAdditionalFieldRequired()) {
@@ -155,7 +159,10 @@ public class AssessmentLoginController {
 	 * @param veteran
 	 * @return
 	 */
-	private String completeVeteranLogin(VeteranDto veteran, Integer programId) {
+	private String completeVeteranLogin(VeteranDto veteran, Integer programId, 
+	        HttpServletResponse response,
+	        HttpServletRequest request
+	        ) {
 		// Check if there is a valid and current Assessment. If not, then redirect to 'Please see clerk' page.
 		VeteranAssessment veteranAssessment = assessmentDelegate.getAvailableVeteranAssessment(veteran.getVeteranId(), programId);
 
@@ -167,7 +174,10 @@ public class AssessmentLoginController {
 			// Initialize and setup the session scoped AssessmentContext.
 			logger.debug("Found available assessment for user");
 			assessmentDelegate.setUpAssessmentContext(veteran, veteranAssessment);
-			return "redirect:/assessment/home";
+			
+			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+			response.setHeader("Location", request.getContextPath() + "/assessment/home");
+			return "/assessmentLogin";
 		}
 	}
 
