@@ -61,6 +61,8 @@
 
         <div class="container left-right-shadow nonPrintableArea">
             <form:form modelAttribute="assessmentSummaryFormBean" autocomplete="off" method="post">
+                <input type="hidden" name="veteranId" value="${veteranAssessmentInfo.veteranId}"/>
+
                 <div class="row">
                     <div class="col-md-5">
                         <a name="skip"> </a>
@@ -78,14 +80,15 @@
                                                      label="Please Select a Status" selected="selected"/>
                                         <form:options items="${assessmentStatusList}" itemValue="stateId"
                                                       itemLabel="stateName"/>
-                                    </form:select>                                    
+                                    </form:select>
                                     <div class="text-right">
                                         <form:errors path="selectedAssessmentStatusId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                             </c:if>
                             <c:if test="${empty assessmentStatusList}">
-                                <form:hidden path="selectedAssessmentStatusId" value="${veteranAssessmentInfo.assessmentStatusId}" />
+                                <form:hidden path="selectedAssessmentStatusId"
+                                             value="${veteranAssessmentInfo.assessmentStatusId}"/>
                             </c:if>
                         </div>
                     </div>
@@ -132,7 +135,8 @@
                                                                    href="#collapse${counter}" aria-expanded="true"
                                                                    aria-controls="collapse${counter}"><span
                                                                         class="glyphicon glyphicon-plus"></span> <c:out
-                                                                        value="${callResult.userMessage}"/>Click here for details.</a>
+                                                                        value="${callResult.userMessage}"/>Click here
+                                                                    for details.</a>
                                                             </c:if>
                                                             <c:if test="${empty callResult.systemMessage}">
                                                                 <c:out value="${callResult.userMessage}"/>
@@ -140,7 +144,8 @@
                                                         </h4>
                                                     </div>
                                                 </div>
-                                                <div id="collapse${counter}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading${counter + 1}">
+                                                <div id="collapse${counter}" class="panel-collapse collapse"
+                                                     role="tabpanel" aria-labelledby="heading${counter + 1}">
                                                     <div class="panel-body">
                                                         <c:out value="${callResult.systemMessage}"/>
                                                     </div>
@@ -153,7 +158,6 @@
                         </c:if>
 
 
-
                         <div class="border-radius-main-form">
                             <div class="row">
                                 <div class="col-md-2"> Program Name
@@ -162,9 +166,21 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6"> Name (Last, First Middle)
-                                    <div class="txt_lable_lg">
-                                        <c:out value="${veteranAssessmentInfo.veteranFullName}"/>
-                                    </div>
+                                    <c:choose>
+                                        <c:when test="${veteranAssessmentInfo.editable}">
+                                            <div class="txt_lable_lg form-group">
+                                                <input type="text" maxlength="30"
+                                                       size="30"
+                                                       name="lastName" value="${veteranAssessmentInfo.lastName}">
+                                                <c:out value="${veteranAssessmentInfo.firstAndMiddleName}"/>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="txt_lable_lg">
+                                                <c:out value="${veteranAssessmentInfo.veteranFullName}"/>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <div class="col-md-2"> Date of Birth
                                     <div class="txt_lable_lg">
@@ -179,12 +195,25 @@
                                 </div>
                                 <div class="col-md-2 text-right"> SSN-4
                                     <div class="txt_lable_lg text-right">
-                                        <c:if test="${veteranAssessmentInfo.isSensitive}">
-                                            <c:out value="XXXX"/>
-                                        </c:if>
-                                        <c:if test="${!veteranAssessmentInfo.isSensitive}">
-                                            <c:out value="${veteranAssessmentInfo.ssnLastFour}"/>
-                                        </c:if>
+                                        <c:choose>
+                                            <c:when test="${!veteranAssessmentInfo.editable}">
+                                                <c:if test="${veteranAssessmentInfo.isSensitive}">
+                                                    <c:out value="XXXX"/>
+                                                </c:if>
+                                                <c:if test="${!veteranAssessmentInfo.isSensitive}">
+                                                    <c:out value="${veteranAssessmentInfo.ssnLastFour}"/>
+                                                </c:if>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <div class="form-group">
+                                                    <input type="text"
+                                                           name="ssnLastFour"
+                                                           value="${veteranAssessmentInfo.ssnLastFour}"
+                                                           maxlength="4"
+                                                           size="4">
+                                                </div>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
                             </div>
@@ -326,67 +355,68 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <form:label path="selectedClinicId">VistA Clinic *</form:label>
-											<c:choose>
-												<c:when test="${veteranAssessmentInfo.assessmentStatusId == 5}">
-													<br/>
-													<label>${veteranAssessmentInfo.clinicName}</label>
-													<input type="hidden" name="selectedClinicId" value="${veteranAssessmentInfo.clinicId}" />
-												</c:when>
-												<c:otherwise>
-													<form:select path="selectedClinicId"
-														cssClass="form-control disabled-link">
-														<form:option value="" label="Please Select a Clinic" />
-														<form:options items="${clinicList}" itemValue="stateId"
-															itemLabel="stateName" />
-													</form:select>
-												</c:otherwise>
-											</c:choose>
-											<form:errors path="selectedClinicId" cssClass="help-inline"/>
+                                        <c:choose>
+                                            <c:when test="${veteranAssessmentInfo.assessmentStatusId == 5}">
+                                                <br/>
+                                                <label>${veteranAssessmentInfo.clinicName}</label>
+                                                <input type="hidden" name="selectedClinicId"
+                                                       value="${veteranAssessmentInfo.clinicId}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form:select path="selectedClinicId"
+                                                             cssClass="form-control disabled-link">
+                                                    <form:option value="" label="Please Select a Clinic"/>
+                                                    <form:options items="${clinicList}" itemValue="stateId"
+                                                                  itemLabel="stateName"/>
+                                                </form:select>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <form:errors path="selectedClinicId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <form:label path="selectedNoteTitleId">Note Title *</form:label>
-											<c:choose>
-												<c:when	test="${veteranAssessmentInfo.assessmentStatusId == 5}">
-													<br />
-													<label>${veteranAssessmentInfo.noteTitleName}</label>
-													<input type="hidden" name="selectedNoteTitleId"
-														value="${veteranAssessmentInfo.noteTitleId}" />
-												</c:when>
-												<c:otherwise>
-													<form:select path="selectedNoteTitleId"
-														cssClass="form-control">
-														<form:option value="" label="Please Select a Note Title" />
-														<form:options items="${noteTitleList}" itemValue="stateId"
-															itemLabel="stateName" />
-													</form:select>
-												</c:otherwise>
-											</c:choose>
-											<form:errors path="selectedNoteTitleId" cssClass="help-inline"/>
+                                        <c:choose>
+                                            <c:when test="${veteranAssessmentInfo.assessmentStatusId == 5}">
+                                                <br/>
+                                                <label>${veteranAssessmentInfo.noteTitleName}</label>
+                                                <input type="hidden" name="selectedNoteTitleId"
+                                                       value="${veteranAssessmentInfo.noteTitleId}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form:select path="selectedNoteTitleId"
+                                                             cssClass="form-control">
+                                                    <form:option value="" label="Please Select a Note Title"/>
+                                                    <form:options items="${noteTitleList}" itemValue="stateId"
+                                                                  itemLabel="stateName"/>
+                                                </form:select>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <form:errors path="selectedNoteTitleId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-											<form:label path="selectedClinicianId">Clinician *</form:label>
-											<c:choose>
-												<c:when
-													test="${veteranAssessmentInfo.assessmentStatusId == 5}">
-													<br />
-													<label>${veteranAssessmentInfo.clinicianFullName}</label>
-													<input type="hidden" name="selectedClinicianId"
-														value="${veteranAssessmentInfo.clinicianId}" />
-												</c:when>
-												<c:otherwise>
-													<form:select path="selectedClinicianId"
-														cssClass="form-control">
-														<form:option value="" label="Please Select a Clinician" />
-														<form:options items="${clinicianList}" itemValue="stateId"
-															itemLabel="stateName" />
-													</form:select>
-												</c:otherwise>
-											</c:choose>
-											<form:errors path="selectedClinicianId" cssClass="help-inline"/>
+                                        <form:label path="selectedClinicianId">Clinician *</form:label>
+                                        <c:choose>
+                                            <c:when
+                                                    test="${veteranAssessmentInfo.assessmentStatusId == 5}">
+                                                <br/>
+                                                <label>${veteranAssessmentInfo.clinicianFullName}</label>
+                                                <input type="hidden" name="selectedClinicianId"
+                                                       value="${veteranAssessmentInfo.clinicianId}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form:select path="selectedClinicianId"
+                                                             cssClass="form-control">
+                                                    <form:option value="" label="Please Select a Clinician"/>
+                                                    <form:options items="${clinicianList}" itemValue="stateId"
+                                                                  itemLabel="stateName"/>
+                                                </form:select>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <form:errors path="selectedClinicianId" cssClass="help-inline"/>
                                     </div>
                                 </div>
                             </div>
@@ -614,7 +644,7 @@
                                     graphContainer.append("<div class='graphFooter text-center'>" + graphObj.footer + "</div>");
                                 }
                             },
-                            error: function(xhr, exception, errorThrown){
+                            error: function (xhr, exception, errorThrown) {
                                 graphContainer.children(".graphicBody").empty();
                                 handleError(xhr, exception, errorThrown);
                             }
@@ -628,21 +658,21 @@
             function handleError(xhr, exception, errorThrown) {
                 var data = xhr.responseJSON.error;
                 var userMessage = [];
-                var developerMessage  = "No details received from server";
+                var developerMessage = "No details received from server";
 
-                if(data){
-                    if(data.errorMessages){
+                if (data) {
+                    if (data.errorMessages) {
                         for (var j = 0; j < data.errorMessages.length; j++) {
                             errorMessages = data.errorMessages[j];
                             userMessage.push("<div class='userErrorMessage'>" + errorMessages.description + "</div>");
                         }
                     }
-                    if(data.developerMessage && data.developerMessage.length > 0){
+                    if (data.developerMessage && data.developerMessage.length > 0) {
                         developerMessage = "<div class='developerErrorIDMessage'>" + "<strong>ID:</strong> " + data.id + "</div>"
-                        + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
+                                + "<div class='developerErrorMessage'>" + "<strong>Developer Message:</strong> " + data.developerMessage + "</div>";
                     }
                 }
-                else{
+                else {
                     userMessage.push("<div class='userErrorMessage'>An unexpected error was received. Please call support.</div>");
                 }
 
@@ -813,7 +843,7 @@
     }
 
 
-    var colors	= ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
+    var colors = ['#cfd8e0', '#b7c4d0', '#879cb2', '#577593', '#3f6184', '#0f3a65'];
 
     function appendStackGraph(parentSelector, graphParams) {
 

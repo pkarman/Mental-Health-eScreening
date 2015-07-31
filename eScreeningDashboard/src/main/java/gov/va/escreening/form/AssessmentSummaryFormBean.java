@@ -23,6 +23,38 @@ public class AssessmentSummaryFormBean implements Serializable {
     @NotNull(message = "Veteran Assessment required")
     private Integer selectedVeteranAssessmentId;
 
+    private Integer veteranId;
+    private String ssnLastFour;
+    private String lastName;
+
+    public AssessmentSummaryFormBean() {
+        // Default constructor.
+    }
+
+    public String getSsnLastFour() {
+        return ssnLastFour;
+    }
+
+    public void setSsnLastFour(String ssnLastFour) {
+        this.ssnLastFour = ssnLastFour;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Integer getVeteranId() {
+        return veteranId;
+    }
+
+    public void setVeteranId(Integer veteranId) {
+        this.veteranId = veteranId;
+    }
+
     public Integer getSelectedClinicId() {
         return selectedClinicId;
     }
@@ -61,9 +93,5 @@ public class AssessmentSummaryFormBean implements Serializable {
 
     public void setSelectedVeteranAssessmentId(Integer selectedVeteranAssessmentId) {
         this.selectedVeteranAssessmentId = selectedVeteranAssessmentId;
-    }
-
-    public AssessmentSummaryFormBean() {
-        // Default constructor.
     }
 }

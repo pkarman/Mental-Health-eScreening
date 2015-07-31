@@ -281,5 +281,14 @@ public class VeteranAssessmentInfo implements Serializable {
 	public Boolean getIsSensitive(){
 		return isSensitive;
 	}
-	
+
+    public boolean isEditable() {
+        // the veteran first name and last 4 of ssn are editable if assesment is clean and not mapped to vista
+        return assessmentStatusId == 1 && veteranIen == null;
+    }
+
+    public String getFirstAndMiddleName(){
+        return String.format(", %s %s", firstName, middleName);
+    }
+
 }
