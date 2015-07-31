@@ -45,7 +45,7 @@ if [ ! -d "${profile}-release" ]; then
 	exit 1;
 fi
 
-cd "${profile}-release/eScreeningDashboard"
+cd "${profile}-release/escreening"
 
 # generate date tag string
 stamp=`date +"${profile}_%Y%m%d_%H%M"`
