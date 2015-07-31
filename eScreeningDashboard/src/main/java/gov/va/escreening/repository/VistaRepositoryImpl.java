@@ -245,8 +245,8 @@ public class VistaRepositoryImpl implements VistaRepository {
 
         List<VistaRpcParam> vistaRpcParamList = new ArrayList<VistaRpcParam>();
         vistaRpcParamList.add(new VistaRpcParam("string", veteranIen));    // Veteran IEN
-        vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString(LocalDate.now().toDate(), VistaDateFormat.MMdd)));        // Beginning Date (Fileman format), which is usually 1 year ago
-        vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString(LocalDate.now().plusYears(1).toDate(), VistaDateFormat.MMddHHmmss)));        // Ending Date (Fileman format), usually today
+        vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString(LocalDate.now().minusYears(1).toDate(), VistaDateFormat.MMdd)));        // Beginning Date (Fileman format), which is usually 1 year ago
+        vistaRpcParamList.add(new VistaRpcParam("string", VistaUtils.convertToVistaDateString(LocalDate.now().toDate(), VistaDateFormat.MMddHHmmss)));        // Ending Date (Fileman format), usually today
         vistaRpcParamList.add(new VistaRpcParam("string", "0"));            // Skip (1 or 0), if 1 skip over admissions else include admissions
 
 
