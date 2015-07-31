@@ -158,7 +158,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
         }
 
         try {
-            veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean.getSelectedClinicId(), assessmentSummaryFormBean.getSelectedNoteTitleId(), assessmentSummaryFormBean.getSelectedClinicianId(), assessmentSummaryFormBean.getSelectedAssessmentStatusId());
+            veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean);
             ctxt.addCallResult(new CallResult(false, "Successfully updated assessment.", null));
         } catch (Exception e) {
             ctxt.addCallResult(new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage()));
