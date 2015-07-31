@@ -1,0 +1,58 @@
+@media (min-width:1024px) { 
+	.navbar > .container {
+		text-align: center;
+	}
+	.navbar-header,.navbar-brand,.navbar .navbar-nav,.navbar .navbar-nav > li {
+		float: none;
+		display: inline-block;
+	}
+	.collapse.navbar-collapse {
+		float: none;
+		display: inline-block!important;
+		width: auto;
+		clear: none;
+	}
+	/* Promote these to main.css when done. - JBH */
+	
+	.btnHeader{
+		color:#ffffff;
+		background-color:#003f72;
+		margin-left:-4px;
+		margin-right:-4px;
+	}
+	
+	.btnHeader:hover{
+		color:#ffffff;
+		background-color:#001441;
+	}
+	
+	.btnHeader:active{
+		color:#ffae00;
+		background-color:#001441;
+		
+	}
+	
+	.btnHeaderMid{
+		border-radius:0px;
+	}
+	
+	.btnHeaderLeft{
+		border-top-right-radius:0px;
+		border-bottom-right-radius:0px;
+	}
+	
+	.btnHeaderRight{
+		border-top-left-radius:0px;
+		border-bottom-left-radius:0px;
+	}
+	
+	.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
+		color: #ffae00;
+		background-color: #001441;
+		border-color: #adadad;
+	}
+}
+
+label[disabled]{
+	color: #999;
+}

@@ -1,0 +1,63 @@
+<h4 ng-bind="assessmentVariable.displayName + ' Transformation'"></h4>
+
+<h5>Transformation Type (Matrix to list)</h5>
+
+<p>Delimiter</p>
+
+<p class="bg-info">Have to select at least one column and one row</p>
+
+<hr />
+
+<form name="matrixForm">
+	<div class="row">
+		<div class="col-sm-6 col-xs-6">
+			<h5>Columns (Answers)</h5>
+			<ul class="list-group">
+				<li class="list-group-item" ng-repeat="answer in matrixAnswers track by $index">
+					<div class="checkbox">
+						<input type="checkbox" id="{{ answer.id }}" ng-model="answer.checked" ng-change="updateSelectedMatrixAnswers()" tabindex="6">
+						<label for="{{ answer.id }}" ng-bind="answer.text"></label>
+					</div>
+				</li>
+			</ul>
+
+		</div>
+
+		<div class="col-sm-6  col-xs-6">
+			<h5>Rows (Questions)</h5>
+			<ul class="list-group">
+				<li class="list-group-item" ng-repeat="question in matrixQuestions track by $index">
+
+					<div class="checkbox">
+						<input type="checkbox" id="{{ question.id }}" ng-model="question.checked" ng-change="updateSelectedMatrixQuestions()">
+						<label for="{{ question.id }}" ng-bind="question.variableName"></label>
+					</div>
+					<div class="form-group" >
+						<label for="{{ question.id }}_text" ng-disabled="!question.checked || question.useOther">Output Text</label>
+						<input type="text" id="{{ question.id }}_text" class="form-control" placeholder="Enter Output Text" 
+							ng-disabled="!question.checked || question.useOther"
+							ng-model="question.outputText" 
+							ng-required="!question.useOther && question.checked" 
+							ng-keyup="updateTransformation()" 
+							ng-trim="false"
+							tooltip="{{question.hasOther ? 'Enter $other_value$ where the Other text should be inserted' : ''}}"
+							tooltip-placement="right">
+					</div>
+					<div class="checkbox" ng-if="question.hasOther">
+						<input type="checkbox" id="{{ question.id }}_other" 
+							ng-disabled="!question.checked"
+							ng-model="question.useOther" 
+							ng-change="updateSelectedMatrixQuestions()">
+						<label for="{{ question.id }}_other" ng-disabled="!question.checked">Output other value</label>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="text-right">
+		<button type="button" class="btn btn-primary" 
+			ng-click="applyTransformations({this: this});" 
+			ng-disabled="matrixForm.$invalid || !selectedMatrixQuestions.length || !selectedMatrixAnswers.length">Insert</button>
+	</div>
+</form>
