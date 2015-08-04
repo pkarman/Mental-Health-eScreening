@@ -4,9 +4,9 @@ SET FOREIGN_KEY_CHECKS=0;
 
 /*
 Remove batteries (and associated entities):     
-    Aspire Discharge Battery (ID 3)
     Aspire Intake Battery (ID 1)
     Aspire Progress Monitoring Battery (ID 2)
+    Aspire Discharge Battery (ID 3)
     Women’s Assessment Battery (ID 7)
     PTSD Progress – Jacobus (ID 8)
     Lowther Nurse Case Management Battery (ID 10)

@@ -32,6 +32,7 @@
 		<sample.patient.ien>100022</sample.patient.ien>
 		<skip.db>true</skip.db>
 		<db.skip.testData>true</db.skip.testData>
+		<db.skip.deployment.reset>false</db.skip.deployment.reset>
 	</properties>
 	<dependencies>
 		<!-- Web Services -->
@@ -866,12 +867,13 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>apply-deployment-content-reset</id>
+						<id>apply-production-distribution-content-reset</id>
 						<phase>process-test-resources</phase>
 						<goals>
 							<goal>execute</goal>
 						</goals>
 						<configuration>
+							<skip>${db.skip.deployment.reset}</skip>
 						 	<orderFile>ascending</orderFile>
 							<fileset>
 								<basedir>src/main/sql/deployment_content</basedir>
@@ -997,6 +999,21 @@
 			<properties>
 				<skip.db>false</skip.db>
 				<db.skip.testData>false</db.skip.testData>
+				<db.skip.deployment.reset>true</db.skip.deployment.reset>
+			</properties>
+		</profile>
+		<!-- If we are recreating the database by default the deployment rest will not happen; 
+			if the db.skip.testData = true is passed in, then we are creating a production instance for the first time so reset. -->
+		<profile>
+			<id>create_dist_db</id>
+			<activation>
+				<property>
+					<name>db.skip.testData</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<db.skip.deployment.reset>false</db.skip.deployment.reset>
 			</properties>
 		</profile>
 		<profile>
