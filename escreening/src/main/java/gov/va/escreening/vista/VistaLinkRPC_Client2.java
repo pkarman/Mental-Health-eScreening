@@ -288,8 +288,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
     /**
      * Implementation of Appendix D, Para D9 of CPRS Reminder Dialogs
      *
-     * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-
-     * iE9sIdHle5u79F0_qrU/edit#
+     * @see https://docs.google.com/document/d/1mzRgPRvxdPH8rGt6yGtJykn-iE9sIdHle5u79F0_qrU/edit#
      */
     @Override
     public Map<String, Object> saveTBIConsultOrders(
@@ -352,74 +351,40 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 Map<String, Object> respLstMap = new LinkedHashMap<String, Object>();
 
                 // 1. ARRAY(OrderIEN,1)=IEN of Service (Step D3)
-                respLstMap
-                        .put(RpcRequest.buildMultipleMSubscriptKey(String
-                                        .format("%s,1", respListMap.get("ORDERABLEIEN"
-                                                .toUpperCase()))),
-                                getTbiServiceName());
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("ORDERABLEIEN".toUpperCase()))),getTbiServiceName());
                 // 2. ARRAY(CommentIEN,1)=”ORDIALOG("”WP”",CommentIEN,1)”
                 Long commentIEN = respListMap.get("CommentIEN".toUpperCase());
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                        .format("%s,1", commentIEN)), String.format(
-                        "ORDIALOG(\"WP\",%s,1)", commentIEN));
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", commentIEN)), String.format("ORDIALOG(\"WP\",%s,1)", commentIEN));
                 // 3. ARRAY(“WP”,CommentIEN,1,#,0)=TEXT FOR LINE # (Step D8)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("\"WP\",%s,1,1,0", commentIEN)),
-                        prepareTbiConsultReasonText(exportColumnsMap));
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),prepareTbiConsultReasonText(exportColumnsMap));
                 // 4. ARRAY(ClassIEN,1)= Class(“O” or “I”)(Step D6a)
-                Long patientIen = Long.valueOf(veteranAssessment.getVeteran()
-                        .getVeteranIen());
-                Boolean partInpatient = findPatientDemographics(patientIen)
-                        .getInpatientStatus();
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("%s,1",
-                                        respListMap.get("ClassIEN".toUpperCase()))),
-                        partInpatient ? "I" : "O");
+                Long patientIen = Long.valueOf(veteranAssessment.getVeteran().getVeteranIen());
+                Boolean partInpatient = findPatientDemographics(patientIen).getInpatientStatus();
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("ClassIEN".toUpperCase()))),partInpatient ? "I" : "O");
 
                 // 5. ARRAY(UrgencyIEN,1)=IEN for Urgency (Step D2)
                 Map<String, Map<String, String>> consultInfoMap = getConsultInfo("C");
-                Map<String, String> urgencyMap = partInpatient ? consultInfoMap
-                        .get("inpatient_urgencies") : consultInfoMap
-                        .get("outpatient_urgencies");
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("%s,1",
-                                        respListMap.get("UrgencyIEN".toUpperCase()))),
+                Map<String, String> urgencyMap = partInpatient ? consultInfoMap.get("inpatient_urgencies") : consultInfoMap.get("outpatient_urgencies");
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("UrgencyIEN".toUpperCase()))),
                         Long.valueOf(urgencyMap.get("ROUTINE")));
                 // 6. ARRAY(PlaceIEN,1)=IEN Place for Consult (Step D2)
-                Map<String, String> placeMap = partInpatient ? consultInfoMap
-                        .get("inpatient_places") : consultInfoMap
-                        .get("outpatient_places");
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("%s,1",
-                                        respListMap.get("PlaceIEN".toUpperCase()))),
-                        placeMap.get("CONSULTANT'S CHOICE"));
+                Map<String, String> placeMap = partInpatient ? consultInfoMap.get("inpatient_places") : consultInfoMap.get("outpatient_places");
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("PlaceIEN".toUpperCase()))),placeMap.get("CONSULTANT'S CHOICE"));
                 // 7. ARRAY(ProviderIEN,1)=IEN of Provider’s Attention (Step D4)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("%s,1",
-                                        respListMap.get("ProviderIEN".toUpperCase()))),
-                        "");
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("ProviderIEN".toUpperCase()))),"");
+
+                // TODO (krizvi) revisit this to put this back if 'M' does not like this omit
                 // 8. ARRAY(EarliestIEN,1)=Earliest Appt Date (Step D6b)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("%s,1",
-                                        respListMap.get("EarliestIEN".toUpperCase()))),
-                        "TODAY");
-                // 9. ARRAY(MiscIEN,1)=Provisional Diagnosis (Free Text) (Step
-                // D6c)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                                .format("%s,1",
-                                        respListMap.get("MiscIEN".toUpperCase()))),
-                        "Positive OIF/OEF TBI screen.");
+                //respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("EarliestIEN".toUpperCase()))),"TODAY");
+
+                // 9. ARRAY(MiscIEN,1)=Provisional Diagnosis (Free Text) (Step D6c)
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("MiscIEN".toUpperCase()))),"Positive OIF/OEF TBI screen.");
                 // 10. ARRAY(CodeIEN,1)=Not used?
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String
-                        .format("%s,1",
-                                respListMap.get("CodeIEN".toUpperCase()))), "");
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1",respListMap.get("CodeIEN".toUpperCase()))), "");
                 // 11. ARRAY("ORCHECK")=Num of order checks (Always “0” ?)
-                respLstMap
-                        .put(RpcRequest
-                                .buildMultipleMSubscriptKey("\"ORCHECK\""), 0);
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey("\"ORCHECK\""), 0);
                 // 12. ARRAY("ORTS")=IEN of Treating Specialty (Always “0” ?)
-                respLstMap.put(
-                        RpcRequest.buildMultipleMSubscriptKey("\"ORTS\""), 0);
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey("\"ORTS\""), 0);
 
                 return respLstMap;
             }
