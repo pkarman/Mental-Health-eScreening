@@ -32,7 +32,7 @@
 		<sample.patient.ien>100022</sample.patient.ien>
 		<skip.db>true</skip.db>
 		<db.skip.testData>true</db.skip.testData>
-		<db.skip.deployment.reset>false</db.skip.deployment.reset>
+		<db.skip.deployment.reset>true</db.skip.deployment.reset>
 	</properties>
 	<dependencies>
 		<!-- Web Services -->
