@@ -204,9 +204,10 @@ abstract class Resolver {
 
 
 	protected String generateRowId(String partialRowId, String salt, int index) {
-		String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + partialRowId + salt) : salt);
-		String rowId = String.format("%s_%s_%s", ddh.EXPORT_KEY_PREFIX, mId, index);
-		return rowId;
+		//String mId = String.format("%s", ddh.SALT_DEFAULT.equals(salt) ? ("" + partialRowId + salt) : salt);
+		//String rowId = String.format("%s_%s_%s", ddh.EXPORT_KEY_PREFIX, mId, index);
+		//return rowId;
+        return String.format("%s_%s", ddh.EXPORT_KEY_PREFIX, System.nanoTime());
 	}
 
 	protected void addRow(Table<String, String, String> t, String rowId,
