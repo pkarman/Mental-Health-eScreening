@@ -1,0 +1,26 @@
+-- Clean out all exported tables
+DELETE FROM dashboard_alert WHERE TRUE;
+DELETE FROM rule_event WHERE TRUE;
+DELETE FROM `event` WHERE TRUE;
+DELETE FROM rule_assessment_variable WHERE TRUE;
+DELETE FROM rule WHERE TRUE;
+DELETE FROM clinical_reminder_survey WHERE TRUE;
+DELETE FROM health_factor WHERE TRUE;
+DELETE FROM clinical_reminder WHERE TRUE;
+DELETE FROM variable_template WHERE TRUE;
+DELETE FROM assessment_formula WHERE TRUE;
+DELETE FROM assessment_var_children WHERE TRUE;
+DELETE FROM assessment_variable WHERE TRUE;
+DELETE FROM survey_template WHERE TRUE;
+DELETE FROM battery_template WHERE TRUE;
+DELETE FROM template WHERE TRUE;
+DELETE FROM measure_validation WHERE TRUE;
+DELETE FROM measure_answer WHERE TRUE;
+DELETE FROM survey_page_measure WHERE TRUE;
+DELETE FROM measure WHERE parent_measure_id is NOT NULL;
+DELETE FROM measure WHERE TRUE;
+DELETE FROM survey_page WHERE TRUE;
+DELETE FROM battery_survey WHERE TRUE;
+DELETE FROM battery WHERE TRUE;
+DELETE FROM survey WHERE TRUE;
+DELETE FROM survey_section WHERE TRUE;
