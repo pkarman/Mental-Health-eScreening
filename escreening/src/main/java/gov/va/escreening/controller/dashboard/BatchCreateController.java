@@ -147,20 +147,6 @@ public class BatchCreateController {
 
         model.addAttribute("veteransSize", vetList.size());
         model.addAttribute("veterans", vetList);
-        Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
-
-        // Now getting the list of the surveys per veteran
-        for (VeteranWithClinicalReminderFlag v : vetList) {
-            Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate
-                    .getPreSelectedSurveyMap(user, v.getVeteranIen());
-            if (!autoAssignedSurveyMap.isEmpty()) {
-                vetSurveyMap.put(v.getVeteranId(),
-                        new HashSet(autoAssignedSurveyMap.keySet()));
-                v.setDueClinicalReminders(true);
-            }
-        }
-
-        model.addAttribute("vetSurveyMap", vetSurveyMap);
         //batchCreateFormBean.setVetSurveyMap(vetSurveyMap);
 
         model.addAttribute("isCprsVerified", user.getCprsVerified());
@@ -244,6 +230,34 @@ public class BatchCreateController {
 
         //Set pre-selected
         Map<Integer, Integer> preselectedSurveys = new HashMap<Integer, Integer>();
+
+        Map<Integer, Set<Integer>> vetSurveyMap = new HashMap<Integer, Set<Integer>>();
+
+        // Now getting the list of the surveys per veteran
+        for (VeteranWithClinicalReminderFlag v : vetList) {
+            Map<Integer, String> autoAssignedSurveyMap = createAssessmentDelegate
+                    .getPreSelectedSurveyMap(user, v.getVeteranIen());
+            if (!autoAssignedSurveyMap.isEmpty()) {
+                vetSurveyMap.put(v.getVeteranId(),
+                        new HashSet(autoAssignedSurveyMap.keySet()));
+                v.setDueClinicalReminders(true);
+            }
+
+            // For each survey, pre-select it and also indicate reason in
+            // the note.
+            if (autoAssignedSurveyMap != null && !autoAssignedSurveyMap.isEmpty()) {
+                for (int i = 0; i < surveyList.size(); ++i) {
+                    Integer surveyId = surveyList.get(i).getSurveyId();
+
+                    // Preselect it and populate note field.
+                    if (autoAssignedSurveyMap.containsKey(surveyId)) {
+                        surveyList.get(i).setNote(autoAssignedSurveyMap.get(surveyId));
+                    }
+                }
+            }
+        }
+
+        model.addAttribute("vetSurveyMap", vetSurveyMap);
 
         for (Map.Entry<Integer, Set<Integer>> entry : vetSurveyMap.entrySet()) {
             for (Integer surveyId : entry.getValue()) {

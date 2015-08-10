@@ -18,36 +18,7 @@ $(document).ready(function() {
 	// Load Selected Program
 	loadSelectedProgram();
 	
-	// Tri State Check
-   	var $check = $(".tri input[type=checkbox]"), el;
-	$check
-   .data('checked',0)
-   .click(function(e) {
-        el = $(this);  
-        switch(el.data('checked')) {
-            // unchecked, going indeterminate
-            case 0:
-                el.data('checked',1);
-                el.prop('indeterminate',true);
-				el.prop('checked',false);
-                break;
-            
-            // indeterminate, going checked
-            case 1:
-                el.data('checked',2);
-                el.prop('indeterminate',false);
-                el.prop('checked',true);       
-                break;
-            
-            // checked, going unchecked
-            default:  
-                el.data('checked',0);
-                el.prop('indeterminate',false);
-                el.prop('checked',false);
-        }
-    });
-	
-	
+
 	/* Need to clean - From edit Veteran Assessment */
 	var module_values = [];
 	var reset_check = false;
