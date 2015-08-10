@@ -43,7 +43,7 @@
 		primaryStation="${vista.primaryStation}" 
 		access-code="${vista.accessCode}"
 		verify-code="${vista.verifyCode}" 
-		encrypted="true"
+		encrypted="${vista.encrypt}" 
 		enabled="true" timeout="240" always-use-default-as-min="false"/>
 
 </connectors>
