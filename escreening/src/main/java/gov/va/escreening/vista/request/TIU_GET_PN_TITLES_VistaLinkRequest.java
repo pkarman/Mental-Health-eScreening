@@ -45,6 +45,7 @@ public class TIU_GET_PN_TITLES_VistaLinkRequest extends VistaLinkBaseRequest<Str
 		request.setRpcName("TIU GET PN TITLES");
 		request.clearParams();
 
+		if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]",request.getRpcName()));}
 		RpcResponse response = connection.executeRPC(request);
 
 		if (logger.isDebugEnabled()) {

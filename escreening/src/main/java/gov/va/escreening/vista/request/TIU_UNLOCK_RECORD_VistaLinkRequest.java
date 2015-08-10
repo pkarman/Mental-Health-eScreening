@@ -51,6 +51,7 @@ public class TIU_UNLOCK_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Str
         request.clearParams();
         request.setParams(requestParams);
 
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
         logger.debug("UnLock Progress Note Response: " + response.getResults());
 

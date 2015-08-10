@@ -245,6 +245,7 @@ public class Vista_Story40_RpcTest {
 			RpcRequest vReq = createRpcRequest("ORQQPXRM REMINDER DIALOG", "XOBV VISTALINK TESTER", vistaLinkConnection, true);
 			vReq.setParams(Arrays.asList("793", "100687"));
 
+			if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",vReq.getRpcName(),vReq.getParams()));}
 			RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 			String results = vResp.getResults();
 			logger.warn(results);

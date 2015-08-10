@@ -113,6 +113,7 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Str
         request.setParams(requestParams);
 
         logger.info("TIU CREATE RECORD params:" + requestParams.toString());
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
         logger.debug("Create Progress Note Response: " + response.getResults());
 
