@@ -16,6 +16,7 @@ import gov.va.escreening.entity.DashboardAlert;
 import gov.va.escreening.entity.HealthFactor;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.AssessmentReportFormBean;
+import gov.va.escreening.form.AssessmentSummaryFormBean;
 import gov.va.escreening.form.ExportDataFormBean;
 
 import java.util.Date;
@@ -243,17 +244,6 @@ public interface VeteranAssessmentService {
     String getCprsNote(int veteranAssessmentId);
 
     /**
-     * Updates a veteran assessment.
-     * @param veteranAssessmentId
-     * @param clinicId
-     * @param noteTitleId
-     * @param clinicianId
-     * @param assessmentStatusId
-     */
-    void update(int veteranAssessmentId, Integer clinicId, Integer noteTitleId, Integer clinicianId,
-            Integer assessmentStatusId);
-
-    /**
      * Returns the list of titles of the health factors associated with veteran assessment.
      * @param veteranAssessmentId
      * @return
@@ -335,4 +325,6 @@ public interface VeteranAssessmentService {
     List<Report594DTO> findAlertsCount(String fromDate, String toDate, List<Integer> clinicIds);
 
     int getMissingEthnicityCount(List cList, String fromDate, String toDate);
+
+    void update(Integer veteranAssessmentId, AssessmentSummaryFormBean assessmentSummaryFormBean);
 }
