@@ -53,6 +53,24 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
         return veteranAssessmentList;
     }
+    
+    @Override
+    public List<VeteranAssessment> findAllByVeteranIdAndAssessmentStatusIdList(
+    		Integer veteranId, List<Integer> assessmentStatusIdList){
+    	
+    	List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
+
+        String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v JOIN va.assessmentStatus ast WHERE v.veteranId = :veteranId AND ast.assessmentStatusId IN (:assessmentStatusIdList) ORDER BY va.veteranAssessmentId";
+
+        if (assessmentStatusIdList != null && assessmentStatusIdList.size() > 0) {
+            TypedQuery<VeteranAssessment> query = entityManager.createQuery(sql, VeteranAssessment.class);
+            query.setParameter("veteranId", veteranId);
+            query.setParameter("assessmentStatusIdList", assessmentStatusIdList);
+            veteranAssessmentList = query.getResultList();
+        }
+
+        return veteranAssessmentList;
+    }
 
     @Override
     public List<VeteranAssessment> findByProgramIdList(

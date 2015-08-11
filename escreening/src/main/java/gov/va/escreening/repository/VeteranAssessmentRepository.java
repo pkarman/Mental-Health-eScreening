@@ -17,11 +17,19 @@ public interface VeteranAssessmentRepository extends RepositoryInterface<Veteran
     /**
      * @param veteranId
      * @param assessmentStatusIdList
-     * @return
+     * @return Will only return <strong>unarchived</strong> assessments which have one of the the given statuses.
      */
     List<VeteranAssessment> findByVeteranIdAndAssessmentStatusIdList(
             Integer veteranId, List<Integer> assessmentStatusIdList);
 
+    /**
+     * @param veteranId
+     * @param assessmentStatusIdList
+     * @return Will return <strong>any</strong> assessments which have one of the the given statuses.
+     */
+    List<VeteranAssessment> findAllByVeteranIdAndAssessmentStatusIdList(
+    		Integer veteranId, List<Integer> assessmentStatusIdList);
+    
     /**
      * @param programIdList
      * @return
