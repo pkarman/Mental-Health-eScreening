@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -53,7 +54,6 @@ import gov.va.escreening.repository.UserRepository;
 import gov.va.escreening.repository.VeteranAssessmentAuditLogRepository;
 import gov.va.escreening.repository.VeteranAssessmentDashboardAlertRepository;
 import gov.va.escreening.repository.VeteranAssessmentMeasureVisibilityRepository;
-import gov.va.escreening.repository.VeteranAssessmentNoteRepository;
 import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.repository.VeteranAssessmentSurveyRepository;
 import gov.va.escreening.repository.VeteranRepository;
@@ -84,6 +84,14 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     private static final Logger logger = LoggerFactory.getLogger(VeteranAssessmentServiceImpl.class);
     private static final int MAX_ASSESSMENT_HISTORY_COUNT = 15;
     private static final DateFormat variableSeriesDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    private static final List<Integer> ANSWERED_ASSESSMENT_STATUS_LIST = ImmutableList.of(
+    		AssessmentStatusEnum.INCOMPLETE.getAssessmentStatusId(),
+    		AssessmentStatusEnum.COMPLETE.getAssessmentStatusId(),
+    		AssessmentStatusEnum.ERROR.getAssessmentStatusId(),
+    		AssessmentStatusEnum.FINALIZED.getAssessmentStatusId(),
+    		AssessmentStatusEnum.REVIEWED.getAssessmentStatusId());
+    
+    
     @Resource(name = "esVeteranAssessmentDashboardAlertRepository")
     VeteranAssessmentDashboardAlertRepository vadar;
     @Resource(name = "dateValidationHelper")
@@ -110,8 +118,6 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
     private VeteranRepository veteranRepository;
     @Autowired
     private VeteranAssessmentAuditLogRepository veteranAssessmentAuditLogRepository;
-    @Autowired
-    private VeteranAssessmentNoteRepository veteranAssessmentNoteRepository;
     @Autowired
     private VeteranAssessmentSurveyRepository veteranAssessmentSurveyRepository;
     @Autowired
@@ -1159,7 +1165,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
             }
         }
         List<VeteranAssessment> assessmentList = veteranAssessmentRepository
-                .findByVeteranId(veteranId);
+        		.findAllByVeteranIdAndAssessmentStatusIdList(veteranId, ANSWERED_ASSESSMENT_STATUS_LIST);
 
         Collections.sort(assessmentList, new Comparator<VeteranAssessment>() {
 

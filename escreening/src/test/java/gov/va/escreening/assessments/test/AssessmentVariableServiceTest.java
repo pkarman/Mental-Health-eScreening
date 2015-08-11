@@ -6,12 +6,14 @@ import gov.va.escreening.entity.AssessmentVarChildren;
 import gov.va.escreening.entity.AssessmentVariable;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.repository.AssessmentVariableRepository;
+import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.test.TestAssessmentVariableBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,9 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
 	@Resource
     AssessmentVariableService avService;
 	
+	@Resource
+	VeteranAssessmentRepository assessmentRepo;
+	
     @Resource(type=AssessmentDelegate.class)
     AssessmentDelegate ad;
 
@@ -61,7 +66,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         assertEquals(1, timeSeries.size());
     }
 	
-   @Test
+    @Test
     public void testVeteran18_PHQ9TimeSeries(){
         Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(18, 1599, 12);
         assertNotNull(timeSeries);
@@ -82,6 +87,29 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         assertEquals(3, timeSeries.size());
     }
 
+	@Test
+    public void testVeteran16_PHQ9TimeSeries_archivedAssessments(){
+		//Set archive date for these
+		for(VeteranAssessment assessment : assessmentRepo.findByVeteranId(16)){
+			if(assessment.getDateArchived() != null){
+				throw new IllegalStateException("If archive date is set then this code must change");
+			}
+			assessment.setDateArchived(new Date());
+			assessmentRepo.update(assessment);
+		}
+		
+        Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(16, 1599, 12);
+        assertNotNull(timeSeries);
+        //clean assessments should not be returned so only 2 here
+        assertEquals(2, timeSeries.size());
+        
+        //unset archive date for these
+		for(VeteranAssessment assessment : assessmentRepo.findByVeteranId(16)){
+			assessment.setDateArchived(null);
+			assessmentRepo.update(assessment);
+		}
+    }
+	
     @Test
     public void testRecordAllReportableScores(){
         final VeteranAssessment testAssessment = vaSvc.findByVeteranAssessmentId(18);
