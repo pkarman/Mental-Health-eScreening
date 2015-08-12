@@ -11,9 +11,12 @@
 # In each release folder, local tags are used for each release to track what has been 
 # deployed. So for this simple way of tracking changes between deployments to work, we
 # have to have a release directory for each profile.
+# Troubleshooting:
+# If you see some maven error about a missing vistaLink dependency then you have to update your maven settings to point at our 
+# shared maven repo.  Add the following: <localRepository>D:\escreening\.m2\repository</localRepository>
 
-if [ $# != 13 ]; then
-	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen\n"
+if [ $# != 14 ]; then
+	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen samplePatientIen\n"
 	exit 1;
 fi
 
@@ -31,7 +34,7 @@ vistaVerifyCode=${10}
 vistaDuz=${11}
 vistaEncrypted=${12}
 quickOrderIen=${13}
-
+samplePatientIen=${14}
 
 webapps_dir="$INSTANCES_DIR/$instance/webapps"
 
@@ -91,8 +94,10 @@ mvn --quiet clean package -P$profile -DskipTests \
 "-Dvista.primaryStation=$vistaPrimaryStation" \
 "-Dvista.accessCode=$vistaAccessCode" \
 "-Dvista.verifyCode=$vistaVerifyCode" \
-"-Dvista.duz=$vistaDuz" "-Dvista.encrypt=$vistaEncrypted" \
-"-Dquick.order.ien=$quickOrderIen" $extraParams
+"-Dvista.duz=$vistaDuz" \
+"-Dvista.encrypt=$vistaEncrypted" \
+"-Dquick.order.ien=$quickOrderIen" \
+"-Dsample.patient.ien=$samplePatientIen" $extraParams
 
 
 printf "\n\nIf there are no errors, please stop service tomcat-$instance then hit enter to continue\n\n"
