@@ -535,6 +535,7 @@ public class VistaServiceImpl implements VistaService {
 
                 if (!existingDbClinicalReminder.containsKey(cr.getClinicalReminderName())) {
 
+                    logger.info("Creating new clinical reminder {}", cr);
                     clinicalReminderService.create(cr.getClinicalReminderName(),
                             cr.getClinicalReminderIen(),
                             cr.getPrintName(),
@@ -551,7 +552,7 @@ public class VistaServiceImpl implements VistaService {
                         existing.setVistaIen(cr.getClinicalReminderIen());
                         clinicalReminderRepo.update(existing);
                         ++refreshCount;
-                        logger.info("Updated clinical reminder " + existing.getName());
+                        logger.info("Updated existing clinical reminder {}", existing.getName());
                     }
                 }
             }
@@ -723,11 +724,13 @@ public class VistaServiceImpl implements VistaService {
         int numRecord = 0;
         List<Survey> surveyList = surveyRepo.getMhaSurveyList();
 
+        logger.debug("refreshing MHA IENs for surveys");
         for (Survey s : surveyList)
         {
             if (s.getClinicalReminderSurveyList() != null && !s.getClinicalReminderSurveyList().isEmpty())
             {
                 String ien = s.getClinicalReminderSurveyList().get(0).getClinicalReminder().getVistaIen();
+                
                 List<DialogComponent> componentList = vistaRepository.getClinicalReminderDialogs(division, vpid, duz,
                         appProxyName, ien);
 
