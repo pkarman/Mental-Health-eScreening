@@ -367,20 +367,15 @@ public class VistaRepositoryImpl implements VistaRepository {
                 }
             }
 
-            if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",vReq.getRpcName(),vistaRpcParamList));}
+            logger.debug("RPC NAME:[{}]--REQ STRING:[{}]", vReq.getRpcName(), vistaRpcParamList);
+            
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
-            logger.debug("Vista Response: for " + rpcName + " \n" + results);
+            logger.debug("Vista Response: for {} \n{}", rpcName, results);
             return vistaRecordExtractor.extractData(results);
-        } catch (VistaLinkFaultException e) {
-            logger.error("Exception thrown query: ", e);
-            throw new VistaLinkException(e.toString());
-        } catch (ResourceException e) {
-            logger.error("Exception thrown query: ", e);
-            throw new VistaLinkException(e.toString());
-        } catch (FoundationsException e) {
-            logger.error("Exception thrown query: ", e);
+        } catch (ResourceException|FoundationsException e) {
+            logger.error("Vista query exception thrown: ", e);
             throw new VistaLinkException(e.toString());
         } finally {
             if (vistaLinkConnection != null) {
@@ -497,6 +492,9 @@ public class VistaRepositoryImpl implements VistaRepository {
     public List<DialogComponent> getClinicalReminderDialogs(String division,
                                                             String vpid, String duz, String appProxyName,
                                                             String clinicalReminderIEN) {
+    	logger.debug("getClinicalReminderDialogs(division={}, vpid={}, duz={}, appProxyName={}, clinicalReminderIEN={});\nusing samplePatientIen={}",
+    			new Object[]{division, vpid, duz, appProxyName, clinicalReminderIEN, samplePatientIen});
+    	
         List<VistaRpcParam> params = new ArrayList<VistaRpcParam>();
         params.add(new VistaRpcParam("string", clinicalReminderIEN));
         params.add(new VistaRpcParam("string", samplePatientIen));
