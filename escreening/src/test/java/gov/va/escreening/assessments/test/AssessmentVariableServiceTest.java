@@ -84,7 +84,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
     public void testVeteran16_PHQ9TimeSeries(){
         Map<String, Double> timeSeries = vaSvc.getVeteranAssessmentVariableSeries(16, 1599, 12);
         assertNotNull(timeSeries);
-        assertEquals(3, timeSeries.size());
+        assertEquals(2, timeSeries.size());
     }
 
 	@Test
