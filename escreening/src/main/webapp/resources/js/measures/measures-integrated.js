@@ -591,8 +591,8 @@ function buildFormFromJSON(json){
 	$('#assessmentContainer').empty();
 	
 	if(json.assessment.isComplete){
-		$('#viewTitle').text("Completion Screen"); // This is a dummy text for now
-		document.title = "Completion Screen";		 // This is also a dummy text for now
+		$('#viewTitle').text("Final Page"); // This is a dummy text for now
+		document.title = "Final Page";		 // This is also a dummy text for now
 		var strForm = createSurveyCompleForm(json);
 		$('#assessmentContainer').append(strForm);
 		surveyCompleteFormActions(json);
