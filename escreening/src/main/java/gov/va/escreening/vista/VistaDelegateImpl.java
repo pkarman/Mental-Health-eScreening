@@ -478,9 +478,8 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
     private HealthFactorProvider createHealthFactorProvider(
             VeteranAssessment veteranAssessment) {
-        // t951 do not save provider info.
-        String ien = ""; //veteranAssessment.getClinician().getVistaDuz();
-        String name = ""; //veteranAssessment.getClinician().getLastName() + "," + veteranAssessment.getClinician().getFirstName();
+        String ien = veteranAssessment.getClinician().getVistaDuz();
+        String name = veteranAssessment.getClinician().getLastName() + "," + veteranAssessment.getClinician().getFirstName();
         Boolean primaryPhysician = false; // TODO: Need to determine if the
         // escreen user is the primary physician.
         return new HealthFactorProvider(ien, name, primaryPhysician);
