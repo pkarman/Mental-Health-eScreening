@@ -263,6 +263,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
         // Use VistaClient to save to VistA
         if (healthFactorSet != null) {
+            visitDate=visitString.split(";")[1];
             if (!healthFactorSet.getCurrentHealthFactors().isEmpty()) {
                 healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.AMBULATORY, false, visitDate);
                 saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, false, healthFactorSet.getCurrentHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
