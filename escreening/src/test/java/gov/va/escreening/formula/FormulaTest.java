@@ -78,6 +78,11 @@ public class FormulaTest {
         String result = expressionEvaluator.evaluateFormula("T(Math).max(3.34,2.23)", null);
         Assert.isTrue(result.equals("3.34"));
     }
+    @Test
+    public void testRoundingOfIntegers() {
+        String result = expressionEvaluator.evaluateFormula("T(Math).round((3+2)/2.0)", null);
+        String result1 = expressionEvaluator.evaluateFormula("(3+2)/2.0", null);
+    }
 
     @Test
     public void showFormulasWith_AvId_Plus_AvDisplayName_Plus_OrigFormulaTemplate_Plus_FormulasWithDisplayNames() {
