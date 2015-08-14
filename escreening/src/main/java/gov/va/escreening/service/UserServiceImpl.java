@@ -19,6 +19,7 @@ import gov.va.escreening.repository.UserStatusRepository;
 import gov.va.escreening.security.LoginHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -123,6 +124,23 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<UserDto> getUserDtoByRole(RoleEnum role){
+    	List<User> userList = userRepository.findByRoleId(role);
+    	
+    	if(userList == null){
+    		return Collections.emptyList();
+    	}
+    	
+    	List<UserDto> userDtoList = new ArrayList<>(userList.size());
+    	for(User user : userList){
+    		userDtoList.add(initializeUserDto(user));
+    	}
+        
+        return userDtoList;
+    }
+    
     private UserDto initializeUserDto(User user) {
         UserDto userDto = new UserDto();
 

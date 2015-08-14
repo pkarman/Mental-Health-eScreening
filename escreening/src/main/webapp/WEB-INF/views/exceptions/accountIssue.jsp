@@ -43,8 +43,27 @@
 				<span class="exceptionContentLabel"> </span>
 				<div class="exceptionAddressDetails">
 					<strong>Mon - Fri:</strong> 7:30 - 4:00<br />
-					<strong>Phone:</strong> (858) 552-8585 x5550 <br />
-				  <strong>Email:</strong> <a href="mailto:elizabeth.floto@va.gov">elizabeth.floto@va.gov</a> </div>
+					
+					<c:forEach items="${techAdminList}" var="techAdmin">
+					
+						<c:if test="${not empty techAdmin.phoneNumber || not empty techAdmin.emailAddress}">
+							
+							<div class="listEntry">
+								<div><strong>${techAdmin.firstName} ${techAdmin.lastName}</strong></div>
+								<c:if test="${not empty techAdmin.phoneNumber}"> 
+									<div><strong>Phone:</strong>${techAdmin.phoneNumber}</div>
+								</c:if>
+								<c:if test="${not empty techAdmin.emailAddress}"> 
+					  				<div>
+					  					<strong>Email:</strong> 
+					  					<a href="mailto:${techAdmin.emailAddress}">${techAdmin.emailAddress}</a>
+					  				</div>
+					  			</c:if>
+							</div>
+						
+					    </c:if>
+					</c:forEach>
+				</div>
 			</div>
 		</div>
 		
