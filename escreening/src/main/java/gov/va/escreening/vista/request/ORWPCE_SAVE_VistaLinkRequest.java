@@ -74,7 +74,8 @@ public class ORWPCE_SAVE_VistaLinkRequest extends VistaLinkBaseRequest<String> i
             visitData.add(healthFactorVisitData.toString());
         }
 
-        visitData.add(this.healthFactorProvider.toString());
+        // t951 skip the PRV all together
+        //visitData.add(this.healthFactorProvider.toString());
 
         //TODO: Re-factor to include Immunizations and Health Factors in one collection as they both use the same base sequence number.
         for(HealthFactor healthFactor: this.healthFactors) {
