@@ -1,5 +1,6 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.domain.RoleEnum;
 import gov.va.escreening.domain.UserDto;
 import gov.va.escreening.domain.UserListDto;
 import gov.va.escreening.dto.DropDownObject;
@@ -52,6 +53,13 @@ public interface UserService {
      */
     UserDto getUserDtoByUserId(Integer userId);
 
+    /**
+     * Retrieves all users with the given user role 
+     * @param role
+     * @return list of UserDtos for the given role
+     */
+    List<UserDto> getUserDtoByRole(RoleEnum role);
+    
     /**
      * Creates a new user.
      * @param userDto

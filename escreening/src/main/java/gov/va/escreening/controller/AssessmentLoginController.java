@@ -4,7 +4,6 @@ import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.entity.VeteranAssessment;
 import gov.va.escreening.form.AssessmentLoginFormBean;
-import gov.va.escreening.service.VeteranService;
 import gov.va.escreening.validation.AssessmentLoginFormBeanValidator;
 
 import java.text.ParseException;
@@ -39,9 +38,6 @@ public class AssessmentLoginController {
 
 	@Autowired
 	private AssessmentDelegate assessmentDelegate;
-
-	@Autowired
-	private VeteranService veteranService;
 
 	@ModelAttribute
 	public AssessmentLoginFormBean getAssessmentLoginFormBean() {
