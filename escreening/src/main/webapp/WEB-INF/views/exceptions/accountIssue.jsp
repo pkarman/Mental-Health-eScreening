@@ -37,12 +37,11 @@
 		
 		<div class="exceptionWrapper">
 			<div class="exceptionLabel">
-			  For further assistance, please contact the Healthcare System Technical Administrator.
+			  For further assistance, please contact a Healthcare System Technical Administrator.
 			</div>
 			<div class="exceptionContent">
 				<span class="exceptionContentLabel"> </span>
 				<div class="exceptionAddressDetails">
-					<strong>Mon - Fri:</strong> 7:30 - 4:00<br />
 					
 					<c:forEach items="${techAdminList}" var="techAdmin">
 					
