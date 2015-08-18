@@ -18,6 +18,7 @@ public class VistaUtils {
 
     /**
      * Converts a VistA date time string to a date object.
+     *
      * @param vistaDateString
      * @return
      */
@@ -34,28 +35,28 @@ public class VistaUtils {
 
             if (vistaDateString.contains(";")) {
                 String[] components = StringUtils.splitPreserveAllTokens(vistaDateString, ';');
-                if (components.length != 3) throw new IllegalArgumentException("VistaDateString(\"+ vistaDateString+\") format is not valid.  Valid format is \"<Location IEN>;<Date/Time>;<Service Category>\" i.e. 32;3140422.165720;X");
+                if (components.length != 3)
+                    throw new IllegalArgumentException("VistaDateString(\"+ vistaDateString+\") format is not valid.  Valid format is \"<Location IEN>;<Date/Time>;<Service Category>\" i.e. 32;3140422.165720;X");
                 components = StringUtils.splitPreserveAllTokens(components[1], '.');
                 dateComponent = components[0];
                 timeComponent = components[1];
 
             } else if (vistaDateString.contains(".")) {
                 String[] components = StringUtils.splitPreserveAllTokens(vistaDateString, '.');
-                if (components.length != 2) throw new IllegalArgumentException("VistaDateString(\"+ vistaDateString+\") format is not valid.  Valid format is \"YYYMMDD.HHMMSS\" i.e. 3140422.165720");
+                if (components.length != 2)
+                    throw new IllegalArgumentException("VistaDateString(\"+ vistaDateString+\") format is not valid.  Valid format is \"YYYMMDD.HHMMSS\" i.e. 3140422.165720");
                 dateComponent = components[0];
                 timeComponent = components[1];
-            }
-            else if (vistaDateString.length() == 7) {
+            } else if (vistaDateString.length() == 7) {
                 dateComponent = vistaDateString;
                 timeComponent = "000000";
             } else {
-                throw new IllegalArgumentException("VistaDateString("+ vistaDateString+") format is not supported.  There are 3 supported formats for a vista date string:\nValid format is \"<Location IEN>;<Date/Time>;<Service Category>\" i.e. 32;3140422.165720;X\nValid format is \"YYYMMDD.HHMMSS\" i.e. 3140422.165720\nValid format is \"YYYMMDD\" i.e. 3140422");
+                throw new IllegalArgumentException("VistaDateString(" + vistaDateString + ") format is not supported.  There are 3 supported formats for a vista date string:\nValid format is \"<Location IEN>;<Date/Time>;<Service Category>\" i.e. 32;3140422.165720;X\nValid format is \"YYYMMDD.HHMMSS\" i.e. 3140422.165720\nValid format is \"YYYMMDD\" i.e. 3140422");
             }
 
             if (timeComponent == null) {
                 timeComponent = "000000";
-            }
-            else {
+            } else {
                 timeComponent = StringUtils.rightPad(timeComponent, 6, "0");
             }
 
@@ -67,7 +68,7 @@ public class VistaUtils {
             date = sdf.parse(dateComponent);
         } catch (ParseException e) {
             logger.error("Failed to convert VistA date string: " + vistaDateString, e);
-            throw new IllegalArgumentException("VistaDateString("+ vistaDateString+") format is not supported.  There are 3 supported formats for a vista date string:\nValid format is \"<Location IEN>;<Date/Time>;<Service Category>\" i.e. 32;3140422.165720;X\nValid format is \"YYYMMDD.HHMMSS\" i.e. 3140422.165720\nValid format is \"YYYMMDD\" i.e. 3140422");
+            throw new IllegalArgumentException("VistaDateString(" + vistaDateString + ") format is not supported.  There are 3 supported formats for a vista date string:\nValid format is \"<Location IEN>;<Date/Time>;<Service Category>\" i.e. 32;3140422.165720;X\nValid format is \"YYYMMDD.HHMMSS\" i.e. 3140422.165720\nValid format is \"YYYMMDD\" i.e. 3140422");
         }
 
         return date;
@@ -75,6 +76,7 @@ public class VistaUtils {
 
     /**
      * Breaks up a component of a VistA veteran name string and returns a NameDto object.
+     *
      * @param vistaNameString
      * @return
      */
@@ -90,13 +92,13 @@ public class VistaUtils {
         String[] nameFields = StringUtils.splitPreserveAllTokens(vistaNameString, ',');
 
         // 1. Last Name
-        nameDto.setLastName(nameFields[0]);
+        nameDto.setLastName(nameFields.length > 0 ? nameFields[0] : "");
 
         if (nameFields.length > 1) {
             // 2. First Name and Middle Name. User can have > 1 middle name separated by " "
             String[] firstMiddleNameComponents = StringUtils.split(nameFields[1], " ", 2);
 
-            nameDto.setFirstName(firstMiddleNameComponents[0]);
+            nameDto.setFirstName(firstMiddleNameComponents.length > 0 ? firstMiddleNameComponents[0] : "");
 
             if (firstMiddleNameComponents.length > 1) {
                 nameDto.setMiddleName(firstMiddleNameComponents[1]);
@@ -108,6 +110,7 @@ public class VistaUtils {
 
     /**
      * Reads the data portion of a string based on the data label.
+     *
      * @param text
      * @param dataLabel
      * @return
@@ -125,8 +128,7 @@ public class VistaUtils {
 
                 if (StringUtils.isBlank(text.charAt(i) + "")) {
                     break;
-                }
-                else {
+                } else {
                     sb.append(text.charAt(i));
                 }
             }
@@ -134,14 +136,14 @@ public class VistaUtils {
 
         if ("UNSPECIFIED".equals(sb.toString())) {
             return null;
-        }
-        else {
+        } else {
             return sb.toString();
         }
     }
 
     /**
      * Converts a date into a VistA date time string.
+     *
      * @param date
      * @return
      */
@@ -158,13 +160,13 @@ public class VistaUtils {
     /**
      * Convenience method that gets the Vista Date from the Vista Visit String.
      *
-     * @param vistaVisitString  Represents the Vista Visit String for which the Vista Date is in.
-     * @return  The Vista Date as a String.
+     * @param vistaVisitString Represents the Vista Visit String for which the Vista Date is in.
+     * @return The Vista Date as a String.
      */
     public static String getVistaDateString(String vistaVisitString) {
         String[] vistaVisitStringArray = vistaVisitString.split(";");
-        if(vistaVisitStringArray.length != 3) {
-            String errorMsg = "Invalid Vista Visit String ("+vistaVisitString+").  Valid format is '[Clinic IEN];[Visit Date String];[Service Category]";
+        if (vistaVisitStringArray.length != 3) {
+            String errorMsg = "Invalid Vista Visit String (" + vistaVisitString + ").  Valid format is '[Clinic IEN];[Visit Date String];[Service Category]";
             throw new IllegalArgumentException(errorMsg);
         }
         return vistaVisitStringArray[1];
@@ -173,13 +175,13 @@ public class VistaUtils {
     /**
      * Convenience method that gets the Clinic IEN from the Vista Visit String.
      *
-     * @param vistaVisitString  Represents the Vista Visit String for which the Clinic IEN is in.
-     * @return  The Clinic IEN as a String.
+     * @param vistaVisitString Represents the Vista Visit String for which the Clinic IEN is in.
+     * @return The Clinic IEN as a String.
      */
     public static String getClinicIEN(String vistaVisitString) {
         String[] vistaVisitStringArray = vistaVisitString.split(";");
-        if(vistaVisitStringArray.length != 3) {
-            String errorMsg = "Invalid Vista Visit String ("+vistaVisitString+").  Valid format is '[Clinic IEN];[Visit Date String];[Service Category]";
+        if (vistaVisitStringArray.length != 3) {
+            String errorMsg = "Invalid Vista Visit String (" + vistaVisitString + ").  Valid format is '[Clinic IEN];[Visit Date String];[Service Category]";
             throw new IllegalArgumentException(errorMsg);
         }
         return vistaVisitStringArray[0];
