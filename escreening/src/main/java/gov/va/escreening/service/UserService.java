@@ -58,7 +58,7 @@ public interface UserService {
      * @param role
      * @return list of UserDtos for the given role
      */
-    List<UserDto> getUserDtoByRole(RoleEnum role);
+    List<User> getUserByRole(RoleEnum role);
     
     /**
      * Creates a new user.

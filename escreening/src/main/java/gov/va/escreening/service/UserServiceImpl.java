@@ -126,19 +126,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserDto> getUserDtoByRole(RoleEnum role){
+    public List<User> getUserByRole(RoleEnum role){
     	List<User> userList = userRepository.findByRoleId(role);
     	
     	if(userList == null){
     		return Collections.emptyList();
     	}
-    	
-    	List<UserDto> userDtoList = new ArrayList<>(userList.size());
-    	for(User user : userList){
-    		userDtoList.add(initializeUserDto(user));
-    	}
-        
-        return userDtoList;
+    	return userList;
     }
     
     private UserDto initializeUserDto(User user) {

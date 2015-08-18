@@ -50,7 +50,12 @@
 							<div class="listEntry">
 								<div><strong>${techAdmin.firstName} ${techAdmin.lastName}</strong></div>
 								<c:if test="${not empty techAdmin.phoneNumber}"> 
-									<div><strong>Phone:</strong>${techAdmin.phoneNumber}</div>
+									<div>
+										<strong>Phone:</strong> ${techAdmin.phoneNumber} 
+										<c:if test="${not empty techAdmin.phoneNumberExt}">
+										X ${techAdmin.phoneNumberExt}
+										</c:if>
+									</div>
 								</c:if>
 								<c:if test="${not empty techAdmin.emailAddress}"> 
 					  				<div>

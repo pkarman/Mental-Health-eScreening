@@ -24,7 +24,7 @@ public class ExceptionPageController {
 
         logger.debug("AccountIssue page called");
         
-        model.addAttribute("techAdminList", userService.getUserDtoByRole(RoleEnum.TECH_ADMIN));
+        model.addAttribute("techAdminList", userService.getUserByRole(RoleEnum.TECH_ADMIN));
 
         return "exceptions/accountIssue";
     }
