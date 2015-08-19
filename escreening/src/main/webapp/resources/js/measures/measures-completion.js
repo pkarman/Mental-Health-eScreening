@@ -10,10 +10,6 @@ function createSurveyCompleForm(json) {
 	var formContainer = $('<div id="formContainer">');
 	var formElements = $('<ul id="centerItemList">');
 	
-	var txt1 = " You have completed the VA San Diego eScreening Questionnaire!";
-	
-	var completionInfo = "<div id='completionInfo'>"+txt1+"</div>";
-	
 	var questionCompleteGraphics = "<div id='questionCompleteGraphics'></div>";
 	
 	// Buttons
@@ -22,7 +18,6 @@ function createSurveyCompleForm(json) {
 							"<div id='surveyFinishedButton' style='margin-left:2px;'><input id='completedButton' class='answerButton' type='button' value='I am finished with the questionnaire'></div>" +
 						"</div>";
 	
-	formElements.append(completionInfo);
 	formElements.append(questionCompleteGraphics);
 	formElements.append(buttonWrapper);
 	

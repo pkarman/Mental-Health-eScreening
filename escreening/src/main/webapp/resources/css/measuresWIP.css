@@ -844,12 +844,6 @@ td.matrixQuestionText input.selectOther{
 	margin: 10px 0px;
 }
 
-#completionInfo {
-	font-size: 22px;
-	margin: 10px 0px 10px 20px;
-	font-weight: bold;
-}
-
 #completionText {
 	border-bottom: 1px solid #666;
 	word-wrap: break-word;
