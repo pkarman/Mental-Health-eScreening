@@ -1,6 +1,7 @@
 package gov.va.escreening.service.export;
 
 import com.google.common.collect.Lists;
+import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.service.AssessmentVariableService;
 import gov.va.escreening.service.AvBuilder;
@@ -132,7 +133,14 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
     class MeasureNameExtractor implements ExportNameExtractor {
         public String extractExportName(AssessmentVarChildren avc) {
             Measure m = avc.getVariableChild().getMeasure();
-            String exportName = m != null && !m.getMeasureAnswerList().isEmpty() ? m.getMeasureAnswerList().iterator().next().getIdentifyingText() : avc.getVariableChild().getDisplayName();
+            String exportName = "";
+            if (m != null &&
+                    (m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE ||
+                            m.getMeasureType().getMeasureTypeId() == AssessmentConstants.MEASURE_TYPE_SELECT_ONE_MATRIX)) {
+                exportName = m.getVariableName();
+            } else {
+                exportName = m != null && !m.getMeasureAnswerList().isEmpty() ? m.getMeasureAnswerList().iterator().next().getIdentifyingText() : avc.getVariableChild().getDisplayName();
+            }
             return exportName;
         }
     }
