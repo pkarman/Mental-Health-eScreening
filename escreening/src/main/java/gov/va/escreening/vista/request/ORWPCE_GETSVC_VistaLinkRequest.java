@@ -80,7 +80,7 @@ public class ORWPCE_GETSVC_VistaLinkRequest extends VistaLinkBaseRequest<String>
 			// throw new
 			// VistaLinkResponseException("Expected a response; but found no response."
 			// , requestParams, response.getResults(), vlnre);
-			serviceCategoryEnum = VistaServiceCategoryEnum.NOT_FOUND;
+			serviceCategoryEnum = VistaServiceCategoryEnum.N;
 			logger.warn(String.format("Expected a response; but found no response. Request Parameters %s", requestParams));
 		}
 

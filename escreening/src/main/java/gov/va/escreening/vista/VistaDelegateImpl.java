@@ -100,7 +100,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         Boolean inpatientStatus = vistaLinkClient.findPatientDemographics(patientIEN).getInpatientStatus();
         logger.debug("sva2vista:vaid:{}--inpatientStatus:{}", vaId, inpatientStatus);
 
-        VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, locationIEN, inpatientStatus);
+        VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.A, locationIEN, inpatientStatus);
         logger.debug("sva2vista:vaid:{}--encounterServiceCategory:{}", vaId, encounterServiceCategory);
 
         Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
@@ -112,7 +112,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String visitStr = findVisitStr(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
         logger.debug("sva2vista:vaid:{}--visitStr:{}", vaId, visitStr);
 
-        String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.AMBULATORY.getCode()));
+        String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.A.getCode()));
         logger.debug("sva2vista:vaid:{}--visitString:{}", vaId, visitString);
 
         {
@@ -264,15 +264,16 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         // Use VistaClient to save to VistA
         if (healthFactorSet != null) {
             visitDate=visitString.split(";")[1];
+            VistaServiceCategoryEnum encounterServiceCategory=VistaServiceCategoryEnum.valueOf(visitString.split(";")[2]);
             if (!healthFactorSet.getCurrentHealthFactors().isEmpty()) {
-                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.AMBULATORY, false, visitDate);
+                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, encounterServiceCategory, false, visitDate);
                 saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, false, healthFactorSet.getCurrentHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
             }
 
             if (!healthFactorSet.getHistoricalHealthFactors().isEmpty()) {
                 // TODO: Need to get visit date from the historical health
                 // factor prompts.
-                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.AMBULATORY, true, visitDate);
+                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.A, true, visitDate);
                 saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, true, healthFactorSet.getHistoricalHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
             }
             ctxt.requestDone(SaveToVistaContext.PendingOperation.hf);
