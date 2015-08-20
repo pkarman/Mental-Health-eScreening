@@ -74,11 +74,11 @@ public class VistaRPCTest {
 
 	@Test
 	public void findServiceCategoryTest() throws Exception {
-		VistaLocation clinicLocation = client.findLocation("PRIMARY CARE", "", true); // PRIMARY CARE, OBSERVATION
+		VistaLocation clinicLocation = client.findLocation("PRIMARY CARE", "", true); // PRIMARY CARE, O
 		Assert.assertNotNull(clinicLocation);
 		Long clinicId = clinicLocation.getIen(); // 234L; //128L
 
-		VistaServiceCategoryEnum serviceCategoryEnum = client.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, clinicId, false);
+		VistaServiceCategoryEnum serviceCategoryEnum = client.findServiceCategory(VistaServiceCategoryEnum.A, clinicId, false);
 		Assert.assertNotNull(serviceCategoryEnum);
 	}
 
@@ -201,7 +201,7 @@ public class VistaRPCTest {
 	private String calculateVistaVisitString(String clinicLocationName,
 			boolean inpatientStatus) throws Exception {
 		Long clinicId = client.findLocation(clinicLocationName, "", true).getIen();
-		VistaServiceCategoryEnum serviceCategoryEnum = client.findServiceCategory(VistaServiceCategoryEnum.AMBULATORY, clinicId, inpatientStatus);
+		VistaServiceCategoryEnum serviceCategoryEnum = client.findServiceCategory(VistaServiceCategoryEnum.A, clinicId, inpatientStatus);
 		String vistaVisitDate = VistaUtils.convertToVistaDateString(new Date(), VistaDateFormat.MMddHHmmss);
 		return clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.getCode();
 	}

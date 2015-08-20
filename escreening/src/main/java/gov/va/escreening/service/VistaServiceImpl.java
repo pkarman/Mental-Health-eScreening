@@ -322,7 +322,7 @@ public class VistaServiceImpl implements VistaService {
         orwpceSaveHeader.setIsInpatient(false);
         orwpceSaveHeader.setVisitLocationIen(visitLocationIen);
         orwpceSaveHeader.setVisitDate(visitDate);
-        orwpceSaveHeader.setVistaServiceCategory(VistaServiceCategoryEnum.EVENT);
+        orwpceSaveHeader.setVistaServiceCategory(VistaServiceCategoryEnum.E);
         vistaRecordList.add(orwpceSaveHeader);
 
         OrwpceSaveVisit visitDateRecord = new OrwpceSaveVisit();
@@ -337,7 +337,7 @@ public class VistaServiceImpl implements VistaService {
 
         OrwpceSaveVisit visitEncounterRecord = new OrwpceSaveVisit();
         visitEncounterRecord.setVisitType(VisitTypeEnum.ENCOUNTER_SERVICE_CATEGORY);
-        visitEncounterRecord.setVistaServiceCategory(VistaServiceCategoryEnum.EVENT);
+        visitEncounterRecord.setVistaServiceCategory(VistaServiceCategoryEnum.E);
         vistaRecordList.add(visitEncounterRecord);
 
         OrwpceSaveVisit visitParentVisitIenRecord = new OrwpceSaveVisit();
