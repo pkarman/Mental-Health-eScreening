@@ -15,7 +15,7 @@
 # If you see some maven error about a missing vistaLink dependency then you have to update your maven settings to point at our 
 # shared maven repo.  Add the following: <localRepository>D:\escreening\.m2\repository</localRepository>
 
-if [ $# != 14 ]; then
+if [ $# != 15 ]; then
 	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen samplePatientIen\n"
 	exit 1;
 fi
