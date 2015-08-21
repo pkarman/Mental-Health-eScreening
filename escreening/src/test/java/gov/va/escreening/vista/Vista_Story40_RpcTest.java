@@ -192,7 +192,9 @@ public class Vista_Story40_RpcTest {
 	
 	@Value("${quick.order.ien}")
     private long qoi;
-	
+	@Value("${ref.tbi.service.name}")
+    private String refTbiServiceName;
+
 	@Test
 	public void testStory40_TBI_Consult_Save_Scenario_1() throws Exception {
 		VistaLinkClientStrategy vistaLinkClientStrategy = createVistaLinkClientStrategy(null, "", "OR CPRS GUI CHART");
@@ -203,7 +205,7 @@ public class Vista_Story40_RpcTest {
 			exportColumnsMap.put("TBI_consult_where", "Baghdad, Iraq");
 			//exportColumnsMap.put("TBI_consult_when", "2003");
 			//exportColumnsMap.put("TBI_consult_how", "Shell exploded within 100 feet");
-			logger.warn("" + client.saveTBIConsultOrders(va, qoi, exportColumnsMap));
+			logger.warn("" + client.saveTBIConsultOrders(va, qoi, refTbiServiceName, exportColumnsMap));
 		} finally {
 			client.closeConnection();
 		}
