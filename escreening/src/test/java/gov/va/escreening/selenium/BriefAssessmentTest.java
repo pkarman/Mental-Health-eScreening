@@ -1,0 +1,95 @@
+package gov.va.escreening.selenium;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
+
+public class BriefAssessmentTest extends SeleniumTest{
+
+	@Test
+	public void testBriefAssessment() throws Exception {
+		driver.get(baseUrl + "/home");
+		driver.findElement(By.linkText("Staff Login")).click();
+		driver.findElement(By.id("userNameParam")).clear();
+		driver.findElement(By.id("userNameParam")).sendKeys("techadmin");
+		driver.findElement(By.id("passwordParam")).clear();
+		driver.findElement(By.id("passwordParam")).sendKeys("password");
+		driver.findElement(By.id("dashboardLogin")).click();
+		driver.findElement(By.id("createBatteryTab")).click();
+		driver.findElement(By.id("ssnLastFour")).clear();
+		driver.findElement(By.id("ssnLastFour")).sendKeys("1234");
+		driver.findElement(By.id("searchButton")).click();
+		driver.findElement(By.xpath("(//a[contains(text(),'Select')])[26]")).click();
+		driver.findElement(By.id("createAssessmentButton")).click();
+		new Select(driver.findElement(By.id("selectedProgramId"))).selectByVisibleText("OOO");
+		driver.findElement(By.cssSelector("option[value=\"4\"]")).click();
+		new Select(driver.findElement(By.id("selectedClinicId"))).selectByVisibleText("NUCLEAR MEDICINE");
+		new Select(driver.findElement(By.id("selectedNoteTitleId"))).selectByVisibleText("OUTSIDE MEDICATION");
+		new Select(driver.findElement(By.id("selectedClinicianId"))).selectByVisibleText("1pharmacist, One");
+		driver.findElement(By.id("selectedBatteryId5")).click();
+		driver.findElement(By.linkText("Clear all Checked Modules")).click();
+		driver.findElement(By.id("selectedSurveyIdList3")).click();
+		driver.findElement(By.id("selectedSurveyIdList7")).click();
+		driver.findElement(By.id("selectedSurveyIdList10")).click();
+		driver.findElement(By.id("selectedSurveyIdList14")).click();
+		driver.findElement(By.id("selectedSurveyIdList27")).click();
+		driver.findElement(By.id("selectedSurveyIdList34")).click();
+		driver.findElement(By.id("saveButton")).click();
+		driver.findElement(By.id("dashboardTab")).click();
+		driver.findElement(By.cssSelector("span[name=\"View Assessment Summary for Veteran40, 40\"]")).click();
+		driver.findElement(By.cssSelector("img[alt=\"Department of Veterans Affairs | eScreening Program\"]")).click();
+		navigateToVeteranLogin();
+		driver.findElement(By.id("lastName")).clear();
+		driver.findElement(By.id("lastName")).sendKeys("veteran40");
+		driver.findElement(By.id("lastFourSsn")).clear();
+		driver.findElement(By.id("lastFourSsn")).sendKeys("1234");
+		driver.findElement(By.id("veteranLogin")).click();
+		driver.findElement(By.id("startAssessmentButton")).click();
+		new Select(driver.findElement(By.id("queILS_8"))).selectByVisibleText("Afternoon");
+		driver.findElement(By.id("inp_72")).click();
+		driver.findElement(By.id("inp_60")).clear();
+		driver.findElement(By.id("inp_60")).sendKeys("2222222222");
+		driver.findElement(By.id("nextBtn")).click();
+		new Select(driver.findElement(By.id("queILS_37"))).selectByVisibleText("Vietnamese");
+		driver.findElement(By.id("inp_378")).click();
+		driver.findElement(By.id("inp_381")).click();
+		driver.findElement(By.id("inp_391")).click();
+		driver.findElement(By.id("nextBtn")).click();
+		driver.findElement(By.id("inp_1121")).click();
+		new Select(driver.findElement(By.id("queILS_113"))).selectByVisibleText("Uzbekistan");
+		driver.findElement(By.id("nextBtn")).click();
+		new Select(driver.findElement(By.id("queILS_220"))).selectByVisibleText("3");
+		driver.findElement(By.id("inp_2202")).click();
+		driver.findElement(By.id("tableQuestionAdd_221")).click();
+		driver.findElement(By.id("inp0_2220")).clear();
+		driver.findElement(By.id("inp0_2220")).sendKeys("knees");
+		driver.findElement(By.id("tableQuestionAdd_221")).click();
+		driver.findElement(By.id("inp1_2220")).clear();
+		driver.findElement(By.id("inp1_2220")).sendKeys("feet");
+		driver.findElement(By.id("tableQuestionAdd_221")).click();
+		driver.findElement(By.id("nextBtn")).click();
+		driver.findElement(By.xpath("//button[@type='button']")).click();
+		driver.findElement(By.id("inp_3301")).click();
+		driver.findElement(By.id("nextBtn")).click();
+		driver.findElement(By.id("inp_4020")).click();
+		driver.findElement(By.id("inp_4030")).click();
+		driver.findElement(By.id("nextBtn")).click();
+		driver.findElement(By.id("completedButton")).click();
+		driver.findElement(By.cssSelector("input.answerButton.doneButton")).click();
+		driver.findElement(By.cssSelector("img[alt=\"Department of Veterans Affairs | eScreening Program\"]")).click();
+		driver.findElement(By.linkText("Staff Login")).click();
+		driver.findElement(By.id("userNameParam")).clear();
+		driver.findElement(By.id("userNameParam")).sendKeys("techadmin");
+		driver.findElement(By.id("passwordParam")).clear();
+		driver.findElement(By.id("passwordParam")).sendKeys("password");
+		driver.findElement(By.id("dashboardLogin")).click();
+		driver.findElement(By.id("dashboardTab")).click();
+		driver.findElement(By.cssSelector("span[name=\"View Assessment Summary for Veteran40, 40\"]")).click();
+		driver.findElement(By.id("reviewAssessmentButton")).click();
+		driver.findElement(By.cssSelector("#AssessmentReportPreview > div.modal-dialog > div.modal-content > div.modal-header.nonPrintableArea > button.close")).click();
+		driver.findElement(By.id("VeteranSummaryButton")).click();
+		driver.findElement(By.cssSelector("div.modal-header.nonPrintableArea > button.close")).click();
+		driver.findElement(By.id("homeTab")).click();
+		driver.findElement(By.cssSelector("img[alt=\"Department of Veterans Affairs | eScreening Program\"]")).click();
+	}
+}
