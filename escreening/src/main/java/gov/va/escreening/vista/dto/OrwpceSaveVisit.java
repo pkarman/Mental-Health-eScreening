@@ -108,7 +108,7 @@ public class OrwpceSaveVisit implements Serializable, VistaRecord {
             pieces[2] = locationIen;
             break;
         case ENCOUNTER_SERVICE_CATEGORY:
-            pieces[2] = vistaServiceCategory.getCode();
+            pieces[2] = vistaServiceCategory.name();
             break;
         case PARENT_VISIT_IEN_HIST:
             pieces[2] = parentVisitIen;

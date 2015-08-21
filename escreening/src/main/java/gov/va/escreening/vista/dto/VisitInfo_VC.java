@@ -5,11 +5,11 @@ package gov.va.escreening.vista.dto;
  */
 public class VisitInfo_VC extends VisitBaseInfo implements HealthFactorVisitData{
     public VisitInfo_VC(VistaServiceCategoryEnum data) {
-        super(data.getCode(), null);
+        super(data.name(), null);
     }
 
     public VisitInfo_VC(VistaServiceCategoryEnum data, String additionalData) {
-        super(data.getCode(), additionalData);
+        super(data.name(), additionalData);
     }
 
     @Override

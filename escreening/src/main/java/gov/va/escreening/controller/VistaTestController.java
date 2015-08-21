@@ -398,7 +398,7 @@ public class VistaTestController {
                     clinicId, false);
             String vistaVisitDate = VistaUtils.convertToVistaDateString(new Date(), VistaDateFormat.MMddHHmmss);
 
-            String visitString = clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.getCode(); // Required to
+            String visitString = clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.name(); // Required to
             // create
             // Progress
             // Note.
