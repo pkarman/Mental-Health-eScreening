@@ -35,6 +35,7 @@ vistaDuz=${11}
 vistaEncrypted=${12}
 quickOrderIen=${13}
 samplePatientIen=${14}
+refTbiServiceName=${15}
 
 webapps_dir="$INSTANCES_DIR/$instance/webapps"
 
@@ -97,6 +98,7 @@ mvn --quiet clean package -P$profile -DskipTests \
 "-Dvista.duz=$vistaDuz" \
 "-Dvista.encrypt=$vistaEncrypted" \
 "-Dquick.order.ien=$quickOrderIen" \
+"-Dref.tbi.service.name=$refTbiServiceName" \
 "-Dsample.patient.ien=$samplePatientIen" $extraParams
 
 
