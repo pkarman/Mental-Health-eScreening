@@ -72,7 +72,7 @@ public class ORWPCE_GETSVC_VistaLinkRequest extends VistaLinkBaseRequest<String>
 		try {
 			String[] serviceCategoryArray = parseRpcResponse(response);
 			for (VistaServiceCategoryEnum serviceCategory : VistaServiceCategoryEnum.values()) {
-				if (serviceCategory.getCode().equals(serviceCategoryArray[0])) {
+				if (serviceCategory.name().equals(serviceCategoryArray[0])) {
 					serviceCategoryEnum = serviceCategory;
 				}
 			}

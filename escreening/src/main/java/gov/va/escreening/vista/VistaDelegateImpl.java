@@ -112,7 +112,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         String visitStr = findVisitStr(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
         logger.debug("sva2vista:vaid:{}--visitStr:{}", vaId, visitStr);
 
-        String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.getCode() : VistaServiceCategoryEnum.A.getCode()));
+        String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.name() : VistaServiceCategoryEnum.A.name()));
         logger.debug("sva2vista:vaid:{}--visitString:{}", vaId, visitString);
 
         {

@@ -203,7 +203,7 @@ public class VistaRPCTest {
 		Long clinicId = client.findLocation(clinicLocationName, "", true).getIen();
 		VistaServiceCategoryEnum serviceCategoryEnum = client.findServiceCategory(VistaServiceCategoryEnum.A, clinicId, inpatientStatus);
 		String vistaVisitDate = VistaUtils.convertToVistaDateString(new Date(), VistaDateFormat.MMddHHmmss);
-		return clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.getCode();
+		return clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.name();
 	}
 
 	private RpcRequest createRpcRequest(String rpcContext,

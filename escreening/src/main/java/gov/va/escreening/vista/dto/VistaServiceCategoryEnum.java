@@ -2,26 +2,26 @@ package gov.va.escreening.vista.dto;
 
 public enum VistaServiceCategoryEnum {
 
-    A("A"),
-    H("H"),
-    I("I"),
-    C("C"),
-    T("T"),
-    N("N"),
-    S("S"),
-    O("O"),
-    E("E"),
-    R("R"),
-    D("D"),
-    X("X");
+    A("AMBULATORY"),
+    H("HOSPITALIZATION"),
+    I("IN HOSPITAL"),
+    C("CHART REVIEW"),
+    T("TELECOMMUNICATIONS"),
+    N("NOT FOUND"),
+    S("DAY SURGERY"),
+    O("OBSERVATION"),
+    E("EVENT"),
+    R("NURSING_HOME"),
+    D("DAILY HOSPITALIZATION DATA"),
+    X("ANCILLARY PACKAGE DAILY DATA");
 
-    private final String code;
+    private final String description;
 
-    public String getCode() {
-        return code;
+    public String getDescription() {
+        return description;
     }
 
-    VistaServiceCategoryEnum(String code) {
-        this.code = code;
+    VistaServiceCategoryEnum(String description) {
+        this.description = description;
     }
 }

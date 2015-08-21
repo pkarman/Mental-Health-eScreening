@@ -27,13 +27,13 @@ public class ORWPCE_GETSVC_RequestParameters extends VistaLinkRequestParameters 
     }
 
     protected void checkRequiredParameters() {
-        super.checkRequestParameterString("initialServiceConnectionCategory", initialServiceConnectionCategory.getCode(),  true);
+        super.checkRequestParameterString("initialServiceConnectionCategory", initialServiceConnectionCategory.name(),  true);
         super.checkRequestParameterLong("locationIEN", locationIEN, true);
         super.checkRequestParameterBoolean("inpatientStatus", inpatientStatus, false);
     }
 
     public String getInitialServiceConnectionCategory() {
-        return initialServiceConnectionCategory.getCode();
+        return initialServiceConnectionCategory.name();
     }
 
     public Long getLocationIEN() {
