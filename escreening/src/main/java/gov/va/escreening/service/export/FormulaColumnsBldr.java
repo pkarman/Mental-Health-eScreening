@@ -1,5 +1,6 @@
 package gov.va.escreening.service.export;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.entity.*;
@@ -43,7 +44,7 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
         for (AssessmentVarChildren avc : av.getAssessmentVarChildrenList()) {
             String exportName = extractor.extractExportName(avc);
             String toBeReplaced = String.valueOf(avc.getVariableChild().getAssessmentVariableId());
-            displayableFormula = displayableFormula.replaceAll(toBeReplaced, exportName);
+            displayableFormula = displayableFormula.replaceAll(toBeReplaced, Strings.nullToEmpty(exportName));
         }
         displayableFormula = removeJavaMathFunctions(displayableFormula);
         displayableFormula = removeTernaries(displayableFormula);
