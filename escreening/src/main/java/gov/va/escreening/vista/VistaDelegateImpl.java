@@ -102,27 +102,20 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         Boolean inpatientStatus = vistaLinkClient.findPatientDemographics(patientIEN).getInpatientStatus();
         logger.debug("sva2vista:vaid:{}--inpatientStatus:{}", vaId, inpatientStatus);
 
-        VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.A, locationIEN, inpatientStatus);
-        logger.debug("sva2vista:vaid:{}--encounterServiceCategory:{}", vaId, encounterServiceCategory);
+        String visitStrFromVista = findVisitStrFromVista(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
+        logger.debug("sva2vista:vaid:{}--visitStr:{}", vaId, visitStrFromVista);
+        // vista will not return any visitStr if assessments does not have any appointments
+        boolean hasAppointments = visitStrFromVista != null;
 
-        Date visitDateTime = (veteranAssessment.getDateCompleted() != null) ? veteranAssessment.getDateCompleted() : veteranAssessment.getDateUpdated();
-        logger.debug("sva2vista:vaid:{}--visitDateTime:{}", vaId, visitDateTime);
-
-        String visitDate = VistaUtils.convertToVistaDateString(visitDateTime, VistaDateFormat.MMddHHmmss);
-        logger.debug("sva2vista:vaid:{}--visitDate:{}", vaId, visitDate);
-
-        String visitStr = findVisitStr(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
-        logger.debug("sva2vista:vaid:{}--visitStr:{}", vaId, visitStr);
-
-        String visitString = visitStr != null ? visitStr : (locationIEN + ";" + visitDate + ";" + ((encounterServiceCategory != null) ? encounterServiceCategory.name() : VistaServiceCategoryEnum.A.name()));
+        String visitString = hasAppointments ? visitStrFromVista : createVisitStrLocallyFromAssessment(vistaLinkClient, locationIEN, inpatientStatus, vaId, veteranAssessment);
         logger.debug("sva2vista:vaid:{}--visitString:{}", vaId, visitString);
 
         {
             VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, ctxt);
             logger.debug("sva2vista:vaid:{}--VistaProgressNote:{}", vaId, progressNote);
+
             if (progressNote != null && progressNote.getIEN() != null) {
-                // Do Health Factors
-                saveMentalHealthFactors(locationIEN, visitString, visitDate, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
+                saveMentalHealthFactors(hasAppointments, locationIEN, visitString, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
                 logger.debug("sva2vista:vaid:{}--saveMentalHealthFactors:{}", vaId, ctxt);
                 if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
                     return;
@@ -137,7 +130,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         }
 
         {
-            savePainScale(veteranAssessment, visitDate, vistaLinkClient, ctxt);
+            savePainScale(veteranAssessment, veteranAssessment.getUpdateAsFileman(), vistaLinkClient, ctxt);
             logger.debug("sva2vista:vaid:{}--savePainScale:{}", vaId, ctxt);
         }
 
@@ -152,6 +145,15 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             assessmentEngineService.transitionAssessmentStatusTo(veteranAssessment.getVeteranAssessmentId(), AssessmentStatusEnum.FINALIZED);
             logger.debug("sva2vista:vaid:{}--transitionAssessmentStatusTo FINALIZED", vaId);
         }
+    }
+
+    private String createVisitStrLocallyFromAssessment(VistaLinkClient vistaLinkClient, Long locationIEN, Boolean inpatientStatus, Integer vaId, VeteranAssessment veteranAssessment) {
+        VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.A, locationIEN, inpatientStatus);
+        logger.debug("sva2vista:vaid:{}--encounterServiceCategory:{}", vaId, encounterServiceCategory);
+
+        String assessmentDateAsFileman = veteranAssessment.getUpdateAsFileman();
+
+        return String.format("%s;%s;%s", locationIEN, assessmentDateAsFileman, ((encounterServiceCategory != null) ? encounterServiceCategory.name() : VistaServiceCategoryEnum.A.name()));
     }
 
     private void savePainScale(VeteranAssessment veteranAssessment, String visitDate, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) {
@@ -179,7 +181,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         return veteranAssessment;
     }
 
-    private String findVisitStr(EscreenUser user, String vetIen, VeteranAssessment assessment) {
+    private String findVisitStrFromVista(EscreenUser user, String vetIen, VeteranAssessment assessment) {
         AssessmentAppointment assessAppt = assessmentApptRepo.findByAssessmentId(assessment.getVeteranAssessmentId());
         if (assessAppt == null) return null;
 
@@ -251,8 +253,8 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         return messageSource.getMessage(msgKey.name(), args, null);
     }
 
-    private void saveMentalHealthFactors(Long locationIEN, String visitString,
-                                         String visitDate, Boolean inpatientStatus, Long progressNoteIEN,
+    private void saveMentalHealthFactors(boolean hasAppointments, Long locationIEN, String visitString,
+                                         Boolean inpatientStatus, Long progressNoteIEN,
                                          VeteranAssessment veteranAssessment, VistaLinkClient vistaLinkClient, SaveToVistaContext ctxt) throws VistaLinkClientException {
 
         HealthFactorProvider healthFactorProvider = createHealthFactorProvider(veteranAssessment);
@@ -265,18 +267,18 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
         // Use VistaClient to save to VistA
         if (healthFactorSet != null) {
-            visitDate=visitString.split(";")[1];
+            String visitDateAsFileManFormat=visitString.split(";")[1];
             VistaServiceCategoryEnum encounterServiceCategory=VistaServiceCategoryEnum.valueOf(visitString.split(";")[2]);
             if (!healthFactorSet.getCurrentHealthFactors().isEmpty()) {
-                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, encounterServiceCategory, false, visitDate);
-                saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, false, healthFactorSet.getCurrentHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
+                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, encounterServiceCategory, false, visitDateAsFileManFormat);
+                saveVeteranHealthFactorsToVista(hasAppointments, vistaLinkClient, progressNoteIEN, locationIEN, false, healthFactorSet.getCurrentHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
             }
 
             if (!healthFactorSet.getHistoricalHealthFactors().isEmpty()) {
                 // TODO: Need to get visit date from the historical health
                 // factor prompts.
-                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.A, true, visitDate);
-                saveVeteranHealthFactorsToVista(vistaLinkClient, progressNoteIEN, locationIEN, true, healthFactorSet.getHistoricalHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
+                healthFactorVisitDataSet = createHealthFactorVisitDataSet(veteranAssessment, VistaServiceCategoryEnum.A, true, visitDateAsFileManFormat);
+                saveVeteranHealthFactorsToVista(hasAppointments, vistaLinkClient, progressNoteIEN, locationIEN, true, healthFactorSet.getHistoricalHealthFactors(), healthFactorHeader, healthFactorProvider, healthFactorVisitDataSet, ctxt);
             }
             ctxt.requestDone(SaveToVistaContext.PendingOperation.hf);
         }
@@ -426,6 +428,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     }
 
     private void saveVeteranHealthFactorsToVista(
+            boolean hasAppointments,
             VistaLinkClient vistaLinkClient, Long noteIEN, Long locationIEN,
             boolean historicalHealthFactor,
             Set<gov.va.escreening.vista.dto.HealthFactor> healthFactors,
@@ -435,7 +438,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             SaveToVistaContext ctxt) throws VistaLinkClientException {
 
         try {
-            vistaLinkClient.saveHealthFactor(noteIEN, locationIEN, historicalHealthFactor, healthFactorHeader, healthFactorVisitDataList, healthFactorProvider, healthFactors);
+            vistaLinkClient.saveHealthFactor(hasAppointments, noteIEN, locationIEN, historicalHealthFactor, healthFactorHeader, healthFactorVisitDataList, healthFactorProvider, healthFactors);
             ctxt.addSuccess(SaveToVistaContext.PendingOperation.hf, msg(SaveToVistaContext.MsgKey.usr_pass_hf__saved_success));
         } catch (Exception e) {
             ctxt.addSysErr(SaveToVistaContext.PendingOperation.hf, Throwables.getRootCause(e).getMessage());

@@ -55,7 +55,7 @@ public interface VistaLinkClient {
                                          String visitString, Object[] identifiers, String content,
                                          Boolean suppressCommitPostLogic, Boolean saveCrossReference, Boolean appendContent) throws VistaLinkClientException;
     VistaProgressNote saveProgressNote(ProgressNoteParameters progressNoteParameters) throws VistaLinkClientException;
-    Boolean saveHealthFactor(Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader,
+    Boolean saveHealthFactor(boolean hasAppointments, Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader,
                              Set<HealthFactorVisitData> healthFactorVisitDataList, HealthFactorProvider healthFactorProvider,
                              Set<HealthFactor> healthFactors) throws VistaLinkClientException;
     Boolean saveMentalHealthAssessment(Long patientIEN, String mentalHealthTestName, String mentalHealthTestAnswers) throws VistaLinkClientException;
