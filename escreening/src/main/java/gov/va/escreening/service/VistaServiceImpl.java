@@ -543,9 +543,11 @@ public class VistaServiceImpl implements VistaService {
             	
             	// update IEN if needed
                 ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderName());
-                if (existing.getVistaIen() == null || 
-                		!existing.getVistaIen().equals(cr.getClinicalReminderIen())){
+                if (existing.getVistaIen() == null 
+                		|| !existing.getVistaIen().equals(cr.getClinicalReminderIen())
+                		|| !existing.getPrintName().equals(cr.getPrintName())){
                 	existing.setVistaIen(cr.getClinicalReminderIen());
+                	existing.setPrintName(cr.getPrintName());
                 	clinicalReminderRepo.update(existing);
                 	++refreshCount;
                 	logger.info("Updated IEN of an existing clinical reminder {}", existing);
