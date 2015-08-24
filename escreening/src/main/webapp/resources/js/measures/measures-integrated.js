@@ -93,15 +93,7 @@ $(document).ready(function(e) {
         $(this).parent().removeClass('checkFocus');
       });
       
-      /* Matrix Table - In case of TD empty remove the parent TH */
-      $( ".matrixQuestionText" ).each(function( index ) {
-          var matrixQuestionText = $("#assessmentContainer").find(".matrixQuestionText").html();
-           if (matrixQuestionText == '') {
-            $(this).addClass("empty");
-            $(this).closest('table').find('th').eq(0).addClass("empty");
-          }	  
-      });
-	});     
+	});
 });
 
 
