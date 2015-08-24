@@ -139,7 +139,11 @@ public class ClinicalReminder implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.ClinicalReminder[ clinicalReminderId=" + clinicalReminderId + " ]";
+        return "ClinicalReminder[ clinicalReminderId=" + clinicalReminderId 
+        		+ ", ien=" + vistaIen
+        		+ ", name=" + name
+        		+ ", printName=" + printName
+        		+ " ]";
     }
 
 }
