@@ -34,6 +34,6 @@ vistaDuz=""
 vistaEncrypted=""  # true or false
 
 
-deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $vistaEncrypted $quickOrderIen $samplePatientIen $refTbiServiceName
+deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $vistaEncrypted $quickOrderIen $samplePatientIen "$refTbiServiceName"
 
 

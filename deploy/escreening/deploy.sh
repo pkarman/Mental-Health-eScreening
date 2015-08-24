@@ -16,7 +16,7 @@
 # shared maven repo.  Add the following: <localRepository>D:\escreening\.m2\repository</localRepository>
 
 if [ $# != 15 ]; then
-	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen samplePatientIen\n"
+	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen samplePatientIen refTbiServiceName\n"
 	exit 1;
 fi
 
