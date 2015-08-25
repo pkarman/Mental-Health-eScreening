@@ -222,7 +222,13 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             //if (true) {throw new IllegalStateException("BTBIS EXCEPTION for JSP to handle the callResults logic");}
             Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
-                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
+            	String reason = Strings.nullToEmpty(templateProcessorService.renderSurveyTemplate(btbisSurvey.getSurveyId(), 
+            			TemplateType.TBI_REASON, veteranAssessment, ViewType.TEXT)).trim();
+            	if(reason.isEmpty()){
+                	logger.warn("TBI consult reason template evaluated to empty string for survey {}, in veteran assessment VAID {}",
+                			btbisSurvey, veteranAssessment.getVeteranAssessmentId());
+                }
+                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, reason);
                 logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
@@ -231,7 +237,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         }
         ctxt.requestDone(SaveToVistaContext.PendingOperation.tbi);
     }
-
+    
     private Survey isTBIConsultSelected(VeteranAssessment veteranAssessment) {
         for (SurveyMeasureResponse smr : veteranAssessment.getSurveyMeasureResponseList()) {
             if ("BTBIS".equals(smr.getSurvey().getName())) {

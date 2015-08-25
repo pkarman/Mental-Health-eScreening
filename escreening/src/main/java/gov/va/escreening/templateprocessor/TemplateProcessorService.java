@@ -48,7 +48,7 @@ public interface TemplateProcessorService {
 	 * @param surveyId the id of the survey to render a template for
 	 * @param type TemplateType to render
 	 * @param veteranAssessment the assessment we are rendering a battery for
-	 * @return rendered text
+	 * @return rendered text; If no type is defined for the given survey then EntityNotFoundException is thrown.
 	 * @throws IllegalSystemStateException 
 	 * @throw IllegalStateException 
 	 * @throw EntityNotFoundException if a template of the given type does not exist for the given survey

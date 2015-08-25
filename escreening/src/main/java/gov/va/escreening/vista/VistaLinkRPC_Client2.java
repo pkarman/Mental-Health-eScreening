@@ -1,6 +1,19 @@
 package gov.va.escreening.vista;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Throwables;
+
 import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -18,23 +31,11 @@ import gov.va.med.vistalink.adapter.spi.VistaLinkManagedConnectionFactory;
 import gov.va.med.vistalink.rpc.RpcRequest;
 import gov.va.med.vistalink.rpc.RpcResponse;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
         VistaLinkClient {
     protected static final Logger logger = LoggerFactory
             .getLogger(VistaLinkRPC_Client2.class);
-
+	
     /**
      * inline template driven component to abstract rpc call
      * <p/>
@@ -293,7 +294,8 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
     @Override
     public Map<String, Object> saveTBIConsultOrders(
             final VeteranAssessment veteranAssessment,
-            final long quickOrderIen, final Map<String, String> exportColumnsMap) {
+            final long quickOrderIen, 
+            final String reason) {
 
         return new VistaLinkRpcInvoker<Map<String, Object>>() {
             /**
@@ -328,7 +330,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 reqParams.add("");
                 // 8. Response List (Variables are defined in Step D7)
                 reqParams
-                        .add(getRefRespLst(veteranAssessment, exportColumnsMap));
+                        .add(getRefRespLst(veteranAssessment, reason));
                 // 9. ORDEA (Doesn’t seem to be used - Leave Blank)
                 reqParams.add("");
                 // 10. Appointment (Doesn’t seem to be used - Leave Blank)
@@ -344,7 +346,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
             private Map<String, Object> getRefRespLst(
                     VeteranAssessment veteranAssessment,
-                    Map<String, String> exportColumnsMap) {
+                    String reason) {
 
                 Map<String, Long> respListMap = getIENsMapForResponseList();
 
@@ -356,7 +358,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 Long commentIEN = respListMap.get("CommentIEN".toUpperCase());
                 respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", commentIEN)), String.format("ORDIALOG(\"WP\",%s,1)", commentIEN));
                 // 3. ARRAY(“WP”,CommentIEN,1,#,0)=TEXT FOR LINE # (Step D8)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),prepareTbiConsultReasonText(exportColumnsMap));
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)), reason);
                 // 4. ARRAY(ClassIEN,1)= Class(“O” or “I”)(Step D6a)
                 Long patientIen = Long.valueOf(veteranAssessment.getVeteran().getVeteranIen());
                 Boolean partInpatient = findPatientDemographics(patientIen).getInpatientStatus();
@@ -387,37 +389,6 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 respLstMap.put(RpcRequest.buildMultipleMSubscriptKey("\"ORTS\""), 0);
 
                 return respLstMap;
-            }
-
-            private String prepareTbiConsultReasonText(
-                    Map<String, String> exportColumnsMap) {
-
-                StringBuilder sb = new StringBuilder();
-                sb.append("Veteran not previously seen by the San Diego VA TBI clinic\n");
-                sb.append("OIF/OEF Veteran\n");
-                sb.append("OIF/OEF Veteran with:\n");
-                sb.append("\tOIF/OEF deployment-related, suspected TBI.\n");
-                sb.append("\tPersistent symptoms.\n");
-                sb.append("\tPositive OIF/OEF TBI screen.\n");
-                sb.append("OIF/OEF TBI screen completed date: "
-                        + LocalDate.now().toString("MMM dd,yyyy") + "\n");
-                sb.append("When & Where did the TBI occur:\n");
-                sb.append("\t"
-                        + (exportColumnsMap.get("TBI_consult_when") == null ? "Year not provided to determine when"
-                        : exportColumnsMap.get("TBI_consult_when"))
-                        + ", "
-                        + (exportColumnsMap.get("TBI_consult_where") == null ? "Not provided"
-                        : exportColumnsMap.get("TBI_consult_where"))
-                        + "\n");
-                sb.append("How did the TBI occur:\n");
-                sb.append("\t"
-                        + (exportColumnsMap.get("TBI_consult_how") == null ? "Not Provided"
-                        : exportColumnsMap.get("TBI_consult_how"))
-                        + "\n");
-                sb.append("GOALS for TBI clinic evaluation:\n");
-                sb.append("\tPlease evaluate and refer on for additional services as necessary\n");
-
-                return sb.toString();
             }
 
             private Long getDlgGrpIEN(Long quickOrderIen,

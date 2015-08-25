@@ -68,7 +68,7 @@ public interface VistaLinkClient {
     
     Map<String, Long> getIENsMapForResponseList();
     public Map<String, Long> getConsultationServiceNameDataSet2(String startPositionSearchCriteria, String purpose,	Boolean includeSynonyms) throws VistaLinkClientException;
-    public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, long quickOrderIen, Map<String, String> tbiexportColumnsMap);
+    public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, long quickOrderIen, String reason);
     public Map<String, Map<String, String>> getConsultInfo(String orderType);
     
     void closeConnection();
