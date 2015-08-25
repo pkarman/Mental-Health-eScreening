@@ -17,6 +17,7 @@ vistaIp=""
 vistaPort="" 
 vistaPrimaryStation="" 
 quickOrderIen=""
+refTbiServiceName="" #for local SANDBOX its value is TBI/POLYTRAUMA SUPPORT CLINIC TEAM
 samplePatientIen=""  #any veteran IEN number that is valid in the VistA instance
 
 # Proxy account credentials
@@ -33,6 +34,6 @@ vistaDuz=""
 vistaEncrypted=""  # true or false
 
 
-deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $vistaEncrypted $quickOrderIen $samplePatientIen
+deploy.sh $tomcatInstance $profile $branch $jdbcUsername $jdbcPassword $vistaIp $vistaPort $vistaPrimaryStation $vistaAccessCode $vistaVerifyCode $vistaDuz $vistaEncrypted $quickOrderIen $samplePatientIen "$refTbiServiceName"
 
 

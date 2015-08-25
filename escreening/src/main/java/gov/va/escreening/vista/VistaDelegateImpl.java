@@ -47,6 +47,8 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     private VeteranAssessmentService veteranAssessmentService;
     @Value("${quick.order.ien}")
     private long quickOrderIen;
+    @Value("${ref.tbi.service.name}")
+    private String refTbiServiceName;
     @Autowired
     private VeteranAssessmentAuditLogRepository veteranAssessmentAuditLogRepository;
 
@@ -228,7 +230,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                 	logger.warn("TBI consult reason template evaluated to empty string for survey {}, in veteran assessment VAID {}",
                 			btbisSurvey, veteranAssessment.getVeteranAssessmentId());
                 }
-                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, reason);
+                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, reason);
                 logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
