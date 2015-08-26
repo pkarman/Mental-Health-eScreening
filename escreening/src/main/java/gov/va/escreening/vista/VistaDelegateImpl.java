@@ -47,6 +47,8 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     private VeteranAssessmentService veteranAssessmentService;
     @Value("${quick.order.ien}")
     private long quickOrderIen;
+    @Value("${ref.tbi.service.name}")
+    private String refTbiServiceName;
     @Autowired
     private VeteranAssessmentAuditLogRepository veteranAssessmentAuditLogRepository;
 
@@ -222,7 +224,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             //if (true) {throw new IllegalStateException("BTBIS EXCEPTION for JSP to handle the callResults logic");}
             Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
-                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
+                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
                 logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }

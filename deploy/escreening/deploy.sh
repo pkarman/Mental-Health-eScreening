@@ -15,8 +15,8 @@
 # If you see some maven error about a missing vistaLink dependency then you have to update your maven settings to point at our 
 # shared maven repo.  Add the following: <localRepository>D:\escreening\.m2\repository</localRepository>
 
-if [ $# != 14 ]; then
-	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen samplePatientIen\n"
+if [ $# != 15 ]; then
+	printf "\nUsage: $0 tomcat_instance_name mvn_profile_name branch_to_deploy jdbcUsername jdbcPassword vistaIp vistaPort vistaPrimaryStation vistaAccessCode vistaVerifyCode vistaEncrypted quickOrderIen samplePatientIen refTbiServiceName\n"
 	exit 1;
 fi
 
@@ -35,6 +35,7 @@ vistaDuz=${11}
 vistaEncrypted=${12}
 quickOrderIen=${13}
 samplePatientIen=${14}
+refTbiServiceName=${15}
 
 webapps_dir="$INSTANCES_DIR/$instance/webapps"
 
@@ -97,6 +98,7 @@ mvn --quiet clean package -P$profile -DskipTests \
 "-Dvista.duz=$vistaDuz" \
 "-Dvista.encrypt=$vistaEncrypted" \
 "-Dquick.order.ien=$quickOrderIen" \
+"-Dref.tbi.service.name=$refTbiServiceName" \
 "-Dsample.patient.ien=$samplePatientIen" $extraParams
 
 
