@@ -31,6 +31,8 @@ import javax.persistence.Transient;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import gov.va.escreening.vista.VistaUtils;
+import gov.va.escreening.vista.dto.VistaDateFormat;
 
 @Entity
 @Table(name = "veteran_assessment")
@@ -458,5 +460,11 @@ public class VeteranAssessment implements Serializable {
 	@Override
 	public String toString() {
 		return "[vaId=" + veteranAssessmentId + "]";
+	}
+
+	public String getUpdateAsFileman() {
+		Date visitDateTime = getDateCompleted() != null ? getDateCompleted() : getDateUpdated();
+		String updateAsFileman = VistaUtils.convertToVistaDateString(visitDateTime, VistaDateFormat.MMddHHmmss);
+		return updateAsFileman;
 	}
 }

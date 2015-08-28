@@ -63,7 +63,7 @@ public class OrwpceSaveHeader implements Serializable, VistaRecord {
         pieces[1] = (isInpatient) ? "1" : "0";
         pieces[2] = "";
         pieces[3] = (visitLocationIen + ";" + VistaUtils.convertToVistaDateString(visitDate, VistaDateFormat.MMddHHmmss) + ";" + vistaServiceCategory
-                .getCode());
+                .name());
 
         return StringUtils.join(pieces, "^");
     }

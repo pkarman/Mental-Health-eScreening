@@ -32,8 +32,10 @@ public class ORWPCE_SAVE_VistaLinkRequest extends VistaLinkBaseRequest<String> i
     private Set<HealthFactor> healthFactors = new LinkedHashSet<HealthFactor>();
     private Long noteIEN = null;
     private Long locationIEN = null;
+    private final boolean hasAppointments;
 
-    public ORWPCE_SAVE_VistaLinkRequest(VistaLinkRequestContext<ORWPCE_SAVE_RequestParameters> requestContext) {
+    public ORWPCE_SAVE_VistaLinkRequest(VistaLinkRequestContext<ORWPCE_SAVE_RequestParameters> requestContext, boolean hasAppointments) {
+        this.hasAppointments=hasAppointments;
         this.request = requestContext.getRpcRequest();
         this.connection = requestContext.getVistaLinkConnection();
         this.healthFactorHeader = requestContext.getRequestParameters().getHealthFactorHeader();
@@ -74,8 +76,9 @@ public class ORWPCE_SAVE_VistaLinkRequest extends VistaLinkBaseRequest<String> i
             visitData.add(healthFactorVisitData.toString());
         }
 
-        // t951 skip the PRV all together
-        //visitData.add(this.healthFactorProvider.toString());
+        if (!hasAppointments) {
+            visitData.add(this.healthFactorProvider.toString());
+        }
 
         //TODO: Re-factor to include Immunizations and Health Factors in one collection as they both use the same base sequence number.
         for(HealthFactor healthFactor: this.healthFactors) {

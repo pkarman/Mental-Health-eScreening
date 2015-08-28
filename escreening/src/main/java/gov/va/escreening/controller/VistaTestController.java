@@ -394,11 +394,11 @@ public class VistaTestController {
 
             Long clinicId = vistaLinkClientStrategy.getClient().findLocation("PRIMARY CARE", "", true).getIen();
             VistaServiceCategoryEnum serviceCategoryEnum = vistaLinkClientStrategy.getClient().findServiceCategory(
-                    VistaServiceCategoryEnum.AMBULATORY,
+                    VistaServiceCategoryEnum.A,
                     clinicId, false);
             String vistaVisitDate = VistaUtils.convertToVistaDateString(new Date(), VistaDateFormat.MMddHHmmss);
 
-            String visitString = clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.getCode(); // Required to
+            String visitString = clinicId + ";" + vistaVisitDate + ";" + serviceCategoryEnum.name(); // Required to
             // create
             // Progress
             // Note.
@@ -519,7 +519,7 @@ public class VistaTestController {
         String duz = "10000000056";
         String rpcName = "ORWU CLINLOC";
 
-        String startWithName = "OBSERVATION";
+        String startWithName = "O";
         startWithName = ""; // to start from top of list.
 
         List<VistaRpcParam> vistaRpcParamList = new ArrayList<VistaRpcParam>();
@@ -858,7 +858,7 @@ public class VistaTestController {
         String duz = "10000000056";
         String rpcName = "ORWU1 NEWLOC";
 
-        String startWithName = "OBSERVATION";
+        String startWithName = "O";
         startWithName = ""; // to start from top of list.
 
         List<VistaRpcParam> vistaRpcParamList = new ArrayList<VistaRpcParam>();

@@ -72,7 +72,7 @@ public class ORWPCE_GETSVC_VistaLinkRequest extends VistaLinkBaseRequest<String>
 		try {
 			String[] serviceCategoryArray = parseRpcResponse(response);
 			for (VistaServiceCategoryEnum serviceCategory : VistaServiceCategoryEnum.values()) {
-				if (serviceCategory.getCode().equals(serviceCategoryArray[0])) {
+				if (serviceCategory.name().equals(serviceCategoryArray[0])) {
 					serviceCategoryEnum = serviceCategory;
 				}
 			}
@@ -80,7 +80,7 @@ public class ORWPCE_GETSVC_VistaLinkRequest extends VistaLinkBaseRequest<String>
 			// throw new
 			// VistaLinkResponseException("Expected a response; but found no response."
 			// , requestParams, response.getResults(), vlnre);
-			serviceCategoryEnum = VistaServiceCategoryEnum.NOT_FOUND;
+			serviceCategoryEnum = VistaServiceCategoryEnum.N;
 			logger.warn(String.format("Expected a response; but found no response. Request Parameters %s", requestParams));
 		}
 
