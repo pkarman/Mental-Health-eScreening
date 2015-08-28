@@ -21,6 +21,12 @@ public interface ClinicService {
     List<ClinicDto> getClinicDtoList();
 
     /**
+     * Retrieves clinic drop down options which contain the given text in their name
+     * @return List of drop down objects with key of clinic IEN and value of the name
+     */
+    List<DropDownObject> getClinicOptionsByName(String query);
+    
+    /**
      * Retrieves all the clinics for 'programId'
      * @param programId
      * @return
