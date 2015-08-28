@@ -247,7 +247,11 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
     private Long getTbiServiceName(String refTbiServiceName) {
         Map<String, Long> svcmap = getConsultationServiceNameDataSet2("1", "1",
                 true);
-        return svcmap.get(refTbiServiceName);
+        logger.debug("tbi service names from Vista {}", svcmap);
+
+        Long serviceNameIen=svcmap.get(refTbiServiceName);
+        logger.debug("serviceNameIen for service name {} is {}", refTbiServiceName, serviceNameIen);
+        return serviceNameIen;
     }
 
     /**
