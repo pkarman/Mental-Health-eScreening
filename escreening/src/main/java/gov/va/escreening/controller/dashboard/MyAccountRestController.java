@@ -164,7 +164,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
 
                 request.getSession().setAttribute("VISTA_VERIFY_ACCOUNT_COUNT", vistaVerifyAccountCount);
 
-                logger.info("Invalid Acess/Verify codes for user " + escreenUser.getUserId());
+                logger.error(String.format("%s--%s", "Invalid Acess/Verify codes for user " + escreenUser.getUserId(), e.getMessage()));
             }
             catch (VistaLinkException e) {
                 hasError = true;
