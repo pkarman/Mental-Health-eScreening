@@ -33,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.*;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 @Service("vistaDelegate")
 public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
 
@@ -224,6 +226,10 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             //if (true) {throw new IllegalStateException("BTBIS EXCEPTION for JSP to handle the callResults logic");}
             Survey btbisSurvey = isTBIConsultSelected(veteranAssessment);
             if (btbisSurvey != null) {
+                checkNotNull(veteranAssessment, "Veteran Assessment cannot be null");
+                checkNotNull(quickOrderIen, "Quick Order IEN cannot be null");
+                checkNotNull(refTbiServiceName, "Tbi Service Name cannot be null");
+                checkNotNull(surveyResponsesHelper, "Survey Responses Helper cannot be null");
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
                 logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
