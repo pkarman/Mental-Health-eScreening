@@ -90,7 +90,7 @@
 								<div class="form-group">
 									<form:label path="selectedClinic">VistA Clinic *</form:label>
 									<form:select path="selectedClinic" cssClass="form-control clinicSelect"  
-										id="myselect" required="true"  
+										required="true"
 										title="Please select a VistA Clinic ...">
 										<form:option value="" label="Please Select VistA Clinic"/>
 									</form:select>

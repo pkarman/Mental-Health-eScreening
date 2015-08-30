@@ -114,10 +114,10 @@ $(document).ready(function() {
 	}
 	*/
 	
-	function formatClinic (clinic) {
-		
-		var markup = '<div class="clearfix">' +
-		'<div class="col-sm-6">' + clinic.name + '</div>';
+	//function formatClinic (clinic) {
+	//
+	//	var markup = '<div class="clearfix">' +
+	//	'<div class="col-sm-6">' + clinic.name + '</div>';
 		
 //		'<div class="col-sm-3"><i class="fa fa-code-fork"></i> ' + repo.forks_count + '</div>' +
 //		'<div class="col-sm-2"><i class="fa fa-star"></i> ' + repo.stargazers_count + '</div>' +
@@ -127,18 +127,18 @@ $(document).ready(function() {
 //
 //		markup += '</div></div>';
 
-		return markup;
-		//return '<option value="' + clinic.id + '">' + clinic.name + '</option>';
-		
-	}
+	//	return markup;
+	//	//return '<option value="' + clinic.id + '">' + clinic.name + '</option>';
+	//
+	//}
 
-	function formatClinicSelection (clinic) {
-		return clinic.name;
-	}
+	//function formatClinicSelection (clinic) {
+	//	return clinic.name;
+	//}
 	
 	$(".clinicSelect").select2({
 		  placeholder: "Please Select VistA Clinic",
-		  allowClear: true,
+		  //allowClear: true,
 		  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
 		  minimumInputLength: 3,
 		  ajax: {
@@ -159,16 +159,16 @@ $(document).ready(function() {
 				  $.each(data, function(index, clinic){
 					  items.push({
 						"id": clinic.stateId,
-					   	"name": clinic.stateName,
+					   	"text": clinic.stateName,
 					  });	
 				  });
 				  return {
 					  results: items
 				  };
-			  },
-			  cache: true,
-			  templateResult: formatClinic, 
-			  templateSelection: formatClinicSelection
+			  }
+			  //cache: true
+			  //templateResult: formatClinic,
+			  //templateSelection: formatClinicSelection
 		  }
 	});								
 });
