@@ -33,6 +33,16 @@ public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> im
 
         return resultList;
     }
+    
+    @Override
+    public List<Clinic> getClinicsByName(String query){
+    	String sql = "SELECT c FROM Clinic c WHERE c.name like :query ORDER BY c.name";
+
+        return entityManager
+        	.createQuery(sql, Clinic.class)
+        	.setParameter("query", "%" + query + "%")
+        	.getResultList();
+    }
 
     @Override
     public List<Integer> getAllVeteranIds(Integer clinicId) {
