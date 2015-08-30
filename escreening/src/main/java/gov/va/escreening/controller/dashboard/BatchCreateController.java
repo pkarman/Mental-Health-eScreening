@@ -317,14 +317,6 @@ public class BatchCreateController {
         model.addAttribute("isPostBack", false);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
-        List<DropDownObject> clinicList = new ArrayList<DropDownObject>();
-        for (ClinicDto c : clinicService.getClinicDtoList()) {
-            DropDownObject o = new DropDownObject(c.getClinicIen(),
-                    c.getClinicName());
-            clinicList.add(o);
-        }
-
-        model.addAttribute("clinics", clinicList);
         return "dashboard/selectVeterans";
     }
 

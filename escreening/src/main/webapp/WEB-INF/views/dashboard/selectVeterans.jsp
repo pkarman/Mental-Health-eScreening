@@ -16,12 +16,12 @@
 	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
 
-    <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
-    <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
+    <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />
     <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" /> 
-    <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css">
+    <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css" />
     <link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-    <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
+    <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
     <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="<c:url value="resources/css/bootstrap-datepicker/datepicker.css" />">
 	<link rel="stylesheet" type="text/css" href="<c:url value="resources/js/lib/ladda-bootstrap/dist/ladda-themeless.min.css" />">
@@ -29,7 +29,11 @@
 	<!-- Bootstrap -->
 	<link href="resources/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="resources/css/partialpage/standardtopofpage-dashboard_new.css"rel="stylesheet" type="text/css" />
-	<link href="resources/js/lib/silviomoreto-bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" >
+	<link href="resources/js/lib/silviomoreto-bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
+	
+	<!-- Select 2 -->
+	<link href="resources/vendor-libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+	<script src="resources/vendor-libs/select2/js/select2.min.js"></script>
 	
 </head>
 <body>
@@ -85,13 +89,12 @@
 							<div class="col-md-4">
 								<div class="form-group">
 									<form:label path="selectedClinic">VistA Clinic *</form:label>
-									<form:select path="selectedClinic" cssClass="form-control selectpicker"  
-										id="myselect" required="true"  
-										data-live-search="true"
+									<form:select path="selectedClinic" cssClass="form-control clinicSelect"  
+										required="true"
 										title="Please select a VistA Clinic ...">
 										<form:option value="" label="Please Select VistA Clinic"/>
-										<form:options items="${clinics}" itemValue="stateId" itemLabel="stateName" />
 									</form:select>
+									
 									<form:errors path="selectedClinic" cssClass="help-inline"/>						 
 								</div>
 							</div>			
@@ -192,9 +195,7 @@
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 	
 	<!-- Scripts -->
-	<script type="text/javascript" src="resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap-select.js"></script>
-	<script type="text/javascript" src="resources/js/bootstrap/js/bootstrap.js"></script>
-	<script type="text/javascript" src="resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="resources/vendor-libs/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 		
 	<script type="text/javascript" src="resources/js/lib/ladda-bootstrap/dist/spin.min.js"></script>
