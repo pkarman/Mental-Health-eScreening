@@ -432,14 +432,10 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 		Map<Integer, String> autoAssignedSurveyMap = new HashMap<Integer, String>();
 
 		if (veteranClinicalReminderDtoList != null) {
-			for (int i = 0; i < veteranClinicalReminderDtoList.size(); ++i) {
-				if ("DUE NOW".equalsIgnoreCase(veteranClinicalReminderDtoList
-						.get(i).getDueDateString())) {
-
-					String clinicalReminderIen = veteranClinicalReminderDtoList
-							.get(i).getClinicalReminderIen();
-					String clinicalReminderName = veteranClinicalReminderDtoList
-							.get(i).getName();
+			for (VistaVeteranClinicalReminder clinicalReminder:veteranClinicalReminderDtoList) {
+				if (clinicalReminder.isDueNow()) {
+					String clinicalReminderIen = clinicalReminder.getClinicalReminderIen();
+					String clinicalReminderName = clinicalReminder.getName();
 
 					// Get all the surveys mapped to this clinical reminder.
 					List<ClinicalReminderSurvey> clinicalReminderSurveyList = clinicalReminderSurveyService

@@ -1,13 +1,18 @@
 package gov.va.escreening.vista.dto;
 
+import gov.va.escreening.vista.extractor.OrqqpxRemindersExtractor;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 
 public class VistaVeteranClinicalReminder implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private String clinicalReminderIen;
     private String name;
+
     private String dueDateString;
 
     public String getClinicalReminderIen() {
@@ -50,4 +55,23 @@ public class VistaVeteranClinicalReminder implements Serializable {
                 + ", dueDateString=" + dueDateString + "]";
     }
 
+    public boolean isDueNow() {
+        boolean dueNow = "DUE NOW".equals(dueDateString);
+        if (!dueNow){
+            dueNow=calculateDueNow(dueDateString);
+        }
+        return dueNow;
+    }
+
+    private boolean calculateDueNow(String dueDateString) {
+        try {
+            Date dueDate = OrqqpxRemindersExtractor.clinicalReminderDueDateFormat.parse(dueDateString);
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DAY_OF_YEAR, 1);
+            Date tomorrow = c.getTime();
+            return dueDate.before(tomorrow);
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 }

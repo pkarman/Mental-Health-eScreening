@@ -9,7 +9,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 
 public class OrqqpxRemindersExtractor implements VistaRecordExtractor<VistaVeteranClinicalReminder> {
-
+    public static final SimpleDateFormat clinicalReminderDueDateFormat = new SimpleDateFormat("MM/dd/yyyy");
     @Override
     public VistaVeteranClinicalReminder extractData(String record) {
         // IEN^PRINT NAME^DUE DATE/TIME^LAST OCCURRENCE DATE/TIME
@@ -35,8 +35,7 @@ public class OrqqpxRemindersExtractor implements VistaRecordExtractor<VistaVeter
                 Date dueDate = VistaUtils.convertVistaDate(fields[2]);
 
                 if (dueDate != null) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                    vistaVeteranClinicalReminder.setDueDateString(sdf.format(dueDate));
+                    vistaVeteranClinicalReminder.setDueDateString(clinicalReminderDueDateFormat.format(dueDate));
                 }
             }
             else {
