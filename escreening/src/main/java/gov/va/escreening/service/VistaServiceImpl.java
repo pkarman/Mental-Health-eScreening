@@ -523,42 +523,62 @@ public class VistaServiceImpl implements VistaService {
 
         for (ClinicalReminder cr : clinicalReminderListDb) {
             existingDbClinicalReminder.put(cr.getName(), cr);
+            existingDbClinicalReminder.put(cr.getVistaIen(), cr);
         }
 
         int refreshCount = 0;
 
-        for (VistaClinicalReminderAndCategory cr : clinicalReminderList) {
+        Iterator<VistaClinicalReminderAndCategory> crItr = clinicalReminderList.iterator();
+        while(crItr.hasNext()){
+        	
+        	VistaClinicalReminderAndCategory cr = crItr.next();
 
             // This RPC returns both 'Category' and 'Clinical Reminder'.
             // Don't need to look at Categories.
-            if (!StringUtils.equalsIgnoreCase("C", cr.getClinicalReminderTypeName())) {
-
-                if (!existingDbClinicalReminder.containsKey(cr.getClinicalReminderName())) {
-
-                    logger.info("Creating new clinical reminder {}", cr);
-                    clinicalReminderService.create(cr.getClinicalReminderName(),
-                            cr.getClinicalReminderIen(),
-                            cr.getPrintName(),
-                            cr.getClinicalReminderClass());
-
-                    ++refreshCount;
-                }
-                else
-                {
-                    // update IEN if needed
-                    ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderName());
-                    if (existing.getVistaIen() == null || !existing.getVistaIen().equals(cr.getClinicalReminderIen()))
-                    {
-                        existing.setVistaIen(cr.getClinicalReminderIen());
-                        clinicalReminderRepo.update(existing);
-                        ++refreshCount;
-                        logger.info("Updated existing clinical reminder {}", existing.getName());
-                    }
+        	if(StringUtils.equalsIgnoreCase("C", cr.getClinicalReminderTypeName())){
+        		crItr.remove();
+        	}
+        	else if (existingDbClinicalReminder.containsKey(cr.getClinicalReminderName())){
+            	crItr.remove();
+            	
+            	// update IEN if needed
+                ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderName());
+                if (existing.getVistaIen() == null 
+                		|| !existing.getVistaIen().equals(cr.getClinicalReminderIen())
+                		|| !existing.getPrintName().equals(cr.getPrintName())){
+                	existing.setVistaIen(cr.getClinicalReminderIen());
+                	existing.setPrintName(cr.getPrintName());
+                	clinicalReminderRepo.update(existing);
+                	++refreshCount;
+                	logger.info("Updated IEN of an existing clinical reminder {}", existing);
                 }
             }
-
         }
-
+        
+        //At this point only CRs that don't match in name are left to add (this assumes that IENs are unique in clinicalReminderList)
+        for(VistaClinicalReminderAndCategory cr : clinicalReminderList){
+        	ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderIen());
+        	if(existing != null){
+        		if(!existing.getName().equals(cr.getClinicalReminderName()) ||
+        				!existing.getPrintName().equals(cr.getPrintName())){
+        		
+        			existing.setName(cr.getClinicalReminderName());
+        			existing.setPrintName(cr.getPrintName());
+        			clinicalReminderRepo.update(existing);
+        			++refreshCount;
+        			logger.info("Updated Name of an existing clinical reminder with same IEN {}", existing);
+        		}
+        	}
+        	else{
+	            Integer crId = clinicalReminderService.create(cr.getClinicalReminderName(),
+                        cr.getClinicalReminderIen(),
+                        cr.getPrintName(),
+                        cr.getClinicalReminderClass()); 
+	            ++refreshCount;
+	            logger.info("Created a new clinical reminder (with clinical_reminder_id {}): {}", crId, cr);
+	        }
+        }
+        
         if (refreshCount > 0)
         {
             clinicalReminderRepo.commit();
