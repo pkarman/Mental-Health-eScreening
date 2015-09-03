@@ -14,6 +14,7 @@ public class VistaVeteranClinicalReminder implements Serializable {
     private String name;
 
     private String dueDateString;
+    private boolean dueNow;
 
     public String getClinicalReminderIen() {
         return clinicalReminderIen;
@@ -56,22 +57,27 @@ public class VistaVeteranClinicalReminder implements Serializable {
     }
 
     public boolean isDueNow() {
-        boolean dueNow = "DUE NOW".equals(dueDateString);
-        if (!dueNow){
-            dueNow=calculateDueNow(dueDateString);
-        }
         return dueNow;
+//        boolean dueNow = "DUE NOW".equals(dueDateString);
+//        if (!dueNow){
+//            dueNow=calculateDueNow(dueDateString);
+//        }
+//        return dueNow;
     }
 
-    private boolean calculateDueNow(String dueDateString) {
-        try {
-            Date dueDate = OrqqpxRemindersExtractor.clinicalReminderDueDateFormat.parse(dueDateString);
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.DAY_OF_YEAR, 1);
-            Date tomorrow = c.getTime();
-            return dueDate.before(tomorrow);
-        } catch (ParseException e) {
-            return false;
-        }
+    public void setDueNow(boolean dueNow) {
+        this.dueNow = dueNow;
     }
+
+//    private boolean calculateDueNow(String dueDateString) {
+//        try {
+//            Date dueDate = OrqqpxRemindersExtractor.clinicalReminderDueDateFormat.parse(dueDateString);
+//            Calendar c = Calendar.getInstance();
+//            c.add(Calendar.DAY_OF_YEAR, 1);
+//            Date tomorrow = c.getTime();
+//            return dueDate.before(tomorrow);
+//        } catch (ParseException e) {
+//            return false;
+//        }
+//    }
 }
