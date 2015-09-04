@@ -378,8 +378,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
                 if (veteranAssessment.getClinic() != null) {
                     assessmentSearchResult.setClinicName(veteranAssessment.getClinic().getName());
 
-                    if (veteranAssessment.getClinic().getProgram() != null) {
-                        assessmentSearchResult.setProgramName(veteranAssessment.getClinic().getProgram().getName());
+                    if (veteranAssessment.getProgram() != null) {
+                        assessmentSearchResult.setProgramName(veteranAssessment.getProgram().getName());
                     }
                 }
 
