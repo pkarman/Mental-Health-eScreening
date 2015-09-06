@@ -29,4 +29,10 @@ public interface EventService {
      * @param alert
      */
     public void updateDashboardAlertEvent(DashboardAlert alert);
+
+    /**
+     * Delete the event for a health factor
+     * @param hf
+     */
+    void deleteEventForHealthFactor(HealthFactor hf);
 }
