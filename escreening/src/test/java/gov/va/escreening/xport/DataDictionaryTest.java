@@ -5,7 +5,9 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import gov.va.escreening.service.export.DataDictionary;
 import gov.va.escreening.service.export.DataDictionaryService;
+import gov.va.escreening.service.export.DataDictionarySheet;
 import gov.va.escreening.util.DataExportAndDictionaryUtil;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -30,34 +32,25 @@ import java.util.Map.Entry;
 public class DataDictionaryTest {
     Logger logger = LoggerFactory.getLogger(DataDictionaryTest.class);
 
-    @Resource(type = DDCache.class)
-    DDCache ddCache;
-
     @Resource(name="dataExportAndDictionaryUtil")
     DataExportAndDictionaryUtil dedUtil;
-
-    @Test
-    public void createDataDictionary() throws Exception {
-        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-    }
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
 
     @Test
     public void saveDDAsExcel() throws Exception {
-        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
         String tstDirName=System.getProperty("user.home") + File.separator + "Documents" + File.separator+"escrTestOut";
-        dedUtil.saveDataDictionaryAsExcel(tstDirName, dataDictionary, new Date());
+        dedUtil.saveDataDictionaryAsExcel(tstDirName, new Date());
     }
 
 
-    private Map<String, Table<String, String, String>> reconstructDataDictionary(String ddAsString) {
+    private DataDictionary reconstructDataDictionary(String ddAsString) {
         Gson gson1 = new GsonBuilder().create();
         Map raw = gson1.fromJson(ddAsString, Map.class);
 
-        Map<String, Table<String, String, String>> dd = Maps.newLinkedHashMap();
-
         for (Object o : raw.keySet()) {
             String moduleName = (String) o;
-            Table<String, String, String> t = TreeBasedTable.create();
+            DataDictionarySheet t = new DataDictionarySheet();
             Map m = (Map) raw.get(moduleName);
             Map m1 = (Map) m.get("backingMap");
             for (Object k : m1.keySet()) {
@@ -89,15 +82,14 @@ public class DataDictionaryTest {
     }
 
 
-    private void logDataDictionary(
-            Map<String, Table<String, String, String>> dataDictionary) {
+    private void logDataDictionary() {
         // for each row key
-        for (String surveyName : dataDictionary.keySet()) {
+        for (String surveyName : dd.getModuleNames()) {
             logger.info("Survey name:" + surveyName);
-            Table<String, String, String> measuresTable = dataDictionary.get(surveyName);
-            for (String measureRowNum : measuresTable.rowKeySet()) {
+            DataDictionarySheet ddSheet = dd.findSheet(surveyName);
+            for (String measureRowNum : ddSheet.rowKeySet()) {
                 StringBuilder measureColumns = new StringBuilder();
-                for (Entry<String, String> rowData : measuresTable.row(measureRowNum).entrySet()) {
+                for (Entry<String, String> rowData : ddSheet.row(measureRowNum).entrySet()) {
                     measureColumns.append(String.format("%s:%s$", rowData.getKey(), rowData.getValue()));
                 }
                 logger.info(measureColumns.toString());

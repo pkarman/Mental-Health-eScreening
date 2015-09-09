@@ -1,58 +1,76 @@
 package gov.va.escreening.service.export;
 
-import gov.va.escreening.entity.AssessmentVariable;
-import gov.va.escreening.entity.Measure;
-import gov.va.escreening.entity.MeasureValidation;
-import gov.va.escreening.entity.Survey;
-import gov.va.escreening.entity.Validation;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+import com.google.common.collect.*;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.repository.SurveyRepository;
 import gov.va.escreening.repository.ValidationRepository;
 import gov.va.escreening.service.AssessmentVariableService;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import gov.va.escreening.util.DataDictExcelUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.bouncycastle.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service("dataDictionaryService")
-public class DataDictionaryServiceImpl implements DataDictionaryService, MessageSourceAware {
+
+public class DataDictionaryServiceImpl implements DataDictionaryService, MessageSourceAware, BeanFactoryAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private MessageSource msgSrc;
-
     @Resource(name = "dataDictionaryHelper")
     DataDictionaryHelper ddh;
-
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
     @Resource(type = ValidationRepository.class)
     ValidationRepository vr;
-
-    @Resource(type = SurveyRepository.class)
-    SurveyRepository sr;
-
     @Resource(type = AssessmentVariableService.class)
     AssessmentVariableService avs;
+    @Resource(name = "dataDictAsExcelUtil")
+    DataDictExcelUtil ddeutil;
+    Callable<DataDictionary> ddCallable;
+    @Resource(type = SurveyRepository.class)
+    SurveyRepository sr;
+    private MessageSource msgSrc;
+    private ExecutorService taskExecuter;
+    private BeanFactory beanFactory;
+
+    @PostConstruct
+    private void initDataDictionaryCallable() {
+        taskExecuter = Executors.newSingleThreadExecutor();
+        ddCallable = new Callable<DataDictionary>() {
+            @Override
+            public DataDictionary call() {
+                tryUpdateExcelWorkbook();
+                return dd;
+            }
+        };
+    }
+
+    @PreDestroy
+    private void preDestroy() {
+        logger.warn("Shutting down DataDictionary Executer" + taskExecuter);
+        taskExecuter.shutdown();
+    }
 
     private Multimap<Integer, String> buildMeasureValidationMap() {
 
@@ -100,65 +118,81 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
     @Override
     @Transactional(readOnly = true)
-    public Map<String, Table<String, String, String>> createDataDictionary() {
-        /**
-         * <pre>
-         *
-         * 	pt#1: each survey (also called module) will have its own table (excel sheet)
-         * 	pt#2: each table has rows
-         * 	pt#3: each row has columns
-         * 	pt#4: and each column has values
-         *
-         * 	each [survey] has a [Table]
-         * 		each [Table] has bunch of rows
-         * 	  		==> row column=value
-         * 	  		==> row column=value
-         * 	  		==> row column=value
-         * </pre>
-         *
-         * Perfect data abstraction to capture the above model is to have Google Guava's Table Table <row, col name, col
-         * value>
-         */
-        Map<String, Table<String, String, String>> dataDictionary = Maps.newTreeMap(new Comparator<String>() {
+    public boolean tryPrepareDataDictionary(boolean force) {
+        logger.debug("1-tryPrepareDataDictionary {}", dd);
+        if (force || !dd.isReady()) {
+            updateDataDictionary();
+            logger.debug("2-tryPrepareDataDictionary {}", dd);
 
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.toLowerCase().compareTo(o2.toLowerCase());
+            logger.debug("3-tryPrepareDataDictionary {}", dd);
+            asyncExecLongRunningTask();
+            logger.debug("4-tryPrepareDataDictionary {}", dd);
+        } else {
+            logger.debug("5-tryPrepareDataDictionary {dd already ready} {}", dd);
+            Preconditions.checkState(dd.isReady(), "Data Dictionary must be ready to be used...");
+        }
+        return dd.isReady();
+    }
+
+    private void asyncExecLongRunningTask() {
+        logger.debug("1-asyncExecLongRunningTask {}", dd);
+        taskExecuter.submit(ddCallable);
+        logger.debug("2-asyncExecLongRunningTask {}", dd);
+    }
+
+    private void tryUpdateExcelWorkbook() {
+        logger.debug("1-tryUpdateExcelWorkbook {}", dd);
+        updateExcelWorkbook();
+        logger.debug("2-tryUpdateExcelWorkbook {}", dd);
+    }
+
+    private void updateExcelWorkbook() {
+        logger.debug("1-updateExcelWorkbook {}", dd);
+        dd.setWorkbook(new HSSFWorkbook());
+        logger.debug("2-updateExcelWorkbook {}", dd);
+        ddeutil.buildDdAsExcel(dd.getWorkbook());
+        logger.debug("3-updateExcelWorkbook {}", dd);
+        dd.markReady();
+        logger.debug("4-updateExcelWorkbook {}", dd);
+    }
+
+    private void updateDataDictionary() {
+        try {
+            // partition all survey with its list of measures
+            Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
+
+            // read all AssessmenetVariables having formulae
+            Collection<AssessmentVariable> avList = avs.findAllFormulas();
+
+            // read all measures of free text and its validations
+            Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
+
+            // bookkeeping set to verify that each and every assessment var of formula type has been utilized in creation of
+            // the data dictionary
+            Set<String> formulaeAvTouched = Sets.newLinkedHashSet();
+
+            for (Survey s : surveyMeasuresMap.keySet()) {
+                DataDictionarySheet sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, formulaeAvTouched);
+
+                // bind the survey (or module with its sheet)
+                dd.put(s.getName(), sheet);
+
+                //logger.debug("sheet data for Survey={} =>> {}", s.getName(), sheet);
             }
-        });
 
-        // partition all survey with its list of measures
-        Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
+            if (logger.isDebugEnabled()) {
+                Set<String> avUsedInDataDictionary = Sets.newHashSet(formulaeAvTouched);
 
-        // read all AssessmenetVariables having formulae
-        Collection<AssessmentVariable> avList = avs.findAllFormulas();
+                String refAssessmentVars = getRefAssessmentVars(avList);
+                Set<String> avReference = Sets.newHashSet(Strings.split(refAssessmentVars, ','));
 
-        // read all measures of free text and its validations
-        Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
-
-        // bookkeeping set to verify that each and every assessment var of formula type has been utilized in creation of
-        // the data dictionary
-        Set<String> formulaeAvTouched = Sets.newLinkedHashSet();
-
-        for (Survey s : surveyMeasuresMap.keySet()) {
-            Table<String, String, String> sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, formulaeAvTouched);
-
-            // bind the survey (or module with its sheet)
-            dataDictionary.put(s.getName(), sheet);
-
-            //logger.debug("sheet data for Survey={} =>> {}", s.getName(), sheet);
+                Set<String> unusedAv = Sets.difference(avUsedInDataDictionary, avReference);
+                logger.debug(String.format("AvSizeUsedInDD:%s==AvReferenceDD:%s==AvUnusedInDD:%s", avUsedInDataDictionary.size(), avReference.size(), unusedAv));
+            }
+        } catch (Exception e) {
+            logger.error(Throwables.getRootCause(e).getMessage());
+            Throwables.propagate(e);
         }
-
-        if (logger.isDebugEnabled()) {
-            Set<String> avUsedInDataDictionary = Sets.newHashSet(formulaeAvTouched);
-
-            String refAssessmentVars = getRefAssessmentVars(avList);
-            Set<String> avReference = Sets.newHashSet(Strings.split(refAssessmentVars, ','));
-
-            Set<String> unusedAv = Sets.difference(avUsedInDataDictionary, avReference);
-            logger.debug(String.format("AvSizeUsedInDD:%s==AvReferenceDD:%s==AvUnusedInDD:%s", avUsedInDataDictionary.size(), avReference.size(), unusedAv));
-        }
-        return dataDictionary;
     }
 
     private String getRefAssessmentVars(Collection<AssessmentVariable> avList) {
@@ -172,12 +206,11 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
         return joinedDisplayNames;
     }
 
-    private Table<String, String, String> buildSheetFor(Survey s,
-                                                        Collection<Measure> surveyMeasures, Multimap mvMap,
-                                                        Collection<AssessmentVariable> avList, Set<String> avUsed) {
+    private DataDictionarySheet buildSheetFor(Survey s,
+                                              Collection<Measure> surveyMeasures, Multimap mvMap,
+                                              Collection<AssessmentVariable> avList, Set<String> avUsed) {
 
-        Table<String, String, String> t = TreeBasedTable.create();
-        ddh.buildDataDictionaryFor(s, t, surveyMeasures, mvMap, avList, avUsed);
+        DataDictionarySheet t = ddh.buildDataDictionaryFor(s, surveyMeasures, mvMap, avList, avUsed);
 
         return t;
     }
@@ -198,9 +231,9 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     }
 
     @Override
-    public List<String> findAllFormulas(String surveyName, Map<String, Table<String, String, String>> dd) {
-        final Table<String, String, String> surveySheet = dd.get(surveyName);
-        final Map<String, Map<String, String>> rowMap = surveySheet.rowMap();
+    public List<String> findAllFormulas(String moduleName) {
+        final DataDictionarySheet ddSheet = dd.findSheet(moduleName);
+        final Map<String, Map<String, String>> rowMap = ddSheet.rowMap();
         List<String> formulaNames = Lists.newArrayList();
 
         for (String rowKey : rowMap.keySet()) {
@@ -210,5 +243,10 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
             }
         }
         return formulaNames;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
     }
 }

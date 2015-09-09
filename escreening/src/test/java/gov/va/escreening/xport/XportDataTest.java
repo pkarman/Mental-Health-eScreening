@@ -25,6 +25,7 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.VeteranAssessmentService;
+import gov.va.escreening.service.export.DataDictionary;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import junit.framework.Assert;
@@ -92,9 +93,6 @@ public class XportDataTest {
 
     @Resource(type = ExportDataRestController.class)
     ExportDataRestController exportDataRestController;
-
-    @Resource(type = DDCache.class)
-    DDCache ddCache;
 
     @Resource(type = ExportLogRepository.class)
     private ExportLogRepository elr;
@@ -362,8 +360,7 @@ public class XportDataTest {
     private boolean exportDataVerifierIdentified(Object[] testTuple) {
         AssesmentTestData atd = (AssesmentTestData) testTuple[0];
         VeteranAssessment va = (VeteranAssessment) testTuple[1];
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd, va, 1);
+        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 1);
 
         return exportDataVerifierResult(atd, exportedData, false);
     }
@@ -371,8 +368,7 @@ public class XportDataTest {
     private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
         AssesmentTestData atd = (AssesmentTestData) testTuple[0];
         VeteranAssessment va = (VeteranAssessment) testTuple[1];
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd, va, 2);
+        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 2);
 
         atd.removePPIInfoExportNames();
 
@@ -567,8 +563,7 @@ public class XportDataTest {
     private AssessmentDataExport addExportLogOfVet18() {
         ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
         edfb.setExportedByUserId(1);
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        return exportDataService.getAssessmentDataExport(dd, edfb);
+        return exportDataService.getAssessmentDataExport(edfb, null);
     }
 
     private AssessmentDataExport addExportLogOfProgramOOO() {
@@ -577,8 +572,7 @@ public class XportDataTest {
         eUser.setProgramIdList(new ArrayList(Arrays.asList(1, 2, 3, 4, 5)));
         ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(eUser, null, null, null, "1", "4", null, "test123", "identified", null);
         edfb.setExportedByUserId(5);
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        return exportDataService.getAssessmentDataExport(dd, edfb);
+        return exportDataService.getAssessmentDataExport(edfb, null);
     }
 
     // @Rollback(value = false)
