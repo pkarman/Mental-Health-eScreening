@@ -336,8 +336,8 @@ public class ProgramServiceImpl implements ProgramService {
 	private void manageProgramBatteryRelationships(Program program,
 			List<Integer> batteryIdList) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("associating {} batteries with program id {}", batteryIdList.size(), program.getProgramId());
+		if (logger.isTraceEnabled()) {
+			logger.trace("associating {} batteries with program id {}", batteryIdList.size(), program.getProgramId());
 		}
 
 		// delete old relationships

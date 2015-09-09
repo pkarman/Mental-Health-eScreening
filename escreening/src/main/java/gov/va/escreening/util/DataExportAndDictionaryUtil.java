@@ -1,5 +1,6 @@
 package gov.va.escreening.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
@@ -93,7 +94,7 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
 
     public void saveDataDictionaryAsExcel(
             String dirName, Date now) throws Exception {
-
+        Preconditions.checkState(dd.getWorkbook()!=null, "The excel workbook must not be null at this point");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         dd.getWorkbook().write(baos);
         baos.flush();
@@ -167,8 +168,8 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
         for (String row : data) {
             writer.write(row);
             writer.newLine();
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.format("row written for %s [%s]", fileName, row));
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("row written for %s [%s]", fileName, row));
             }
         }
     }
@@ -179,8 +180,8 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
         writer.newLine();
         writer.write(header);
         writer.newLine();
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("header written for %s [%s]", fileName, header));
+        if (logger.isTraceEnabled()) {
+            logger.trace(String.format("header written for %s [%s]", fileName, header));
         }
     }
 

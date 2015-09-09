@@ -125,7 +125,11 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
             logger.debug("2-tryPrepareDataDictionary {}", dd);
 
             logger.debug("3-tryPrepareDataDictionary {}", dd);
-            asyncExecLongRunningTask();
+            if (!force) {
+                asyncExecLongRunningTask();
+            } else {
+                updateExcelWorkbook();
+            }
             logger.debug("4-tryPrepareDataDictionary {}", dd);
         } else {
             logger.debug("5-tryPrepareDataDictionary {dd already ready} {}", dd);
@@ -180,14 +184,14 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
                 //logger.debug("sheet data for Survey={} =>> {}", s.getName(), sheet);
             }
 
-            if (logger.isDebugEnabled()) {
+            if (logger.isTraceEnabled()) {
                 Set<String> avUsedInDataDictionary = Sets.newHashSet(formulaeAvTouched);
 
                 String refAssessmentVars = getRefAssessmentVars(avList);
                 Set<String> avReference = Sets.newHashSet(Strings.split(refAssessmentVars, ','));
 
                 Set<String> unusedAv = Sets.difference(avUsedInDataDictionary, avReference);
-                logger.debug(String.format("AvSizeUsedInDD:%s==AvReferenceDD:%s==AvUnusedInDD:%s", avUsedInDataDictionary.size(), avReference.size(), unusedAv));
+                logger.trace(String.format("AvSizeUsedInDD:%s==AvReferenceDD:%s==AvUnusedInDD:%s", avUsedInDataDictionary.size(), avReference.size(), unusedAv));
             }
         } catch (Exception e) {
             logger.error(Throwables.getRootCause(e).getMessage());

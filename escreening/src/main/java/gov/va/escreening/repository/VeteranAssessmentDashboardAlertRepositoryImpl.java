@@ -343,8 +343,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 			String updateSql = String.format("update veteran_assessment set date_archived = now() where date_archived is null and assessment_status_id = 1 and date_created < %s", smallestDate);
 			Query archiveUnAttendedCleanSql = entityManager.createNativeQuery(updateSql);
 			int recsUpdated1 = archiveUnAttendedCleanSql.executeUpdate();
-			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("%s records were archived as their assessment status is CLEAN and they have not been attended for more than %s days", recsUpdated1, AssessmentExpirationDaysEnum.CLEAN.getExpirationDays()));
+			if (logger.isTraceEnabled()) {
+				logger.trace(String.format("%s records were archived as their assessment status is CLEAN and they have not been attended for more than %s days", recsUpdated1, AssessmentExpirationDaysEnum.CLEAN.getExpirationDays()));
 			}
 		}
 
@@ -354,8 +354,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 			String updateSql = String.format("update veteran_assessment set date_archived = now() where date_archived is null and assessment_status_id = 5 and date_updated < %s", smallestDate);
 			Query archiveUnAttendedFinalizedSql = entityManager.createNativeQuery(updateSql);
 			int recsUpdated2 = archiveUnAttendedFinalizedSql.executeUpdate();
-			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("%s records were archived as their assessment status is FINALIZED and they have not been attended for more than %s days", recsUpdated2, AssessmentExpirationDaysEnum.FINALIZED.getExpirationDays()));
+			if (logger.isTraceEnabled()) {
+				logger.trace(String.format("%s records were archived as their assessment status is FINALIZED and they have not been attended for more than %s days", recsUpdated2, AssessmentExpirationDaysEnum.FINALIZED.getExpirationDays()));
 			}
 		}
 	}

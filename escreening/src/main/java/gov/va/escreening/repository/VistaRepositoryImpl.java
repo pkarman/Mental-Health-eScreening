@@ -143,11 +143,11 @@ public class VistaRepositoryImpl implements VistaRepository {
                 }
             }
 
-            if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",vReq.getRpcName(),vistaRpcParamList));}
+            if (logger.isTraceEnabled()){logger.trace(String.format("RPC NAME:[%s]--REQ STRING:[%s]",vReq.getRpcName(),vistaRpcParamList));}
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
-            logger.debug("Results: " + results);
+            logger.trace("Results: {}", results);
         } catch (VistaLinkFaultException e) {
             logger.error("Exception thrown testRpc: ", e);
             return e.toString();
@@ -544,12 +544,12 @@ public class VistaRepositoryImpl implements VistaRepository {
             vReq.getParams().setParam(1, "string", clientIp);
             vReq.getParams().setParam(2, "string", applicationName);
 
-            if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[clientOp:%s, applicationName:%s]",vReq.getRpcName(),clientIp, applicationName));}
+            if (logger.isTraceEnabled()){logger.trace(String.format("RPC NAME:[%s]--REQ STRING:[clientOp:%s, applicationName:%s]",vReq.getRpcName(),clientIp, applicationName));}
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
 
-            logger.debug("Results: " + results);
+            logger.trace("Results: {}",results);
 
             // Parse the string and return the UserInfo object.
             XusKaajeeGetUserInfoExtractor xusKaajeeGetUserInfoExtractor = new XusKaajeeGetUserInfoExtractor();

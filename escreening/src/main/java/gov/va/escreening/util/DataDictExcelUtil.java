@@ -47,8 +47,8 @@ public class DataDictExcelUtil implements MessageSourceAware {
         CellStyle csWrapText = workbook.createCellStyle();
         csWrapText.setWrapText(true);
         for (String moduleName : dd.getModuleNames()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("creating excel sheet for module:" + moduleName);
+            if (logger.isTraceEnabled()) {
+                logger.trace("creating excel sheet for module:" + moduleName);
             }
             HSSFSheet sheet = workbook.createSheet(moduleName);
 
@@ -118,7 +118,7 @@ public class DataDictExcelUtil implements MessageSourceAware {
 
             StringBuilder debugString = new StringBuilder();
             for (Map.Entry<String, String> rowData : ddSheet.row(rowId).entrySet()) {
-                if (logger.isDebugEnabled()) {
+                if (logger.isTraceEnabled()) {
                     debugString.append(String.format("%s:%s:%s$", rowId, rowData.getKey(), rowData.getValue()));
                 }
 
@@ -134,8 +134,8 @@ public class DataDictExcelUtil implements MessageSourceAware {
                 }
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(debugString.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(debugString.toString());
             }
         }
     }

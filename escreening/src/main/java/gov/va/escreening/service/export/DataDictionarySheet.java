@@ -2,7 +2,6 @@ package gov.va.escreening.service.export;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import com.sun.xml.internal.bind.v2.util.QNameMap;
 
 import java.util.Map;
 import java.util.Set;

@@ -132,8 +132,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
                 String surveyExportName = surveyEntry.getValue();
                 if (!surveyExportName.isEmpty()) {
                     DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, answerTypeOther, surveyExportName, formulaNames, show);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
                     }
                     exportDataRowCells.add(aCell);
                     saveMultiSelectResponses(multiSelectMap, surveyEntry, aCell);
@@ -393,8 +393,6 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     @Override
     public void takeAssessmentSnapShot(Integer exportedById) {
-        logger.warn(">>>>>>[takeAssessmentSnapShot]DD-CREATE");
-
         dds.tryPrepareDataDictionary(true);
 
         Date lastSnapshotDate = exportLogRepository.findLastSnapshotDate();

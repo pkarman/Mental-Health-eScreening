@@ -13,6 +13,8 @@ import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.concurrent.*;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Created by munnoo on 9/8/15.
  */
@@ -26,14 +28,22 @@ public class DataDictionaryAsyncSpawningTest {
     DataDictionary dd;
 
     @Test
-    public void callDataDictionary() {
+    public void noForceCreateDataDictionary() {
         dds.tryPrepareDataDictionary(false);
+        assertTrue(!dd.isReady());
         try {
             System.out.println("Sleeping..." + Thread.currentThread().getName());
             Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("Shutting now..."+dd);
+        assertTrue("Data Dictionary should have initialized in 20 secs", dd.isReady());
+        System.out.println("Shutting now..." + dd);
+    }
+
+    @Test
+    public void forceCreateDataDictionary() {
+        dds.tryPrepareDataDictionary(true);
+        assertTrue("Data Dictionary should have initialized as this was a blocking call",dd.isReady());
     }
 }

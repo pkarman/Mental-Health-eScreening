@@ -343,10 +343,6 @@ public class ExpressionEvaluatorServiceImpl implements
         }
 
         String newlyBuiltFormula = Joiner.on("").join(tokens);
-//        if (logger.isDebugEnabled()) {
-//            logger.debug(String.format("Formula Str:%s == Src tokens:%s",
-//                    newlyBuiltFormula, idList));
-//        }
         return newlyBuiltFormula;
     }
 

@@ -80,8 +80,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
             @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "exportDataType", required = true) String exportDataType) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
+        if (logger.isTraceEnabled()) {
+            logger.trace(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
         }
 
         List<String> errors = new ArrayList<String>();
