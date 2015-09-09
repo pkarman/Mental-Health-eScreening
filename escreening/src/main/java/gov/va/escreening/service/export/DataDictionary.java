@@ -47,6 +47,8 @@ public class DataDictionary {
     }
 
     public void markNotReady() {
+        ddObject.clear();
+        workbook = null;
         this.state = DataDictionaryState.not_ready;
     }
 

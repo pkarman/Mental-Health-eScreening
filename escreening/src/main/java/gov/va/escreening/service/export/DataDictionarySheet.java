@@ -1,5 +1,6 @@
 package gov.va.escreening.service.export;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
@@ -38,5 +39,16 @@ public class DataDictionarySheet {
 
     public Map<String, Map<String, String>> rowMap() {
         return this.sheet.rowMap();
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("sheet", sheet)
+                .toString();
+    }
+
+    public int size() {
+        return sheet.size();
     }
 }

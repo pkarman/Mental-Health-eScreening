@@ -32,11 +32,15 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service("dataDictionaryService")
 
 public class DataDictionaryServiceImpl implements DataDictionaryService, MessageSourceAware, BeanFactoryAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Lock mainThreadLock = new ReentrantLock();
+    private final Lock workerThreadLock = new ReentrantLock();
     @Resource(name = "dataDictionaryHelper")
     DataDictionaryHelper ddh;
     @Resource(name = "theDataDictionary")
@@ -119,6 +123,20 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     @Override
     @Transactional(readOnly = true)
     public boolean tryPrepareDataDictionary(boolean force) {
+        boolean mainThreadAvailable = false;
+        boolean retVal = false;
+        try {
+            mainThreadAvailable = mainThreadLock.tryLock();
+        } finally {
+            if (mainThreadAvailable) {
+                retVal = proceedMainTask(force);
+                mainThreadLock.unlock();
+            }
+            return retVal;
+        }
+    }
+
+    private boolean proceedMainTask(boolean force) {
         logger.debug("1-tryPrepareDataDictionary {}", dd);
         if (force || !dd.isReady()) {
             updateDataDictionary();
@@ -145,6 +163,18 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     }
 
     private void tryUpdateExcelWorkbook() {
+        boolean workerThreadAvailable = false;
+        try {
+            workerThreadAvailable = workerThreadLock.tryLock();
+        } finally {
+            if (workerThreadAvailable) {
+                proceedWorkerTask();
+                mainThreadLock.unlock();
+            }
+        }
+    }
+
+    private void proceedWorkerTask() {
         logger.debug("1-tryUpdateExcelWorkbook {}", dd);
         updateExcelWorkbook();
         logger.debug("2-tryUpdateExcelWorkbook {}", dd);
@@ -164,19 +194,43 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
         try {
             // partition all survey with its list of measures
             Multimap<Survey, Measure> surveyMeasuresMap = avs.buildSurveyMeasuresMap();
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("%s--%s", "total surveys found", surveyMeasuresMap.size()));
+            }
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("details of every survey with its measures are--%s", surveyMeasuresMap));
+            }
 
             // read all AssessmenetVariables having formulae
-            Collection<AssessmentVariable> avList = avs.findAllFormulas();
+            Collection<AssessmentVariable> formulas = avs.findAllFormulas();
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("%s--%s", "total formulas found", formulas.size()));
+            }
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("details of formulas are--%s", formulas));
+            }
 
             // read all measures of free text and its validations
             Multimap<Integer, String> ftMvMap = buildMeasureValidationMap();
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("%s--%s", "total free text measures validation found", ftMvMap.size()));
+            }
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("details of free text measures validation are--%s", ftMvMap));
+            }
 
             // bookkeeping set to verify that each and every assessment var of formula type has been utilized in creation of
             // the data dictionary
             Set<String> formulaeAvTouched = Sets.newLinkedHashSet();
 
             for (Survey s : surveyMeasuresMap.keySet()) {
-                DataDictionarySheet sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, avList, formulaeAvTouched);
+                DataDictionarySheet sheet = buildSheetFor(s, surveyMeasuresMap.get(s), ftMvMap, formulas, formulaeAvTouched);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(String.format("%s--%s||%s-%s", "sheet name", s.getName(), "sheet size (total number of elements) (rows*columns)", sheet.size()));
+                }
+                if (logger.isTraceEnabled()) {
+                    logger.debug(String.format("details of sheet are--%s", sheet));
+                }
 
                 // bind the survey (or module with its sheet)
                 dd.put(s.getName(), sheet);
@@ -187,7 +241,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
             if (logger.isTraceEnabled()) {
                 Set<String> avUsedInDataDictionary = Sets.newHashSet(formulaeAvTouched);
 
-                String refAssessmentVars = getRefAssessmentVars(avList);
+                String refAssessmentVars = getRefAssessmentVars(formulas);
                 Set<String> avReference = Sets.newHashSet(Strings.split(refAssessmentVars, ','));
 
                 Set<String> unusedAv = Sets.difference(avUsedInDataDictionary, avReference);
