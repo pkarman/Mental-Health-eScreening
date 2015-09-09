@@ -71,14 +71,14 @@ public abstract class BaseDashboardRestController {
 	 * @param request
 	 */
 	protected void displaySearchParms(HttpServletRequest request) {
-		if (logger.isDebugEnabled()) {
+		if (logger.isTraceEnabled()) {
 			// Print out all the parameters sent by the caller.
 			@SuppressWarnings("rawtypes")
 			Enumeration itr1 = request.getParameterNames();
 
 			while (itr1.hasMoreElements()) {
 				String current = (String) itr1.nextElement();
-				logger.debug(current + " : " + request.getParameter(current));
+				logger.trace(current + " : " + request.getParameter(current));
 			}
 		}
 	}

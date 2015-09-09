@@ -1,6 +1,5 @@
 package gov.va.escreening.controller.dashboard;
 
-import com.google.common.collect.Table;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
@@ -12,14 +11,12 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ProgramService;
 import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.export.DataDictionaryService;
-import gov.va.escreening.service.export.ExportDataFilterOptionsService;
-import gov.va.escreening.service.export.ExportDataService;
-import gov.va.escreening.service.export.ExportLogService;
+import gov.va.escreening.service.export.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,7 +35,10 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
     private static final String IDENTIFIED_EXPORT = "identified";
     private static final String DEIDENTIFIED_EXPORT = "deidentified";
-
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
+    @Resource(type = DataDictionaryService.class)
+    DataDictionaryService dds;
     @Autowired
     private ExportDataFilterOptionsService exportDataFilterOptionsService;
     @Autowired
@@ -52,15 +52,17 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @Autowired
     private VeteranAssessmentService veteranAssessmentService;
 
-    @Resource(type = DataDictionaryService.class)
-    DataDictionaryService dds;
-
     @RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
     @ResponseBody
     public ExportDataFormBean getFormBean(HttpServletRequest request) {
         logger.debug("In ExportDataRestController::getFormBean");
         ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
         return exportDataFormBean;
+    }
+
+    @RequestMapping("/exportData/services/exports/resetDD")
+    public void resetDd() {
+        dd.markNotReady();
     }
 
     @RequestMapping(value = "/exportData/services/exports/exportData", method = RequestMethod.GET)
@@ -78,8 +80,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
             @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "exportDataType", required = true) String exportDataType) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
+        if (logger.isTraceEnabled()) {
+            logger.trace(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
         }
 
         List<String> errors = new ArrayList<String>();
@@ -93,8 +95,12 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
         exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
-        AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(dd, exportDataFormBean);
+        if (!dds.tryPrepareDataDictionary(false)) {
+            modelAndView.addObject("createUserStatusMessage", Arrays.asList("Data Dictionary is being built. Please try again in a min. or so..."));
+            modelAndView.setViewName("exportData");
+            return modelAndView;
+        }
+        AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean, null);
 
         if (dataExport != null) {
             modelAndView.setViewName("dataArchiveZipView");
@@ -125,10 +131,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
     public ModelAndView generateDataDictionary(ModelAndView modelAndView,
                                                HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
-
+        dds.tryPrepareDataDictionary(true);
         modelAndView.setViewName("dataDictionaryExcelView");
-        modelAndView.addObject("dataDictionary", dataDictionary);
 
         return modelAndView;
     }
@@ -339,7 +343,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
         // exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
 
         // Assessment Start Date from last snapshop date is by default
-        if (!exportDataFormBean.getHasParameter() && errors.isEmpty()){
+        if (!exportDataFormBean.getHasParameter() && errors.isEmpty()) {
             exportDataFormBean.setFromAssessmentDate(exportDataService.getLastSnapshotDate());
             exportDataFormBean.setToAssessmentDate(new Date());
             exportDataFormBean.setHasParameter(true);

@@ -111,8 +111,8 @@ public class VistaBrokerVistaLinkConnectionSpec
             Document requestDoc,
             Node securityNode) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("setAuthenticationNodes -> Re Auth type is 'av'");
+        if (logger.isTraceEnabled()) {
+            logger.trace("setAuthenticationNodes -> Re Auth type is 'av'");
         }
 
         // AC/OAK OIFO - Next line commented out and replaced by following line as required for upgrading to VL 1.5

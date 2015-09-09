@@ -7,11 +7,12 @@ import com.google.common.collect.Table;
 
 public interface DataDictionaryService {
 
-	public Map<String, Table<String, String, String>> createDataDictionary();
 
-	public String getExportNameKeyPrefix();
+    public boolean tryPrepareDataDictionary(boolean force);
 
-	public String createTableResponseVarName(String exportName);
+    public String getExportNameKeyPrefix();
 
-	List<String> findAllFormulas(String surveyName, Map<String, Table<String, String, String>> dd);
+    public String createTableResponseVarName(String exportName);
+
+    List<String> findAllFormulas(String surveyName);
 }

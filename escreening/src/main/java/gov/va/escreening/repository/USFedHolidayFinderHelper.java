@@ -35,8 +35,8 @@ public class USFedHolidayFinderHelper implements FedHolidayFinderHelper {
 		fhfs.add(new LogicalDateFedHolidayFinder("Columbus Day", "Marks the arrival of Christopher Columbus in the Americas, when he landed in the Bahamas on October 12, 1492 (according to the Julian calendar).", 2, "Monday", "October"));
 		fhfs.add(new LogicalDateFedHolidayFinder("Thanksgiving", "Many Americans have a turkey dinner in honor of the dinner shared by Native Americans and the Pilgrims at Plymouth.", 4, "Thursday", "November"));
 
-		if (logger.isDebugEnabled()) {
-			logger.debug(fhfs.toString());
+		if (logger.isTraceEnabled()) {
+			logger.trace(fhfs.toString());
 		}
 	}
 
@@ -44,8 +44,8 @@ public class USFedHolidayFinderHelper implements FedHolidayFinderHelper {
 	public boolean fedHoliday(LocalDate date) {
 		for (FedHolidayFinder fhf : fedHolidayFinders) {
 			if (fhf.fedHoliday(date)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug(String.format("%s is true", fhf));
+				if (logger.isTraceEnabled()) {
+					logger.trace(String.format("%s is true", fhf));
 				}
 				return true;
 			}

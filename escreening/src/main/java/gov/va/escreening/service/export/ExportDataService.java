@@ -13,18 +13,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Table;
+import org.springframework.util.StopWatch;
 
 public interface ExportDataService {
 
-	AssessmentDataExport getAssessmentDataExport(Map<String, Table<String, String, String>> dd,
-			ExportDataFormBean exportDataFormBean);
+	AssessmentDataExport getAssessmentDataExport(ExportDataFormBean exportDataFormBean, StopWatch sw);
 
 	void takeAssessmentSnapShot(Integer exportedById);
 
 	AssessmentDataExport downloadExportData(Integer userId, int exportLogId,
 			String comment);
 
-	List<DataExportCell> buildExportDataForOneAssessment(Map<String, Table<String, String, String>> dd,VeteranAssessment va,
+	List<DataExportCell> buildExportDataForOneAssessment(VeteranAssessment va,
 			int identifiedExportType);
 
 	Date getLastSnapshotDate();
