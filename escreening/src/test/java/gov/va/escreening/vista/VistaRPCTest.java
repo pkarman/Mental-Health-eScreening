@@ -233,4 +233,10 @@ public class VistaRPCTest {
 		vistaLinkConnection.setTimeOut(1000);
 		return vistaLinkConnection;
 	}
+
+	@Test
+	public void testGetTextTemplate()
+	{
+		System.out.println(client.getTemplateText("151", "0;0;A", "TEST |PATIENT FIRST NAME| \nSecond line |PATIENT LAST NAME|;"));
+	}
 }

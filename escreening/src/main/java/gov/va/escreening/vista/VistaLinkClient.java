@@ -73,4 +73,6 @@ public interface VistaLinkClient {
     
     void closeConnection();
 	boolean savePainScale(VeteranAssessment veteranAssessment, String visitDate, SaveToVistaContext response);
+
+    String getTemplateText(String vetIen, String visitStr, String template);
 }

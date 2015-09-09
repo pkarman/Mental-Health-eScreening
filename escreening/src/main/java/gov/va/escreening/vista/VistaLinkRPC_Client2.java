@@ -1,6 +1,7 @@
 package gov.va.escreening.vista;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -566,5 +567,33 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
             }
         }
         return false;
+    }
+
+    @Override
+    public String getTemplateText(String vetIen, String visitStr, String template)
+    {
+        final String[] lines = template.split("\n");
+        VistaLinkRpcInvoker<String> rpcInvolker = new VistaLinkRpcInvoker<String>() {
+            @Override
+            protected List<Object> prepareReqParams() {
+                List<Object> rpcParams = Lists.newArrayList();
+                rpcParams.add(vetIen);
+                rpcParams.add(visitStr);
+
+                List<String> textLines = Arrays.asList(lines);
+                rpcParams.add(textLines);
+                return rpcParams;
+            }
+
+            @Override
+            protected String prepareResponse(String rawReponse) {
+                //logger.info("Response from TIU GET TEMPLATE TEXT === " + rawReponse);
+                return rawReponse;
+            }
+        };
+
+        return rpcInvolker.invokeRpc(getConnection(), getRequest(), "TIU TEMPLATE GETTEXT");
+
+
     }
 }
