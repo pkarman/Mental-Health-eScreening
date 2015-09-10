@@ -6,36 +6,26 @@ public class ProgramDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer programId;
-    private String name;
-    private Boolean isDisabled;
+    private final Integer programId;
+    private final String name;
+    private final Boolean isDisabled;
+
+    public ProgramDto(Integer programId, String name, Boolean isDisabled) {
+        this.isDisabled = isDisabled;
+        this.name = name;
+        this.programId = programId;
+    }
 
     public Integer getProgramId() {
         return programId;
-    }
-
-    public void setProgramId(Integer programId) {
-        this.programId = programId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Boolean getIsDisabled() {
         return isDisabled;
-    }
-
-    public void setIsDisabled(Boolean isDisabled) {
-        this.isDisabled = isDisabled;
-    }
-
-    public ProgramDto() {
-
     }
 
 }

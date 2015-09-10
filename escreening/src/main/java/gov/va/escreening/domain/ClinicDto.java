@@ -1,17 +1,20 @@
 package gov.va.escreening.domain;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import gov.va.escreening.dto.DropDownObject;
+
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 public class ClinicDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    private final List<ProgramDto> programDtos = Lists.newArrayList();
     private Integer clinicId;
     private String clinicName;
     private String clinicIen;
-
-	private Integer programId;
-    private String programName;
 
     public Integer getClinicId() {
         return clinicId;
@@ -19,6 +22,14 @@ public class ClinicDto implements Serializable {
 
     public void setClinicId(Integer clinicId) {
         this.clinicId = clinicId;
+    }
+
+    public String getClinicIen() {
+        return clinicIen;
+    }
+
+    public void setClinicIen(String clinicIen) {
+        this.clinicIen = clinicIen;
     }
 
     public String getClinicName() {
@@ -29,30 +40,15 @@ public class ClinicDto implements Serializable {
         this.clinicName = clinicName;
     }
 
-    public Integer getProgramId() {
-        return programId;
+    public List<ProgramDto> getProgramDtos() {
+        return programDtos;
     }
 
-    public void setProgramId(Integer programId) {
-        this.programId = programId;
-    }
-
-    public String getProgramName() {
-        return programName;
-    }
-
-    public void setProgramName(String programName) {
-        this.programName = programName;
-    }
-
-    public String getClinicIen() {
-		return clinicIen;
-	}
-
-	public void setClinicIen(String clinicIen) {
-		this.clinicIen = clinicIen;
-	}
-    public ClinicDto() {
-
+    public Set<DropDownObject> getProgramsAsDropDownList() {
+        Set<DropDownObject> programs = Sets.newLinkedHashSet();
+        for (ProgramDto pdto : programDtos) {
+            programs.add(new DropDownObject(pdto.getProgramId().toString(), pdto.getName()));
+        }
+        return programs;
     }
 }
