@@ -1,24 +1,16 @@
 package gov.va.escreening.controller;
 
 import gov.va.escreening.dto.ae.ErrorResponse;
-import gov.va.escreening.exception.AssessmentEngineDataValidationException;
-import gov.va.escreening.exception.EntityNotFoundException;
-import gov.va.escreening.exception.ErrorResponseException;
-import gov.va.escreening.exception.ErrorResponseRuntimeException;
-import gov.va.escreening.exception.EscreeningDataValidationException;
-import gov.va.escreening.exception.FreemarkerRenderException;
-import gov.va.escreening.exception.IllegalSystemStateException;
-import gov.va.escreening.exception.InvalidAssessmentContextException;
+import gov.va.escreening.exception.*;
 import gov.va.escreening.webservice.Response;
 import gov.va.escreening.webservice.ResponseStatus;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
 
 public abstract class RestController {
 	private static final Logger logger = LoggerFactory.getLogger(RestController.class);
