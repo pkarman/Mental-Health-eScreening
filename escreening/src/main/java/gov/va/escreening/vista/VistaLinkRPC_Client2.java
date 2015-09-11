@@ -580,7 +580,12 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 rpcParams.add(vetIen);
                 rpcParams.add(visitStr);
 
-                List<String> textLines = Arrays.asList(lines);
+                List<String> textLines = Lists.newArrayList();
+                int i = 1 ;
+                for(String l : lines)
+                {
+                    textLines.add(String.format("[%d,0]=%s", i++, l));
+                }
                 rpcParams.add(textLines);
                 return rpcParams;
             }

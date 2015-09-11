@@ -235,8 +235,9 @@ public class VistaRPCTest {
 	}
 
 	@Test
-	public void testGetTextTemplate()
+	public void testGetTextTemplate() throws Exception
 	{
-		System.out.println(client.getTemplateText("151", "0;0;A", "TEST |PATIENT FIRST NAME| \nSecond line |PATIENT LAST NAME|;"));
+		System.out.println(client.getTemplateText("100022", "11;3020130.114524;H",
+				"TEST \n|PATIENT NAME|; \nSecond line PATIENT \n|ALLERGIES/ADR|;"));
 	}
 }
