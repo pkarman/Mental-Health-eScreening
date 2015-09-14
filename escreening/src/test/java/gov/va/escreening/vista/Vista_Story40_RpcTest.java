@@ -205,7 +205,7 @@ public class Vista_Story40_RpcTest {
 			exportColumnsMap.put("TBI_consult_where", "Baghdad, Iraq");
 			//exportColumnsMap.put("TBI_consult_when", "2003");
 			//exportColumnsMap.put("TBI_consult_how", "Shell exploded within 100 feet");
-			logger.warn("" + client.saveTBIConsultOrders(va, qoi, refTbiServiceName, exportColumnsMap));
+			logger.warn("" + client.saveTBIConsultOrders(va, qoi, refTbiServiceName, "TEST CONSULT",exportColumnsMap));
 		} finally {
 			client.closeConnection();
 		}

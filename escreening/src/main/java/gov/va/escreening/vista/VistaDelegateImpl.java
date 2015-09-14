@@ -3,6 +3,7 @@ package gov.va.escreening.vista;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import gov.va.escreening.constants.AssessmentConstants;
+import gov.va.escreening.constants.TemplateConstants;
 import gov.va.escreening.constants.TemplateConstants.TemplateType;
 import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.delegate.SaveToVistaContext;
@@ -232,7 +233,10 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                 checkNotNull(quickOrderIen, "Quick Order IEN cannot be null");
                 checkNotNull(refTbiServiceName, "Tbi Service Name cannot be null");
                 checkNotNull(surveyResponsesHelper, "Survey Responses Helper cannot be null");
-                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
+                String consultReason = templateProcessorService.renderBatteryTemplate(veteranAssessment.getBattery(),
+                        TemplateType.TBI_CONSULT_REASON, veteranAssessment, ViewType.TEXT);
+                Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, consultReason,
+                        surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
                 logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
