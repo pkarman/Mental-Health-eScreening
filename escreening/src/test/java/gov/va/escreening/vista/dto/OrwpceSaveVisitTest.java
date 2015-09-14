@@ -46,7 +46,7 @@ public class OrwpceSaveVisitTest {
 
         OrwpceSaveVisit orwpceSaveVisit = new OrwpceSaveVisit();
         orwpceSaveVisit.setVisitType(VisitTypeEnum.ENCOUNTER_SERVICE_CATEGORY);
-        orwpceSaveVisit.setVistaServiceCategory(VistaServiceCategoryEnum.EVENT);
+        orwpceSaveVisit.setVistaServiceCategory(VistaServiceCategoryEnum.E);
 
         String actual = orwpceSaveVisit.toVistaRecord();
 

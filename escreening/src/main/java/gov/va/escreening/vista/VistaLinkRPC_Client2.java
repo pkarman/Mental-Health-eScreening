@@ -29,6 +29,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
         VistaLinkClient {
@@ -243,16 +244,14 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 "ORQQCN SVC W/SYNONYMS");
     }
 
-    private Long getTbiServiceName() {
+    private Long getTbiServiceName(String refTbiServiceName) {
         Map<String, Long> svcmap = getConsultationServiceNameDataSet2("1", "1",
                 true);
+        logger.debug("tbi service names from Vista {}", svcmap);
 
-        for (Map.Entry<String, Long> entry : svcmap.entrySet()) {
-            if (entry.getKey().startsWith("TBI/POLYTRAUMA SUPPORT CLINIC TEAM")) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        Long serviceNameIen=svcmap.get(refTbiServiceName);
+        logger.debug("serviceNameIen for service name {} is {}", refTbiServiceName, serviceNameIen);
+        return serviceNameIen;
     }
 
     /**
@@ -293,7 +292,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
     @Override
     public Map<String, Object> saveTBIConsultOrders(
             final VeteranAssessment veteranAssessment,
-            final long quickOrderIen, final Map<String, String> exportColumnsMap) {
+            final long quickOrderIen, String refTbiServiceName, final Map<String, String> exportColumnsMap) {
 
         return new VistaLinkRpcInvoker<Map<String, Object>>() {
             /**
@@ -328,7 +327,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 reqParams.add("");
                 // 8. Response List (Variables are defined in Step D7)
                 reqParams
-                        .add(getRefRespLst(veteranAssessment, exportColumnsMap));
+                        .add(getRefRespLst(veteranAssessment, exportColumnsMap, refTbiServiceName));
                 // 9. ORDEA (Doesn’t seem to be used - Leave Blank)
                 reqParams.add("");
                 // 10. Appointment (Doesn’t seem to be used - Leave Blank)
@@ -344,14 +343,14 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
             private Map<String, Object> getRefRespLst(
                     VeteranAssessment veteranAssessment,
-                    Map<String, String> exportColumnsMap) {
+                    Map<String, String> exportColumnsMap, String refTbiServiceName) {
 
                 Map<String, Long> respListMap = getIENsMapForResponseList();
 
                 Map<String, Object> respLstMap = new LinkedHashMap<String, Object>();
 
                 // 1. ARRAY(OrderIEN,1)=IEN of Service (Step D3)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("ORDERABLEIEN".toUpperCase()))),getTbiServiceName());
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", respListMap.get("ORDERABLEIEN".toUpperCase()))),getTbiServiceName(refTbiServiceName));
                 // 2. ARRAY(CommentIEN,1)=”ORDIALOG("”WP”",CommentIEN,1)”
                 Long commentIEN = respListMap.get("CommentIEN".toUpperCase());
                 respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", commentIEN)), String.format("ORDIALOG(\"WP\",%s,1)", commentIEN));

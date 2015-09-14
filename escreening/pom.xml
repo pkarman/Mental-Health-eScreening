@@ -21,6 +21,7 @@
 		<jdbc.username>escrapp</jdbc.username>
 		<jdbc.password>CHANGE_M3</jdbc.password>
 		<quick.order.ien>51</quick.order.ien>
+		<ref.tbi.service.name>TBI/POLYTRAUMA SUPPORT CLINIC TEAM</ref.tbi.service.name>
 		<vista.connector>vljconnector</vista.connector>
 		<vista.ip>54.235.74.13</vista.ip>
 		<vista.port>8000</vista.port>

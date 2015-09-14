@@ -300,11 +300,11 @@ abstract class VistaLinkRPC_Client extends BaseVistaLinkRPC_Client implements Vi
     }
 
     @Override
-    public Boolean saveHealthFactor(Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader, Set<HealthFactorVisitData> healthFactorVisitDataList, HealthFactorProvider healthFactorProvider, Set<HealthFactor> healthFactors) throws VistaLinkClientException {
+    public Boolean saveHealthFactor(boolean hasAppointments, Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader, Set<HealthFactorVisitData> healthFactorVisitDataList, HealthFactorProvider healthFactorProvider, Set<HealthFactor> healthFactors) throws VistaLinkClientException {
         ORWPCE_SAVE_RequestParameters requestParameters = new ORWPCE_SAVE_RequestParameters( noteIEN, locationIEN, historicalHealthFactor, healthFactorHeader,
                 healthFactorVisitDataList, healthFactorProvider, healthFactors);
         VistaLinkRequestContext<ORWPCE_SAVE_RequestParameters> context = new ORWPCE_SAVE_VistaLinkRequestContext<>(getRequest(), getConnection(), requestParameters);
-        VistaLinkRequest<Boolean> request = new ORWPCE_SAVE_VistaLinkRequest(context);
+        VistaLinkRequest<Boolean> request = new ORWPCE_SAVE_VistaLinkRequest(context, hasAppointments);
         return request.sendRequest();
     }
 

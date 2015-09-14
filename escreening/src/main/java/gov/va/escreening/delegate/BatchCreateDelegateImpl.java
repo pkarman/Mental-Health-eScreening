@@ -81,7 +81,8 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			// need to set end to the end of the day here.
 			Calendar c = Calendar.getInstance();
 			c.setTime(end);
-			c.add(Calendar.HOUR, 24);
+			c.add(Calendar.HOUR, 23);
+			c.add(Calendar.MINUTE, 59);
 			
 			List<VistaClinicAppointment> appList = vistaRepo
 					.getAppointmentsForClinic(user.getVistaDivision(),

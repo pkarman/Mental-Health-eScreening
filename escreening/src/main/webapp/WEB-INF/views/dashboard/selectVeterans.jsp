@@ -16,33 +16,25 @@
 	<script type="text/javascript" src="resources/js/angular/angular.min.js"></script>
     <script type="text/javascript" src="resources/js/adminDashboardTabs.js"></script>
 
-    <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css">
-    <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon">
+    <link href="resources/css/jquery/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="resources/images/valogo.ico" type="image/x-icon" />
     <link rel="SHORTCUT ICON" href="resources/images/valogo.ico" type="image/x-icon" /> 
-    <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css">
+    <link href="resources/css/partialpage/standardtopofpage-dashboard.css" rel="stylesheet" type="text/css" />
     <link href="resources/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
-    <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css">
+    <link href="resources/css/partialpage/menu-partial.css" rel="stylesheet" type="text/css" />
     <link href="resources/css/veteranSearch.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="<c:url value="resources/css/bootstrap-datepicker/datepicker.css" />">
 	<link rel="stylesheet" type="text/css" href="<c:url value="resources/js/lib/ladda-bootstrap/dist/ladda-themeless.min.css" />">
 
-	<!-- BEGIN syntax highlighter -->
-	<script type="text/javascript" src="resources/vendor-libs/jquery.searchabledropdown-v1.0.8/sh/shCore.js"></script>
-	<script type="text/javascript" src="resources/vendor-libs/jquery.searchabledropdown-v1.0.8/sh/shBrushJScript.js"></script>
-	<link type="text/css" rel="stylesheet" href="resources/vendor-libs/jquery.searchabledropdown-v1.0.8/sh/shCore.css"/>
-	<link type="text/css" rel="stylesheet" href="resources/vendor-libs/jquery.searchabledropdown-v1.0.8/sh/shThemeDefault.css"/>
-	<script type="text/javascript">
-		SyntaxHighlighter.all();
-	</script>
-	<!-- END syntax highlighter -->
-	<script type="text/javascript" src="resources/vendor-libs/jquery.searchabledropdown-v1.0.8/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-	<script type="text/javascript" src="resources/vendor-libs/jquery.searchabledropdown-v1.0.8/jquery.searchabledropdown-1.0.8.src.js"></script>
-	
 	<!-- Bootstrap -->
-	<link href="<c:url value="/resources/js/bootstrap/css/bootstrap.css" />" rel="stylesheet" type="text/css" />
-	<link href="<c:url value="/resources/css/partialpage/standardtopofpage-dashboard_new.css" />" rel="stylesheet" type="text/css">
-
-	<link rel="stylesheet" type="text/css" href="resources/js/lib/silviomoreto-bootstrap-select/dist/css/bootstrap-select.css">
+	<link href="resources/js/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="resources/css/partialpage/standardtopofpage-dashboard_new.css"rel="stylesheet" type="text/css" />
+	<link href="resources/js/lib/silviomoreto-bootstrap-select/dist/css/bootstrap-select.css" rel="stylesheet" type="text/css" />
+	
+	<!-- Select 2 -->
+	<link href="resources/vendor-libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+	<script src="resources/vendor-libs/select2/js/select2.min.js"></script>
+	
 </head>
 <body>
 <a href="#skip" class="offscreen">Skip to main content</a>
@@ -90,10 +82,6 @@
 				<form:form modelAttribute="selectVeteranFormBean" autocomplete="off" method="post">
 					<div class="border-radius-main-form gray-lighter">
 						<h2>Search Criteria</h2>
-
-
-
-	
 							
 						<form:errors path="*" element="div" cssClass="alert alert-danger" />
 
@@ -101,10 +89,12 @@
 							<div class="col-md-4">
 								<div class="form-group">
 									<form:label path="selectedClinic">VistA Clinic *</form:label>
-									<form:select path="selectedClinic" cssClass="form-control"   id="myselect" required="true"  data-live-search="true" title="Please select a VistA Clinic ...">
+									<form:select path="selectedClinic" cssClass="form-control clinicSelect"  
+										required="true"
+										title="Please select a VistA Clinic ...">
 										<form:option value="" label="Please Select VistA Clinic"/>
-										<form:options items="${clinics}" itemValue="stateId" itemLabel="stateName" />
 									</form:select>
+									
 									<form:errors path="selectedClinic" cssClass="help-inline"/>						 
 								</div>
 							</div>			
@@ -205,13 +195,11 @@
 	<%@ include file="/WEB-INF/views/partialpage/footer.jsp" %>
 	
 	<!-- Scripts -->
-	<script type="text/javascript" src="<c:url value="/resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap-select.js" />"></script>
-	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap/js/bootstrap.js" />"></script>
-	<script src="resources/js/lib/silviomoreto-bootstrap-select/js/bootstrap.min.js"></script>
-	<script src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="resources/vendor-libs/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="resources/js/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 		
-	<script src="resources/js/lib/ladda-bootstrap/dist/spin.min.js"></script>
-	<script src="resources/js/lib/ladda-bootstrap/dist/ladda.min.js"></script>
-	<script type="text/javascript" src="<c:url value="/resources/js/dashboard/selectVeterans.js?v=2" />"></script>
+	<script type="text/javascript" src="resources/js/lib/ladda-bootstrap/dist/spin.min.js"></script>
+	<script type="text/javascript" src="resources/js/lib/ladda-bootstrap/dist/ladda.min.js"></script>
+	<script type="text/javascript" src="resources/js/dashboard/selectVeterans.js?v=2"></script>
 </body>	
 </html>

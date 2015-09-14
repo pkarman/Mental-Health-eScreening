@@ -50,6 +50,17 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<DropDownObject> getClinicOptionsByName(String query){
+    	List<Clinic> clinics = clinicRepository.getClinicsByName(query);
+    	List<DropDownObject> clinicList = new ArrayList<DropDownObject>(clinics.size());
+        for (Clinic c : clinics) {
+            clinicList.add(new DropDownObject(c.getVistaIen(), c.getName()));
+        }
+    	return clinicList;
+    }
+    
+    @Transactional(readOnly = true)
+    @Override
     public List<DropDownObject> getDropDownObjectsByProgramId(int programId) {
 
         List<DropDownObject> dropDownObjectList = new ArrayList<DropDownObject>();

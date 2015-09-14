@@ -20,7 +20,7 @@ public class OrwpceSaveHeaderTest {
         orwpceSaveHeader.setIsInpatient(isInpatient);
         orwpceSaveHeader.setVisitLocationIen(visitLocationIen);
         orwpceSaveHeader.setVisitDate(visitDate.toDate());
-        orwpceSaveHeader.setVistaServiceCategory(VistaServiceCategoryEnum.EVENT);
+        orwpceSaveHeader.setVistaServiceCategory(VistaServiceCategoryEnum.E);
 
         String actual = orwpceSaveHeader.toVistaRecord();
 
@@ -40,7 +40,7 @@ public class OrwpceSaveHeaderTest {
         orwpceSaveHeader.setIsInpatient(isInpatient);
         orwpceSaveHeader.setVisitLocationIen(visitLocationIen);
         orwpceSaveHeader.setVisitDate(visitDate.toDate());
-        orwpceSaveHeader.setVistaServiceCategory(VistaServiceCategoryEnum.AMBULATORY);
+        orwpceSaveHeader.setVistaServiceCategory(VistaServiceCategoryEnum.A);
 
         String actual = orwpceSaveHeader.toVistaRecord();
 

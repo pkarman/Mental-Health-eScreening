@@ -55,7 +55,7 @@ public interface VistaLinkClient {
                                          String visitString, Object[] identifiers, String content,
                                          Boolean suppressCommitPostLogic, Boolean saveCrossReference, Boolean appendContent) throws VistaLinkClientException;
     VistaProgressNote saveProgressNote(ProgressNoteParameters progressNoteParameters) throws VistaLinkClientException;
-    Boolean saveHealthFactor(Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader,
+    Boolean saveHealthFactor(boolean hasAppointments, Long noteIEN, Long locationIEN, Boolean historicalHealthFactor, HealthFactorHeader healthFactorHeader,
                              Set<HealthFactorVisitData> healthFactorVisitDataList, HealthFactorProvider healthFactorProvider,
                              Set<HealthFactor> healthFactors) throws VistaLinkClientException;
     Boolean saveMentalHealthAssessment(Long patientIEN, String mentalHealthTestName, String mentalHealthTestAnswers) throws VistaLinkClientException;
@@ -68,7 +68,7 @@ public interface VistaLinkClient {
     
     Map<String, Long> getIENsMapForResponseList();
     public Map<String, Long> getConsultationServiceNameDataSet2(String startPositionSearchCriteria, String purpose,	Boolean includeSynonyms) throws VistaLinkClientException;
-    public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, long quickOrderIen, Map<String, String> tbiexportColumnsMap);
+    public Map<String, Object> saveTBIConsultOrders(VeteranAssessment veteranAssessment, long quickOrderIen, String refTbiServiceName, Map<String, String> tbiexportColumnsMap);
     public Map<String, Map<String, String>> getConsultInfo(String orderType);
     
     void closeConnection();

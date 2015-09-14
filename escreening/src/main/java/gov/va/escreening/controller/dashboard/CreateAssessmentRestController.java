@@ -5,6 +5,8 @@ import gov.va.escreening.delegate.CreateAssessmentDelegate;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.DataTableResponse;
+import gov.va.escreening.dto.DropDownObject;
+import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
@@ -25,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -115,9 +118,14 @@ public class CreateAssessmentRestController {
     
     @RequestMapping(value = "/clinics/list", method = RequestMethod.GET)
     @ResponseBody
-    public List<ClinicDto> getAllClinics(@CurrentUser EscreenUser escreenUser) 
-    {
+    public List<ClinicDto> getAllClinics(@CurrentUser EscreenUser escreenUser){
     	return clinicService.getClinicDtoList();
     }
-	
+    
+    @RequestMapping(value = "/clinics/{query}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<DropDownObject> getClinicsByName(@PathVariable("query") String query){
+    	
+    	return clinicService.getClinicOptionsByName(query);
+    }
 }
