@@ -1,5 +1,6 @@
 package gov.va.escreening.selenium;
 
+import com.google.common.base.Throwables;
 import org.junit.experimental.categories.Category;
 
 import gov.va.escreening.test.Selenium;
@@ -26,6 +27,10 @@ public class SeleniumTestSuite {
 	}
 
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(suite());
+		try {
+			junit.textui.TestRunner.run(suite());
+		} catch (Exception e){
+			System.err.println(Throwables.getRootCause(e).getMessage());
+		}
 	}
 }

@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 @RunWith(JUnit4.class)
 @Category(Selenium.class)
 public abstract class SeleniumTest extends TestCase {
-	protected String baseUrl = "http://localhost:8080/escreening";
+	protected String baseUrl = System.getProperty("BASE_URL","http://localhost:8080/escreening");
 	protected final String date = new SimpleDateFormat("MM/dd/yyyy").format(new Date());
 
 	protected WebDriver driver;
