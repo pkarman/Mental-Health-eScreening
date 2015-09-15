@@ -172,7 +172,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
             if (veteranAssessment.getClinic() != null) {
                 veteranAssessmentDto.setClinicName(veteranAssessment.getClinic().getName());
-                veteranAssessmentDto.setProgramName(veteranAssessment.getClinic().getProgram().getName());
+                //todo krizvi which program to choose
+                veteranAssessmentDto.setProgramName(veteranAssessment.getClinic().getClinicProgramList().iterator().next().getProgram().getName());
             }
 
             veteranAssessmentDto.setDuration(veteranAssessment.getDuration());

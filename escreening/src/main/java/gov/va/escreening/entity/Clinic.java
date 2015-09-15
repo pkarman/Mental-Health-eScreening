@@ -22,32 +22,39 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "clinic")
-@NamedQueries({ @NamedQuery(name = "Clinic.findAll", query = "SELECT c FROM Clinic c") })
+@NamedQueries({@NamedQuery(name = "Clinic.findAll", query = "SELECT c FROM Clinic c")})
 public class Clinic implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "clinic_id")
     private Integer clinicId;
+
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
+
     @Column(name = "vista_ien")
     private String vistaIen;
+
     @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clinic")
     private List<UserClinic> userClinicList;
-    @JoinColumn(name = "program_id", referencedColumnName = "program_id")
-    @ManyToOne
-    private Program program;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clinic")
     private List<VeteranAssessment> veteranAssessmentList;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clinic")
     private List<ClinicSurvey> clinicSurveyList;
+
+    @OneToMany(mappedBy = "clinic")
+    private List<ClinicProgram> clinicProgramList;
 
     public Clinic() {
     }
@@ -102,14 +109,6 @@ public class Clinic implements Serializable {
         this.userClinicList = userClinicList;
     }
 
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
     public List<VeteranAssessment> getVeteranAssessmentList() {
         return veteranAssessmentList;
     }
@@ -124,6 +123,14 @@ public class Clinic implements Serializable {
 
     public void setClinicSurveyList(List<ClinicSurvey> clinicSurveyList) {
         this.clinicSurveyList = clinicSurveyList;
+    }
+
+    public List<ClinicProgram> getClinicProgramList() {
+        return clinicProgramList;
+    }
+
+    public void setClinicProgramList(List<ClinicProgram> clinicProgramList) {
+        this.clinicProgramList = clinicProgramList;
     }
 
     @Override
@@ -143,7 +150,7 @@ public class Clinic implements Serializable {
         Clinic other = (Clinic) object;
         if ((this.clinicId == null && other.clinicId != null)
                 || (this.clinicId != null && !this.clinicId
-                        .equals(other.clinicId))) {
+                .equals(other.clinicId))) {
             return false;
         }
         return true;

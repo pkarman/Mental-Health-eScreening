@@ -21,32 +21,41 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "program")
 @NamedQueries({
-        @NamedQuery(name = "Program.findAll", query = "SELECT p FROM Program p") })
+        @NamedQuery(name = "Program.findAll", query = "SELECT p FROM Program p")})
 public class Program implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "program_id")
     private Integer programId;
+
     @Basic(optional = false)
     @Column(name = "name")
     private String name;
+
     @Basic(optional = false)
     @Column(name = "is_disabled")
     private boolean isDisabled;
+
     @Basic(optional = false)
     @Column(name = "date_created")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
-    @OneToMany(mappedBy = "program")
-    private List<Clinic> clinicList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program")
+    private List<ClinicProgram> clinicProgramList;
+
     @OneToMany(mappedBy = "program")
     private List<VeteranAssessment> veteranAssessmentList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "program")
+
+    @OneToMany(mappedBy = "program")
     private List<UserProgram> userProgramList;
+
     @OneToMany(mappedBy = "program")
     private List<NoteTitleMap> noteTitleMapList;
+
     @OneToMany(mappedBy = "program")
     private List<ExportLog> exportLogList;
 
@@ -96,12 +105,12 @@ public class Program implements Serializable {
         this.dateCreated = dateCreated;
     }
 
-    public List<Clinic> getClinicList() {
-        return clinicList;
+    public List<ClinicProgram> getClinicProgramList() {
+        return clinicProgramList;
     }
 
-    public void setClinicList(List<Clinic> clinicList) {
-        this.clinicList = clinicList;
+    public void setClinicProgramList(List<ClinicProgram> clinicProgramList) {
+        this.clinicProgramList = clinicProgramList;
     }
 
     public List<VeteranAssessment> getVeteranAssessmentList() {
@@ -162,4 +171,6 @@ public class Program implements Serializable {
         return "gov.va.escreening.entity.Program[ programId=" + programId + " ]";
     }
 
+    public void updateClinics(List<Clinic> updatedClinics) {
+    }
 }
