@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import gov.va.escreening.entity.ClinicProgram;
 import org.springframework.stereotype.Repository;
 
 @Repository("clinicRepository")
@@ -20,18 +21,17 @@ public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> im
     }
 
     @Override
-    public List<Clinic> findByProgramId(int programId) {
+    public List<ClinicProgram> findByProgramId(int programId) {
 
-        List<Clinic> resultList = new ArrayList<Clinic>();
 
-        String sql = "SELECT c FROM Clinic c JOIN c.program p WHERE p.programId = :programId ORDER BY c.name";
+        String sql = "SELECT cp FROM ClinicProgram cp JOIN cp.program p WHERE p.programId = :programId";
 
-        TypedQuery<Clinic> query = entityManager.createQuery(sql, Clinic.class);
+        TypedQuery<ClinicProgram> query = entityManager.createQuery(sql, ClinicProgram.class);
         query.setParameter("programId", programId);
 
-        resultList = query.getResultList();
+        List<ClinicProgram> cps=query.getResultList();
 
-        return resultList;
+        return cps;
     }
     
     @Override

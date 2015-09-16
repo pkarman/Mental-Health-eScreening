@@ -250,8 +250,8 @@ INSERT INTO `veteran_assessment_survey` (`veteran_assessment_id`,`survey_id`) VA
 
 -- Update the pgoram_id field to be the clinic's
 UPDATE veteran_assessment va 
-INNER JOIN clinic c ON va.clinic_id = c.clinic_id 
-SET va.program_id = c.program_id
+INNER JOIN clinic_program cp ON va.clinic_id = cp.clinic_id
+SET va.program_id = cp.program_id
 WHERE va.program_id IS NULL;
 
 -- Update the note_title_id field (we might have to fix this if some note titles don't make sense for an assessment)
