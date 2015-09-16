@@ -20,12 +20,12 @@
 								<div class="row">
 									<div class="col-md-4">
 										<h4>Battery</h4>
-										<div class="radio_block">
-											<c:forEach var="item" items="${batteryList}">
+										<%--<div class="radio_block">--%>
+											<%--<c:forEach var="item" items="${batteryList}">--%>
 
-											</c:forEach>
-											<form:errors path="selectedBatteryId" cssClass="help-inline"/>
-										</div>
+											<%--</c:forEach>--%>
+											<%--<form:errors path="selectedBatteryId" cssClass="help-inline"/>--%>
+										<%--</div>--%>
 										<hr />
 										<div class="row">
 											<div class="col-md-6 padding_5"><div class="border_right_gray text-center"><strong>Highlight & Select Screening Modules</strong></div></div>
@@ -37,7 +37,7 @@
 											</li>
 											<c:forEach var="item" items="${batteryList}">
 												<!--extract the relationship between this battery and program. Means extract all the programs this battery belongs to -->
-												<li class="${programsMap[item.stateId]}"><!-- program_1 - Khalid please add value here -->
+												<%--<li class="${programsMap[item.stateId]}"><!-- program_1 - Khalid please add value here -->--%>
 													<div class="row">
 														<div class="col-md-6 padding_5">
 															<div class="radio border_right_gray">
@@ -48,7 +48,7 @@
 															<span class="battery_${item.stateId} battery_highlight_${item.stateId}"><a href="#" class="btn btn-warning btn-block highlight_module_item" role="button"><span class="glyphicon glyphicon-bookmark"></span> Highlight <c:out value="${item.stateName}" /></a></span>
 														</div>
 													</div>
-												</li>
+												<%--</li>--%>
 											</c:forEach>
 										</ul>
 										<hr />

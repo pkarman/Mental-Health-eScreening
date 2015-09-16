@@ -309,4 +309,6 @@ public interface CreateAssessmentDelegate {
 	 * @return
 	 */
 	List<Program> getProgramsForBattery(int batteryId);
+
+	List<DropDownObject> getBatteryListByProgram(Integer pid);
 }
