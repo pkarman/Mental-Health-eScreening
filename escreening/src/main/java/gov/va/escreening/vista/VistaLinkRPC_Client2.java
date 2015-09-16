@@ -1,6 +1,7 @@
 package gov.va.escreening.vista;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -29,7 +30,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Years;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+
 
 public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
         VistaLinkClient {
@@ -292,7 +293,8 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
     @Override
     public Map<String, Object> saveTBIConsultOrders(
             final VeteranAssessment veteranAssessment,
-            final long quickOrderIen, String refTbiServiceName, final Map<String, String> exportColumnsMap) {
+            final long quickOrderIen, String refTbiServiceName, final String tbiReason,
+            final Map<String, String> exportColumnsMap) {
 
         return new VistaLinkRpcInvoker<Map<String, Object>>() {
             /**
@@ -327,7 +329,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 reqParams.add("");
                 // 8. Response List (Variables are defined in Step D7)
                 reqParams
-                        .add(getRefRespLst(veteranAssessment, exportColumnsMap, refTbiServiceName));
+                        .add(getRefRespLst(veteranAssessment, exportColumnsMap, refTbiServiceName, tbiReason));
                 // 9. ORDEA (Doesn’t seem to be used - Leave Blank)
                 reqParams.add("");
                 // 10. Appointment (Doesn’t seem to be used - Leave Blank)
@@ -343,7 +345,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
             private Map<String, Object> getRefRespLst(
                     VeteranAssessment veteranAssessment,
-                    Map<String, String> exportColumnsMap, String refTbiServiceName) {
+                    Map<String, String> exportColumnsMap, String refTbiServiceName, String tbiReason) {
 
                 Map<String, Long> respListMap = getIENsMapForResponseList();
 
@@ -355,7 +357,10 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 Long commentIEN = respListMap.get("CommentIEN".toUpperCase());
                 respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("%s,1", commentIEN)), String.format("ORDIALOG(\"WP\",%s,1)", commentIEN));
                 // 3. ARRAY(“WP”,CommentIEN,1,#,0)=TEXT FOR LINE # (Step D8)
-                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),prepareTbiConsultReasonText(exportColumnsMap));
+                //respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),prepareTbiConsultReasonText(exportColumnsMap));
+
+                respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),tbiReason);
+
                 // 4. ARRAY(ClassIEN,1)= Class(“O” or “I”)(Step D6a)
                 Long patientIen = Long.valueOf(veteranAssessment.getVeteran().getVeteranIen());
                 Boolean partInpatient = findPatientDemographics(patientIen).getInpatientStatus();
@@ -417,6 +422,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 sb.append("\tPlease evaluate and refer on for additional services as necessary\n");
 
                 return sb.toString();
+
             }
 
             private Long getDlgGrpIEN(Long quickOrderIen,
@@ -566,5 +572,38 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
             }
         }
         return false;
+    }
+
+    @Override
+    public String getTemplateText(String vetIen, String visitStr, String template)
+    {
+        final String[] lines = template.split("\n");
+        VistaLinkRpcInvoker<String> rpcInvolker = new VistaLinkRpcInvoker<String>() {
+            @Override
+            protected List<Object> prepareReqParams() {
+                List<Object> rpcParams = Lists.newArrayList();
+                rpcParams.add(vetIen);
+                rpcParams.add(visitStr);
+
+                List<String> textLines = Lists.newArrayList();
+                int i = 1 ;
+                for(String l : lines)
+                {
+                    textLines.add(String.format("(%d,0)=%s", i++, l));
+                }
+                rpcParams.add(textLines);
+                return rpcParams;
+            }
+
+            @Override
+            protected String prepareResponse(String rawReponse) {
+                //logger.info("Response from TIU GET TEMPLATE TEXT === " + rawReponse);
+                return rawReponse;
+            }
+        };
+
+        return rpcInvolker.invokeRpc(getConnection(), getRequest(), "TIU TEMPLATE GETTEXT");
+
+
     }
 }
