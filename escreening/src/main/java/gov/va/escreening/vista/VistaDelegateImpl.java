@@ -233,7 +233,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                 checkNotNull(quickOrderIen, "Quick Order IEN cannot be null");
                 checkNotNull(refTbiServiceName, "Tbi Service Name cannot be null");
                 checkNotNull(surveyResponsesHelper, "Survey Responses Helper cannot be null");
-                String consultReason = templateProcessorService.renderBatteryTemplate(veteranAssessment.getBattery(),
+                String consultReason = templateProcessorService.renderSurveyTemplate(btbisSurvey.getSurveyId(),
                         TemplateType.TBI_CONSULT_REASON, veteranAssessment, ViewType.TEXT);
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, consultReason,
                         surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
@@ -318,6 +318,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
             vistaProgressNote = vistaLinkClient.saveProgressNote(progressNoteParameters);
             ctxt.addSuccess(SaveToVistaContext.PendingOperation.cprs, msg(SaveToVistaContext.MsgKey.usr_pass_cprs__saved_success));
         } catch (Exception e) {
+            logger.warn("Save Progress Note Failed", e);
             ctxt.addSysErr(SaveToVistaContext.PendingOperation.cprs, Throwables.getRootCause(e).getMessage());
         }
 
