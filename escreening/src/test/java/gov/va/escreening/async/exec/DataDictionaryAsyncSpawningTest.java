@@ -27,21 +27,13 @@ public class DataDictionaryAsyncSpawningTest {
     public void noForceCreateDataDictionary() {
         dd.markNotReady();
         dds.tryPrepareDataDictionary(false);
-        assertTrue(!dd.isReady());
-        try {
-            System.out.println("Sleeping..." + Thread.currentThread().getName());
-            Thread.sleep(40000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        assertTrue("Data Dictionary should have initialized in 40 secs", dd.isReady());
-        System.out.println("Shutting now..." + dd);
+        assertTrue("Data Dictionary should have initialized as this was a blocking call, because future was waiting", dd.isReady());
     }
 
     @Test
     public void forceCreateDataDictionary() {
         dd.markNotReady();
         dds.tryPrepareDataDictionary(true);
-        assertTrue("Data Dictionary should have initialized as this was a blocking call",dd.isReady());
+        assertTrue("Data Dictionary should have initialized as this was a blocking call", dd.isReady());
     }
 }

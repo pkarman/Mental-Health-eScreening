@@ -29,9 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -158,7 +156,18 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
 
     private void asyncExecLongRunningTask() {
         logger.debug("1-asyncExecLongRunningTask {}", dd);
-        taskExecuter.submit(ddCallable);
+        try {
+            Future<DataDictionary> future = taskExecuter.submit(ddCallable);
+            // Waits if necessary for at most 120 seconds for the
+            // DataDictionary to complete, and then retrieves its result, if available.
+            future.get(120, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Throwables.propagate(e);
+        } catch (ExecutionException e) {
+            Throwables.propagate(e);
+        } catch (TimeoutException e) {
+            Throwables.propagate(e);
+        }
         logger.debug("2-asyncExecLongRunningTask {}", dd);
     }
 
@@ -169,7 +178,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
         } finally {
             if (workerThreadAvailable) {
                 proceedWorkerTask();
-                mainThreadLock.unlock();
+                workerThreadLock.unlock();
             }
         }
     }
