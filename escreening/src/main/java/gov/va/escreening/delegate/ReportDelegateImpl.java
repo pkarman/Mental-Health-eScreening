@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import gov.va.escreening.controller.dashboard.ReportsController;
 import gov.va.escreening.domain.ClinicDto;
+import gov.va.escreening.domain.ProgramDto;
 import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.dto.report.*;
@@ -699,10 +700,10 @@ public class ReportDelegateImpl implements ReportDelegate {
         // use this user Id and go an get try to get UserProgram using this id and each programId from clinic.
         // If found then that is a intersection and that clinic is allowed
         for (ClinicDto clinicDto : clinicDtoList) {
-            Integer programId = clinicDto.getProgramId();
-
-            if (upr.hasUserAndProgram(userId, programId)) {
-                allowedClinic.add(clinicDto);
+            for(ProgramDto pdto:clinicDto.getProgramDtos()) {
+                if (upr.hasUserAndProgram(userId, pdto.getProgramId())) {
+                    allowedClinic.add(clinicDto);
+                }
             }
         }
 

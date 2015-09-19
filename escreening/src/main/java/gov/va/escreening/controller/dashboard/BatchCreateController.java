@@ -9,12 +9,9 @@ import gov.va.escreening.domain.SurveyDto;
 import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 import gov.va.escreening.dto.BatchBatteryCreateResult;
 import gov.va.escreening.dto.DropDownObject;
-import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.entity.Program;
-import gov.va.escreening.entity.User;
 import gov.va.escreening.form.BatchCreateFormBean;
 import gov.va.escreening.form.VeteranClinicApptSearchFormBean;
-import gov.va.escreening.repository.ClinicRepository;
 import gov.va.escreening.security.CurrentUser;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ClinicService;
@@ -29,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,24 +48,16 @@ public class BatchCreateController {
 
     private static final Logger logger = LoggerFactory
             .getLogger(BatchCreateController.class);
-
+    @Resource(name = "editVeteranAssessmentController")
+    EditVeteranAssessmentController editVeteranAssessmentController;
     @Autowired
     private VeteranService veteranService;
-
     @Autowired
     private ClinicService clinicService;
-
     @Autowired
     private BatchBatteryCreateDelegate batchCreateDelegate;
-
     @Autowired
     private CreateAssessmentDelegate createAssessmentDelegate;
-
-    @Autowired
-    private ClinicRepository clinicRepo;
-
-    @Resource(name="editVeteranAssessmentController")
-    EditVeteranAssessmentController editVeteranAssessmentController;
 
     @RequestMapping(value = "/selectVeterans", method = RequestMethod.POST, params = "searchButton")
     public String searchVeterans(
@@ -123,11 +111,11 @@ public class BatchCreateController {
     public String selectVeteransForBatchCreate(Model model,
                                                @ModelAttribute BatchCreateFormBean batchCreateFormBean,
                                                BindingResult result,
-                                               @RequestParam(value="vid", required = false) Integer vId,
-                                               @RequestParam(value="programId", required = false) Integer programId,
-                                               @RequestParam(value="clinicId", required = false) Integer clinicId,
-                                               @RequestParam(value="noteTitleId", required = false) Integer noteTitleId,
-                                               @RequestParam(value="clinicianId", required = false) Integer clinicianId,
+                                               @RequestParam(value = "vid", required = false) Integer vId,
+                                               @RequestParam(value = "programId", required = false) Integer programId,
+                                               @RequestParam(value = "clinicId", required = false) Integer clinicId,
+                                               @RequestParam(value = "noteTitleId", required = false) Integer noteTitleId,
+                                               @RequestParam(value = "clinicianId", required = false) Integer clinicianId,
                                                @CurrentUser EscreenUser user) {
 
         // replace user from the loggedin user to the clinician
@@ -139,7 +127,7 @@ public class BatchCreateController {
         batchCreateFormBean.setSelectedNoteTitleId(noteTitleId);
 
         String[] vetIens = (String[]) model.asMap().get("vetIens");
-        String varClinicId = (String) model.asMap().get("clinicId");
+        String clinicIen = (String) model.asMap().get("clinicId");
         List<VistaClinicAppointment> appList = (List<VistaClinicAppointment>) model
                 .asMap().get("searchResult");
         List<VeteranWithClinicalReminderFlag> vetList = batchCreateDelegate
@@ -152,44 +140,28 @@ public class BatchCreateController {
         model.addAttribute("isCprsVerified", user.getCprsVerified());
         model.addAttribute("isCreateMode", true);
 
-        Clinic c = clinicRepo.findByIen(varClinicId);
-        batchCreateFormBean.setSelectedClinicId(c.getClinicId());
+        ClinicDto clinicDto = clinicService.getClinicDtoByIen(clinicIen);
+        batchCreateFormBean.setSelectedClinicId(clinicDto.getClinicId());
 
-        model.addAttribute("clinic", c.getName());
+        model.addAttribute("clinic", clinicDto.getClinicName());
 
-        if (c.getProgram() != null) {
-            int varProgramId = c.getProgram().getProgramId();
-            batchCreateFormBean.setSelectedProgramId(varProgramId);
-
-            DropDownObject dr = new DropDownObject(String.valueOf(varProgramId), c
-                    .getProgram().getName());
-            List<DropDownObject> progList = new ArrayList<DropDownObject>(1);
-            progList.add(dr);
-            model.addAttribute("programList", progList);
-            model.addAttribute("program", c.getProgram().getName());
-            List<DropDownObject> noteTitleList = createAssessmentDelegate
-                    .getNoteTitleList(varProgramId);
+        //todo krizvi which program to choose
+        model.addAttribute("programList", clinicDto.getProgramsAsDropDownList());
+        if (programId != null) {
+            List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(programId);
             model.addAttribute("noteTitleList", noteTitleList);
 
             // Get all clinician list since we have a clinic.
-            List<DropDownObject> clinicianList = createAssessmentDelegate
-                    .getClinicianList(varProgramId);
+            List<DropDownObject> clinicianList = createAssessmentDelegate.getClinicianList(programId);
             model.addAttribute("clinicianList", clinicianList);
-
-        } else {
-            List<DropDownObject> programList = createAssessmentDelegate
-                    .getProgramList(user.getProgramIdList());
-            model.addAttribute("programList", programList);
         }
 
-        List<DropDownObject> batteryList = createAssessmentDelegate
-                .getBatteryList();
+        List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
 
         Map<String, String> pm = new HashMap<String, String>();
 
         for (DropDownObject b : batteryList) {
-            List<Program> ps = createAssessmentDelegate
-                    .getProgramsForBattery(Integer.parseInt(b.getStateId()));
+            List<Program> ps = createAssessmentDelegate.getProgramsForBattery(Integer.parseInt(b.getStateId()));
             StringBuilder sb = new StringBuilder();
             for (Program p : ps) {
                 sb.append("program_" + p.getProgramId()).append(" ");
@@ -287,7 +259,7 @@ public class BatchCreateController {
         }
         logger.info("Check indicators: " + checkIndicator);
         model.addAttribute("dueClinicalReminders", checkIndicator);
-        return clinicianId==null?"dashboard/editVeteransAssessment":"dashboard/editVeteransAssessmentTail";
+        return clinicianId == null ? "dashboard/editVeteransAssessment" : "dashboard/editVeteransAssessmentTail";
     }
 
     /**

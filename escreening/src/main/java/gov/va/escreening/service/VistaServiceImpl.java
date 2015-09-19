@@ -707,6 +707,7 @@ public class VistaServiceImpl implements VistaService {
             	if(healthFactorMap!=null && healthFactorMap.containsKey(entry.getKey()))
             	{
             		HealthFactor hf = healthFactorMap.get(name);
+                    hfList.remove(hf);
             		if (hf.getVistaIen() == null || !hf.getVistaIen().equals(ien))
                     {
                         hf.setVistaIen(hfIenMap.get(name));
@@ -730,10 +731,17 @@ public class VistaServiceImpl implements VistaService {
             	}
             }
         }
-        if (numRecord > 0)
+
+        //Now, remove the remaining Health Factors because they do not exist in vistA.
+        for(HealthFactor hf : hfList)
         {
-            healthFactorRepo.commit();
+            eventService.deleteEventForHealthFactor(hf);
+            healthFactorRepo.delete(hf);
+            logger.info("Removed Health Factor " + hf.getName() + hf.getVistaIen());
         }
+
+        healthFactorRepo.commit();
+
         return numRecord;
     }
 

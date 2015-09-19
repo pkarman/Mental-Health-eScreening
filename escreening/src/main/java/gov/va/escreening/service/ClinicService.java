@@ -44,4 +44,6 @@ public interface ClinicService {
     public String getClinicNameById(Integer clinicId);
 
     List<Integer> getAllVeteranIds(Integer clinicId);
+
+    ClinicDto getClinicDtoByIen(String varClinicId);
 }

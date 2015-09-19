@@ -9,7 +9,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("programBatteryRepository")
 public class ProgramBatteryRepositoryImpl extends AbstractHibernateRepository<ProgramBattery> implements ProgramBatteryRepository {
 
 	public ProgramBatteryRepositoryImpl() {

@@ -153,12 +153,12 @@ public class EditVeteranAssessmentController {
         List<DropDownObject> programList = createAssessmentDelegate.getProgramList(escreenUser.getProgramIdList());
         model.addAttribute("programList", programList);
 
-        // 5. Get all battery list.
-        List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
-        model.addAttribute("batteryList", batteryList);
-
-        Map<String, String> programsMap = createProgramsMap(batteryList);
-        model.addAttribute("programsMap", programsMap);
+//        // 5. Get all battery list.
+//        List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryList();
+//        model.addAttribute("batteryList", batteryList);
+//
+//        Map<String, String> programsMap = createProgramsMap(batteryList);
+//        model.addAttribute("programsMap", programsMap);
 
         // 6. Get all battery survey list.
         List<BatterySurveyDto> batterySurveyList = createAssessmentDelegate.getBatterySurveyList();
@@ -190,6 +190,9 @@ public class EditVeteranAssessmentController {
         if (programId != null || (veteranAssessment != null && veteranAssessment.getProgram() != null)) {
             Integer pid = programId != null ? programId : veteranAssessment.getProgram().getProgramId();
             editVeteranAssessmentFormBean.setSelectedProgramId(pid);
+
+            List<DropDownObject> batteryList = createAssessmentDelegate.getBatteryListByProgram(pid);
+            model.addAttribute("batteryList", batteryList);
 
             // Get all clinic list since we have a program.
             List<DropDownObject> clinicList = createAssessmentDelegate.getClinicList(pid);

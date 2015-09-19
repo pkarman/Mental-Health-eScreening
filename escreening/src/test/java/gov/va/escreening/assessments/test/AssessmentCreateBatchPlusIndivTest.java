@@ -133,15 +133,17 @@ public class AssessmentCreateBatchPlusIndivTest extends AssessmentTestBase {
 //
         model.put("clinic", c.getName());
 
-        if (c.getProgram() != null) {
-            int varProgramId = c.getProgram().getProgramId();
+        //todo krizvi which program to choose
+        if (c.getClinicProgramList().iterator().hasNext()) {
+            Program p=c.getClinicProgramList().iterator().next().getProgram();
+            int varProgramId = p.getProgramId();
 //            batchCreateFormBean.setSelectedProgramId(varProgramId);
 
-            DropDownObject dr = new DropDownObject(String.valueOf(varProgramId), c.getProgram().getName());
+            DropDownObject dr = new DropDownObject(String.valueOf(varProgramId), p.getName());
             List<DropDownObject> progList = new ArrayList<DropDownObject>(1);
             progList.add(dr);
             model.put("programList", progList);
-            model.put("program", c.getProgram().getName());
+            model.put("program", p.getName());
             List<DropDownObject> noteTitleList = createAssessmentDelegate.getNoteTitleList(varProgramId);
             model.put("noteTitleList", noteTitleList);
 

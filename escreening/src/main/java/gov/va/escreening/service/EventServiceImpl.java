@@ -12,6 +12,7 @@ import gov.va.escreening.entity.Measure;
 import gov.va.escreening.repository.EventRepository;
 import gov.va.escreening.repository.EventTypeRepository;
 
+import gov.va.escreening.repository.RuleEventRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,14 +27,17 @@ public class EventServiceImpl implements EventService {
     
     private final EventRepository eventRepo;
     private final EventTypeRepository eventTypeRepo;
+
+    private final RuleEventRepo ruleEventRepo;
     
     @Autowired
     EventServiceImpl(
             EventRepository eventRepo,
-            EventTypeRepository eventTypeRepo){
+            EventTypeRepository eventTypeRepo, RuleEventRepo ruleEventRepo){
         
         this.eventRepo = checkNotNull(eventRepo);
         this.eventTypeRepo = checkNotNull(eventTypeRepo);
+        this.ruleEventRepo = checkNotNull(ruleEventRepo);
     }
 
     @Override
@@ -101,5 +105,17 @@ public class EventServiceImpl implements EventService {
     
     private String truncateName(String name){
         return name.substring(0, Math.min(name.length(), MAX_NAME_LENGTH));
+    }
+
+    @Transactional
+    @Override
+    public void deleteEventForHealthFactor(HealthFactor hf)
+    {
+        Event event = eventRepo.getEventForObject(hf.getHealthFactorId(), EVENT_TYPE_HEALTH_FACTOR);
+        if(event != null)
+        {
+            ruleEventRepo.deleteRuleEventByEventId(event.getEventId());
+            eventRepo.delete(event);
+        }
     }
 }

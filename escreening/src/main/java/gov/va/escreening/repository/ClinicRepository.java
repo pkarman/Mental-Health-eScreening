@@ -1,6 +1,7 @@
 package gov.va.escreening.repository;
 
 import gov.va.escreening.entity.Clinic;
+import gov.va.escreening.entity.ClinicProgram;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface ClinicRepository extends RepositoryInterface<Clinic> {
      * @param programId
      * @return
      */
-    List<Clinic> findByProgramId(int programId);
+    List<ClinicProgram> findByProgramId(int programId);
 
     List<Integer> getAllVeteranIds(Integer clinicId);
     

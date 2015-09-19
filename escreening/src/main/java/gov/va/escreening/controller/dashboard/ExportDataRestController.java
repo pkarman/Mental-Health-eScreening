@@ -65,8 +65,9 @@ public class ExportDataRestController extends BaseDashboardRestController {
         dd.markNotReady();
     }
 
-    @RequestMapping(value = "/exportData/services/exports/exportData", method = RequestMethod.GET)
-    public ModelAndView exportDataAsCsv(
+    @RequestMapping(value = "/exportData/services/exports/genExportData", method = RequestMethod.GET)
+    @ResponseBody
+    public String genExportData(
             ModelAndView modelAndView,
             HttpServletRequest request,
             HttpServletResponse response,
@@ -81,35 +82,53 @@ public class ExportDataRestController extends BaseDashboardRestController {
             @RequestParam(value = "exportDataType", required = true) String exportDataType) {
 
         if (logger.isTraceEnabled()) {
-            logger.trace(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
+            logger.trace(String.format("genExportData: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
         }
 
         List<String> errors = new ArrayList<String>();
         ExportDataFormBean exportDataFormBean = getSearchFormBean(escreenUser, fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType, errors);
 
         if (errors.size() > 0) {
-            modelAndView.addObject("createUserStatusMessage", errors);
-            modelAndView.setViewName("exportData");
-            return modelAndView;
+            //modelAndView.addObject("createUserStatusMessage", errors);
+            //modelAndView.setViewName("exportData");
+            //return modelAndView;
+            return errors.toString();
         }
 
         exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
         if (!dds.tryPrepareDataDictionary(false)) {
-            modelAndView.addObject("createUserStatusMessage", Arrays.asList("Data Dictionary is being built. Please try again in a min. or so..."));
-            modelAndView.setViewName("exportData");
-            return modelAndView;
+            //modelAndView.addObject("createUserStatusMessage", Arrays.asList("Data Dictionary is being built. Please try again in a min. or so..."));
+            //modelAndView.setViewName("exportData");
+            //return modelAndView;
+            return "Data Dictionary is being built. Please try again in a min. or so...";
         }
         AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean, null);
 
         if (dataExport != null) {
-            modelAndView.setViewName("dataArchiveZipView");
-            modelAndView.addObject("model", dataExport.getExportZipAsModel());
+            //modelAndView.setViewName("dataArchiveZipView");
+            //modelAndView.addObject("model", dataExport.getExportZipAsModel());
+            request.getSession().setAttribute("dataArchiveZipView", dataExport.getExportZipAsModel());
+            return "prepared";
         } else if (!errors.isEmpty()) {
-            modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
-            modelAndView.setViewName("exportData");
+            //modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
+            //modelAndView.setViewName("exportData");
+            return "There is no result found for the provided search criteria";
         }
 
+        return "not_prepared";
+    }
+
+    @RequestMapping(value = "/exportData/services/exports/getExportDataFromSession", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView getExportDataNow(
+            ModelAndView modelAndView,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @CurrentUser EscreenUser escreenUser) {
+
+        modelAndView.setViewName("dataArchiveZipView");
+        modelAndView.addObject("model", request.getSession().getAttribute("dataArchiveZipView"));
         return modelAndView;
     }
 
@@ -127,11 +146,20 @@ public class ExportDataRestController extends BaseDashboardRestController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
-    public ModelAndView generateDataDictionary(ModelAndView modelAndView,
-                                               HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+    @RequestMapping(value = "/exportData/services/exports/genDataDictionary", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean generateDataDictionary(ModelAndView modelAndView,
+                                          HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
         dds.tryPrepareDataDictionary(true);
+        return dd.isReady();
+    }
+
+    @RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
+    public ModelAndView getDataDictionaryNow(ModelAndView modelAndView,
+                                             HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+
+        dds.tryPrepareDataDictionary(false);
         modelAndView.setViewName("dataDictionaryExcelView");
 
         return modelAndView;
