@@ -15,6 +15,7 @@ import gov.va.escreening.service.SystemPropertyService;
 import gov.va.escreening.service.VeteranAssessmentService;
 import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -81,8 +82,11 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
     				variableDto = getVeteranAppointments(veteranAssessmentId);
     			}
     			else if(CUSTOM_ASSESSMENT_LAST_MODIFIED.equals(variableId)){
-    				variableDto = getAssessmentLastModified(veteranAssessmentId);
+    				variableDto = getAssessmentLastModified(veteranAssessmentId, TODAYS_DATE_FORMAT, variableId);
     			}
+				else if(CUSTOM_ASSESSMENT_LAST_MODIFIED_LONG_FORMAT.equals(variableId)){
+					variableDto = getAssessmentLastModified(veteranAssessmentId, LONG_DATE_FORMAT, variableId);
+				}
     			else{
     				throw new UnsupportedOperationException(
     					String.format("AssessmentVariable of type Custom with an id of %s is not supported.  A handler must be implemented to support the referenced id.", 
@@ -290,7 +294,7 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 	 * @param veteranAssessmentId
 	 * @return
 	 */
-	private AssessmentVariableDto getAssessmentLastModified(Integer veteranAssessmentId){
+	private AssessmentVariableDto getAssessmentLastModified(Integer veteranAssessmentId, SimpleDateFormat format, int varId){
 		
 		VeteranAssessment veteranAssessment = getAssessment(veteranAssessmentId);
 		
@@ -298,11 +302,11 @@ public class CustomAssessmentVariableResolverImpl implements CustomAssessmentVar
 			throw new CouldNotResolveVariableException(String.format("Assessment last update date was null for VeteranAssessment with id of: %s", veteranAssessmentId));
 		}
 		
-		String strDate = TODAYS_DATE_FORMAT.format(veteranAssessment.getDateUpdated());
+		String strDate = format.format(veteranAssessment.getDateUpdated());
 		
-		String varName = String.format("var%s", CUSTOM_ASSESSMENT_LAST_MODIFIED);
-		String displayName = String.format("custom_%s", CUSTOM_ASSESSMENT_LAST_MODIFIED);
-		AssessmentVariableDto variableDto = new AssessmentVariableDto(CUSTOM_ASSESSMENT_LAST_MODIFIED, varName, "string", displayName, 
+		String varName = String.format("var%s", varId);
+		String displayName = String.format("custom_%s", varId);
+		AssessmentVariableDto variableDto = new AssessmentVariableDto(varId, varName, "string", displayName,
 				strDate, strDate, null, null, AssessmentConstants.ASSESSMENT_VARIABLE_DEFAULT_COLUMN);
 		    
 		return variableDto;

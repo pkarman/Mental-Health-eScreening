@@ -92,6 +92,10 @@ public class SaveToVistaContext {
     }
 
     public void addSysErr(PendingOperation po, String errorMsg) {
+        if(errorMsg == null)
+        {
+            errorMsg = "NULL";
+        }
         add(po, MsgType.sysErr, errorMsg);
     }
 

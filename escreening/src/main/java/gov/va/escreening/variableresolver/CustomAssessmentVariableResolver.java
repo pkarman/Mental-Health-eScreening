@@ -10,10 +10,13 @@ public interface CustomAssessmentVariableResolver extends VariableResolver {
 	public static final Integer CUSTOM_ASSESSMENT_DURATION = 5;
 	public static final Integer CUSTOM_VETERAN_APPOINTMENTS = 6;
 	public static final Integer CUSTOM_ASSESSMENT_LAST_MODIFIED = 7;
+
+	public static final Integer CUSTOM_ASSESSMENT_LAST_MODIFIED_LONG_FORMAT = 99999;
 	
 	public static final Integer SYSTEM_PROPERTIES_ESCREENING_PACKET_VERSION_ID = 1;
 	
 	public static final SimpleDateFormat APPOINTMENT_DATE_FORMAT = new SimpleDateFormat("MM-dd-yy@hh:mm");
 	public static final SimpleDateFormat TODAYS_DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy");
+	public static final SimpleDateFormat LONG_DATE_FORMAT = new SimpleDateFormat("MMM dd,yyyy");
 	
 }
