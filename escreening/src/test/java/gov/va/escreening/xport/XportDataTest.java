@@ -25,6 +25,8 @@ import gov.va.escreening.repository.VeteranAssessmentRepository;
 import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.AssessmentAlreadyExistException;
 import gov.va.escreening.service.VeteranAssessmentService;
+import gov.va.escreening.service.export.DataDictionary;
+import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.service.export.ExportDataService;
 import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import junit.framework.Assert;
@@ -92,16 +94,12 @@ public class XportDataTest {
 
     @Resource(type = ExportDataRestController.class)
     ExportDataRestController exportDataRestController;
-
-    @Resource(type = DDCache.class)
-    DDCache ddCache;
-
+    @Resource(name = "dataDictionaryService")
+    DataDictionaryService dds;
     @Resource(type = ExportLogRepository.class)
     private ExportLogRepository elr;
-
     @Resource(type = TemplateProcessorService.class)
     private TemplateProcessorService templateProcessorService;
-
     private Map<String, SmrBldr> smrBldrMap;
 
     private boolean compare(Map<String, String> testData,
@@ -177,7 +175,7 @@ public class XportDataTest {
 
     private VeteranAssessment createTestAssessment(List<Integer> surveyIdList) throws AssessmentAlreadyExistException {
         Integer assessmentId = vas.create(TEST_VET_ID, OOO_BATTERY_ID, 17, TEST_USER_ID, TEST_USER_ID, 1, 5, surveyIdList);
-       
+
         VeteranAssessment assessment = var.findOne(assessmentId);
 
         return assessment;
@@ -362,8 +360,7 @@ public class XportDataTest {
     private boolean exportDataVerifierIdentified(Object[] testTuple) {
         AssesmentTestData atd = (AssesmentTestData) testTuple[0];
         VeteranAssessment va = (VeteranAssessment) testTuple[1];
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd, va, 1);
+        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 1);
 
         return exportDataVerifierResult(atd, exportedData, false);
     }
@@ -371,8 +368,7 @@ public class XportDataTest {
     private boolean exportDataVerifierDeIdentified(Object[] testTuple) {
         AssesmentTestData atd = (AssesmentTestData) testTuple[0];
         VeteranAssessment va = (VeteranAssessment) testTuple[1];
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(dd, va, 2);
+        List<DataExportCell> exportedData = exportDataService.buildExportDataForOneAssessment(va, 2);
 
         atd.removePPIInfoExportNames();
 
@@ -458,7 +454,7 @@ public class XportDataTest {
         // now we also need to make sure all smr entered by user in the json file were tested and found correct
         for (TestSurvey ts : atd.testSurveys) {
             assertTrue(
-                    String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap), 
+                    String.format("user provided data =>%s->%s has following deidentified=%s export name(s) with no corresponding result in exported data %s", atd.testName, ts.surveyName, deidentified, ts.smrMap),
                     ts.smrMap.isEmpty());
         }
 
@@ -565,10 +561,12 @@ public class XportDataTest {
     }
 
     private AssessmentDataExport addExportLogOfVet18() {
-        ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
-        edfb.setExportedByUserId(1);
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        return exportDataService.getAssessmentDataExport(dd, edfb);
+        if (dds.tryPrepareDataDictionary(true)) {
+            ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(null, null, null, null, "1", null, "18", "test123", "identified", null);
+            edfb.setExportedByUserId(1);
+            return exportDataService.getAssessmentDataExport(edfb, null);
+        }
+        return null;
     }
 
     private AssessmentDataExport addExportLogOfProgramOOO() {
@@ -577,8 +575,7 @@ public class XportDataTest {
         eUser.setProgramIdList(new ArrayList(Arrays.asList(1, 2, 3, 4, 5)));
         ExportDataFormBean edfb = exportDataRestController.getSearchFormBean(eUser, null, null, null, "1", "4", null, "test123", "identified", null);
         edfb.setExportedByUserId(5);
-        Map<String, Table<String, String, String>> dd = (Map<String, Table<String, String, String>>)ddCache.getDDCache();
-        return exportDataService.getAssessmentDataExport(dd, edfb);
+        return exportDataService.getAssessmentDataExport(edfb, null);
     }
 
     // @Rollback(value = false)
@@ -638,10 +635,12 @@ public class XportDataTest {
 
     @Test
     public void takeSnapShot() {
-        List before = exportLogRepository.findAll();
-        exportDataService.takeAssessmentSnapShot(1);
-        List after = exportLogRepository.findAll();
-        Assert.assertTrue(after.size() - before.size() == 1);
+        if (dds.tryPrepareDataDictionary(true)) {
+            List before = exportLogRepository.findAll();
+            exportDataService.takeAssessmentSnapShot(1);
+            List after = exportLogRepository.findAll();
+            Assert.assertTrue(after.size() - before.size() == 1);
+        }
     }
 
     @Test

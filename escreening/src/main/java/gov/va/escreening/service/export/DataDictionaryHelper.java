@@ -43,19 +43,21 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		return this.resolverMap.get(measureTypeId);
 	}
 
-	public void buildDataDictionaryFor(Survey s,
-									   Table<String, String, String> t, Collection<Measure> smList,
+	public DataDictionarySheet buildDataDictionaryFor(Survey s,
+									   Collection<Measure> smList,
 									   Multimap mvMap, Collection<AssessmentVariable> avList,
 									   Set<String> avUsed) {
+		DataDictionarySheet t=new DataDictionarySheet();
 		for (Measure m : smList) {
 			addDictionaryRowsFor(m, s, mvMap, t, SALT_DEFAULT);
 		}
 
 		addFormulaeFor(s, t, smList, avList, avUsed);
+		return t;
 	}
 
 	void addDictionaryRowsFor(Measure m, Survey s, Multimap mvMap,
-							  Table<String, String, String> t, String salt) {
+							  DataDictionarySheet t, String salt) {
 		findResolver(m).addDictionaryRows(s, m, mvMap, t, salt);
 	}
 
@@ -65,7 +67,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
 		return tableResponseVarName;
 	}
 
-	private void addFormulaeFor(Survey s, Table<String, String, String> t,
+	private void addFormulaeFor(Survey s, DataDictionarySheet t,
 								Collection<Measure> smList, Collection<AssessmentVariable> avList,
 								Set<String> avUsed) {
 
@@ -152,7 +154,7 @@ abstract class Resolver {
 	}
 
 	public final void addDictionaryRows(Survey s, Measure m, Multimap mvMap,
-										Table<String, String, String> t, String salt) {
+										DataDictionarySheet t, String salt) {
 		addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 
@@ -165,7 +167,7 @@ abstract class Resolver {
 	}
 
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-										Table<String, String, String> t, String salt) {
+										DataDictionarySheet t, String salt) {
 
 		int index = 0;
 		addSingleRow(s, m, mvMap, t, m.getMeasureAnswerList().isEmpty() ? null : m.getMeasureAnswerList().iterator().next(), index++, false, salt);
@@ -180,7 +182,7 @@ abstract class Resolver {
 	}
 
 	protected final void addSingleRow(Survey s, Measure m, Multimap mvMap,
-									  Table<String, String, String> t, MeasureAnswer ma, int index,
+									  DataDictionarySheet t, MeasureAnswer ma, int index,
 									  boolean other, String salt) {
 
 		String rowId = generateRowId("" + m.getMeasureId(), salt, index);
@@ -210,7 +212,7 @@ abstract class Resolver {
         return String.format("%s_%s", ddh.EXPORT_KEY_PREFIX, System.nanoTime());
 	}
 
-	protected void addRow(Table<String, String, String> t, String rowId,
+	protected void addRow(DataDictionarySheet t, String rowId,
 						  String quesType, String quesDesc, String varName, String valsRange,
 						  String valsDesc, String dataVal, String followup, String skiplevel, boolean other) {
 
@@ -247,7 +249,7 @@ class MultiSelectResolver extends Resolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-										Table<String, String, String> t, String salt) {
+										DataDictionarySheet t, String salt) {
 
 		int index = 0;
 		addSingleRow(s, m, mvMap, t, null, index++, false, salt);
@@ -366,7 +368,7 @@ class SelectOneMatrixResolver extends Resolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-										Table<String, String, String> t, String salt) {
+										DataDictionarySheet t, String salt) {
 
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 
@@ -394,7 +396,7 @@ class SelectMultiMatrixResolver extends SelectOneMatrixResolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-										Table<String, String, String> t, String salt) {
+										DataDictionarySheet t, String salt) {
 		super.addDictionaryRowsNow(s, m, mvMap, t, salt);
 	}
 }
@@ -406,7 +408,7 @@ class TableQuestionResolver extends SelectOneMatrixResolver {
 
 	@Override
 	protected void addDictionaryRowsNow(Survey s, Measure m, Multimap mvMap,
-										Table<String, String, String> t, String salt) {
+										DataDictionarySheet t, String salt) {
 		String saltForResponseRowCounter = m.getMeasureId() + String.valueOf((Integer.parseInt(ddh.SALT_DEFAULT)-1));
 		String tableResponsesCounterVarName = ddh.createTableResponseVarName(m.getChildren().iterator().next().getMeasureAnswerList().iterator().next().getIdentifyingText());
 		addRow(t, generateRowId("", saltForResponseRowCounter, 0), "tableResponseCntr", "total responses of table questions", tableResponsesCounterVarName, "", "", "", "", "", false);

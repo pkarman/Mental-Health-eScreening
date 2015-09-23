@@ -1,8 +1,10 @@
 package gov.va.escreening.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
+import gov.va.escreening.service.export.DataDictionary;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -30,11 +32,11 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     public SimpleDateFormat dateFormatter = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
     MessageSource messageSource;
-    @Resource(name = "dataDictAsExcelUtil")
-    DataDictExcelUtil ddeutil;
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
 
 
-    public String createZipFor(Map<String, Table<String, String, String>> dd, AssessmentDataExport de, OutputStream os) {
+    public String createZipFor(AssessmentDataExport de, OutputStream os) {
 
         Date now = new Date();
 
@@ -44,15 +46,8 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
             // create a directory as user.home>Documents>MM_DD_YY_HH_MM_SS
             String dirName = System.getProperty("user.home") + File.separator + "Documents" + File.separator + nowAsString;
 
-            // if dd is passed than create a file inside user.home>Documents>MM_DD_YY_HH_MM_SS representing Data Dictionary
-            if (dd != null) {
-                saveDataDictionaryAsExcel(dirName, dd, now);
-            }
-
-            // if dd is passed than create a file inside user.home>Documents>MM_DD_YY_HH_MM_SS representing Data Export
-            if (de != null) {
-                saveDataExportAsCsv(dirName, de, now);
-            }
+            saveDataDictionaryAsExcel(dirName, now);
+            saveDataExportAsCsv(dirName, de, now);
 
             // create a zip file name as data_archive_DD_MM_YY_HH_MM_SS.zip
             String zipFileName = "data_archive_" + nowAsString + ".zip";
@@ -98,15 +93,10 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
     }
 
     public void saveDataDictionaryAsExcel(
-            String dirName, Map<String, Table<String, String, String>> dataDictionary, Date now) throws Exception {
-
-        Map<String, Map<String, Table<String, String, String>>> model = Maps.newHashMap();
-        model.put("dataDictionary", dataDictionary);
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        logger.debug("Created Excel Workbook from scratch");
-        ddeutil.buildDdAsExcel(model, workbook);
+            String dirName, Date now) throws Exception {
+        Preconditions.checkState(dd.getWorkbook()!=null, "The excel workbook must not be null at this point");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        workbook.write(baos);
+        dd.getWorkbook().write(baos);
         baos.flush();
         baos.close();
 
@@ -178,8 +168,8 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
         for (String row : data) {
             writer.write(row);
             writer.newLine();
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.format("row written for %s [%s]", fileName, row));
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("row written for %s [%s]", fileName, row));
             }
         }
     }
@@ -190,8 +180,8 @@ public class DataExportAndDictionaryUtil implements MessageSourceAware {
         writer.newLine();
         writer.write(header);
         writer.newLine();
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("header written for %s [%s]", fileName, header));
+        if (logger.isTraceEnabled()) {
+            logger.trace(String.format("header written for %s [%s]", fileName, header));
         }
     }
 
