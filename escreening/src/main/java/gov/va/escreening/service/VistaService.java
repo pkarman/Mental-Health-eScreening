@@ -19,6 +19,7 @@ import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface VistaService {
 
@@ -214,7 +215,7 @@ public interface VistaService {
      * @param duz
      * @param appProxyName
      */
-    int refreshClinicList(String division, String vpid, String duz, String appProxyName);
+    Map<String, Integer> refreshClinicList(String division, String vpid, String duz, String appProxyName);
     
     /**
      * Imports the Clinical Reminder list from VistA and then updates the database
