@@ -3,9 +3,12 @@ package gov.va.escreening.assessments.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import gov.va.escreening.constants.RuleConstants;
 import gov.va.escreening.context.VeteranAssessmentSmrList;
 import gov.va.escreening.delegate.AssessmentDelegate;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
+import gov.va.escreening.dto.rule.EventDto;
 import gov.va.escreening.entity.Rule;
 import gov.va.escreening.entity.Survey;
 import gov.va.escreening.entity.SurveyMeasureResponse;
@@ -362,5 +365,16 @@ public class RuleServiceTest extends AssessmentTestBase {
 			logger.info("==== Survey ID ======" + s.getSurveyId());
 			logger.info(surveyMeasureRespSvc.generateQuestionsAndAnswers(s, 56));
 		}
+	}
+
+	@Test
+	public void testGetHealthFactorEvent()
+	{
+		List<EventDto> eventsByType = ruleService.getEventsByType(RuleConstants.EVENT_TYPE_HEALTH_FACTOR);
+
+		assert(eventsByType.get(0).getName().contains("("));
+
+		eventsByType = ruleService.getEventsByType(RuleConstants.EVENT_TYPE_CONSULT);
+		assert(!eventsByType.get(0).getName().contains("("));
 	}
 }
