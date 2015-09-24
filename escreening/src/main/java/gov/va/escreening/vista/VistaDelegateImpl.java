@@ -241,6 +241,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
         } catch (Exception e) {
+            logger.error("ERROR SAVE TBI CONSULT", e);
             ctxt.addSysErr(SaveToVistaContext.PendingOperation.tbi, Throwables.getRootCause(e).getMessage());
         }
         ctxt.requestDone(SaveToVistaContext.PendingOperation.tbi);
