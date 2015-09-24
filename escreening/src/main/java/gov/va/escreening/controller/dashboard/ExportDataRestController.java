@@ -1,6 +1,5 @@
 package gov.va.escreening.controller.dashboard;
 
-import com.google.common.collect.Table;
 import gov.va.escreening.domain.ExportTypeEnum;
 import gov.va.escreening.dto.DataTableResponse;
 import gov.va.escreening.dto.DropDownObject;
@@ -12,14 +11,12 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.ProgramService;
 import gov.va.escreening.service.UserService;
 import gov.va.escreening.service.VeteranAssessmentService;
-import gov.va.escreening.service.export.DataDictionaryService;
-import gov.va.escreening.service.export.ExportDataFilterOptionsService;
-import gov.va.escreening.service.export.ExportDataService;
-import gov.va.escreening.service.export.ExportLogService;
+import gov.va.escreening.service.export.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,7 +35,10 @@ public class ExportDataRestController extends BaseDashboardRestController {
 
     private static final String IDENTIFIED_EXPORT = "identified";
     private static final String DEIDENTIFIED_EXPORT = "deidentified";
-
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
+    @Resource(type = DataDictionaryService.class)
+    DataDictionaryService dds;
     @Autowired
     private ExportDataFilterOptionsService exportDataFilterOptionsService;
     @Autowired
@@ -52,9 +52,6 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @Autowired
     private VeteranAssessmentService veteranAssessmentService;
 
-    @Resource(type = DataDictionaryService.class)
-    DataDictionaryService dds;
-
     @RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
     @ResponseBody
     public ExportDataFormBean getFormBean(HttpServletRequest request) {
@@ -63,8 +60,14 @@ public class ExportDataRestController extends BaseDashboardRestController {
         return exportDataFormBean;
     }
 
-    @RequestMapping(value = "/exportData/services/exports/exportData", method = RequestMethod.GET)
-    public ModelAndView exportDataAsCsv(
+    @RequestMapping("/exportData/services/exports/resetDD")
+    public void resetDd() {
+        dd.markNotReady();
+    }
+
+    @RequestMapping(value = "/exportData/services/exports/genExportData", method = RequestMethod.GET)
+    @ResponseBody
+    public String genExportData(
             ModelAndView modelAndView,
             HttpServletRequest request,
             HttpServletResponse response,
@@ -78,32 +81,54 @@ public class ExportDataRestController extends BaseDashboardRestController {
             @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "exportDataType", required = true) String exportDataType) {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("exportDataAsCsv: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
+        if (logger.isTraceEnabled()) {
+            logger.trace(String.format("genExportData: arguments fromAssessmentDate=%s, toAssessmentDate=%s, clinicianId=%s, createdByUserId=%s, programId=%s, veteranId=%s, comment=%s, exportDataType=%s", fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType));
         }
 
         List<String> errors = new ArrayList<String>();
         ExportDataFormBean exportDataFormBean = getSearchFormBean(escreenUser, fromAssessmentDate, toAssessmentDate, clinicianId, createdByUserId, programId, veteranId, comment, exportDataType, errors);
 
         if (errors.size() > 0) {
-            modelAndView.addObject("createUserStatusMessage", errors);
-            modelAndView.setViewName("exportData");
-            return modelAndView;
+            //modelAndView.addObject("createUserStatusMessage", errors);
+            //modelAndView.setViewName("exportData");
+            //return modelAndView;
+            return errors.toString();
         }
 
         exportDataFormBean.setExportedByUserId(escreenUser.getUserId());
 
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
-        AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(dd, exportDataFormBean);
+        if (!dds.tryPrepareDataDictionary(false)) {
+            //modelAndView.addObject("createUserStatusMessage", Arrays.asList("Data Dictionary is being built. Please try again in a min. or so..."));
+            //modelAndView.setViewName("exportData");
+            //return modelAndView;
+            return "Data Dictionary is being built. Please try again in a min. or so...";
+        }
+        AssessmentDataExport dataExport = exportDataService.getAssessmentDataExport(exportDataFormBean, null);
 
         if (dataExport != null) {
-            modelAndView.setViewName("dataArchiveZipView");
-            modelAndView.addObject("model", dataExport.getExportZipAsModel());
+            //modelAndView.setViewName("dataArchiveZipView");
+            //modelAndView.addObject("model", dataExport.getExportZipAsModel());
+            request.getSession().setAttribute("dataArchiveZipView", dataExport.getExportZipAsModel());
+            return "prepared";
         } else if (!errors.isEmpty()) {
-            modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
-            modelAndView.setViewName("exportData");
+            //modelAndView.addObject("createUserStatusMessage", Arrays.asList("There is no result found for the provided search criteria"));
+            //modelAndView.setViewName("exportData");
+            return "There is no result found for the provided search criteria";
         }
 
+        return "not_prepared";
+    }
+
+    @RequestMapping(value = "/exportData/services/exports/getExportDataFromSession", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView getExportDataNow(
+            ModelAndView modelAndView,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @CurrentUser EscreenUser escreenUser) {
+
+        modelAndView.setViewName("dataArchiveZipView");
+        modelAndView.addObject("model", request.getSession().getAttribute("dataArchiveZipView"));
         return modelAndView;
     }
 
@@ -121,14 +146,21 @@ public class ExportDataRestController extends BaseDashboardRestController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/exportData/services/exports/genDataDictionary", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean generateDataDictionary(ModelAndView modelAndView,
+                                          HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+
+        dds.tryPrepareDataDictionary(true);
+        return dd.isReady();
+    }
+
     @RequestMapping(value = "/exportData/services/exports/dataDictionary", method = RequestMethod.GET)
-    public ModelAndView generateDataDictionary(ModelAndView modelAndView,
-                                               HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
+    public ModelAndView getDataDictionaryNow(ModelAndView modelAndView,
+                                             HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        Map<String, Table<String, String, String>> dataDictionary = dds.createDataDictionary();
-
+        dds.tryPrepareDataDictionary(false);
         modelAndView.setViewName("dataDictionaryExcelView");
-        modelAndView.addObject("dataDictionary", dataDictionary);
 
         return modelAndView;
     }
@@ -339,7 +371,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
         // exportDataFormBean.setProgramIdList(escreenUser != null ? escreenUser.getProgramIdList() : null);
 
         // Assessment Start Date from last snapshop date is by default
-        if (!exportDataFormBean.getHasParameter() && errors.isEmpty()){
+        if (!exportDataFormBean.getHasParameter() && errors.isEmpty()) {
             exportDataFormBean.setFromAssessmentDate(exportDataService.getLastSnapshotDate());
             exportDataFormBean.setToAssessmentDate(new Date());
             exportDataFormBean.setHasParameter(true);

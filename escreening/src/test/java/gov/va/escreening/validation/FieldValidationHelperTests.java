@@ -98,10 +98,10 @@ public class FieldValidationHelperTests {
 		Assert.assertEquals(true, actual);	
 		
 		actual = FieldValidationHelper.isFieldValidPassword("Abcd+123");
-		Assert.assertEquals(true, actual);	
+		Assert.assertEquals(false, actual);
 		
 		actual = FieldValidationHelper.isFieldValidPassword("Abcd=123");
-		Assert.assertEquals(true, actual);	
+		Assert.assertEquals(false, actual);
 		
 		//Not containing blank
 		actual = FieldValidationHelper.isFieldValidPassword("abcd abcd");

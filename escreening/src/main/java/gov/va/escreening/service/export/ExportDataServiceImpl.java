@@ -22,6 +22,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
 import javax.annotation.Resource;
 import java.io.ByteArrayOutputStream;
@@ -70,6 +71,9 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     @Resource(type = DataExportAndDictionaryUtil.class)
     private DataExportAndDictionaryUtil dedUtil;
 
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
+
     /**
      * method to find a response of 1 in multi-select type responses. If user has responded to any question, then all
      * other unanswered question must be marked 999. All this method does is that it changes those 999 to 0
@@ -90,11 +94,10 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     }
 
     @Override
-    public List<DataExportCell> buildExportDataForOneAssessment(Map<String, Table<String, String, String>> dd,
-                                                                VeteranAssessment va, int identifiedExportType) {
+    public List<DataExportCell> buildExportDataForOneAssessment(VeteranAssessment va, int identifiedExportType) {
 
-        Map<String, Map<String, String>> preFetchedData = prepareData(dd, Arrays.asList(va), identifiedExportType);
-        List<DataExportCell> row = buildExportDataPerAssessment(dd, va, identifiedExportType, preFetchedData);
+        Map<String, Map<String, String>> preFetchedData = prepareData(Arrays.asList(va), identifiedExportType);
+        List<DataExportCell> row = buildExportDataPerAssessment(va, identifiedExportType, preFetchedData);
         return row;
 
     }
@@ -104,7 +107,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         return exportLogRepository.findLastSnapshotDate();
     }
 
-    private List<DataExportCell> buildExportDataPerAssessment(Map<String, Table<String, String, String>> dd,
+    private List<DataExportCell> buildExportDataPerAssessment(
                                                               VeteranAssessment assessment, Integer identifiedExportType,
                                                               Map<String, Map<String, String>> preFetchedData) {
 
@@ -117,7 +120,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         List<DataExportCell> exportDataRowCells = buildMandatoryColumns(assessment, show);
 
         for (String surveyName : preFetchedData.get(surveyNamesKey()).keySet()) {
-            List<String> formulaNames = dds.findAllFormulas(surveyName,dd);
+            List<String> formulaNames = dds.findAllFormulas(surveyName);
             Map<String, String> usrRespMap = preFetchedData.get(usrRespKey(assessment, surveyName));
             Map<String, String> surveyDictionary = preFetchedData.get(dictHdrKey(surveyName));
             Map<String, String> answerTypeOther = preFetchedData.get(answerTypeOtherKey(surveyName));
@@ -129,8 +132,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
                 String surveyExportName = surveyEntry.getValue();
                 if (!surveyExportName.isEmpty()) {
                     DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, answerTypeOther, surveyExportName, formulaNames, show);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
                     }
                     exportDataRowCells.add(aCell);
                     saveMultiSelectResponses(multiSelectMap, surveyEntry, aCell);
@@ -202,7 +205,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         return mandatoryIdendifiedData;
     }
 
-    private List<List<DataExportCell>> createDataExportReport(Map<String, Table<String, String, String>> dd,
+    private List<List<DataExportCell>> createDataExportReport(
                                                               List<VeteranAssessment> matchingAssessments,
                                                               Integer identifiedExportType,
                                                               Map<String, Map<String, String>> preFetchedData) {
@@ -211,7 +214,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         // build an export row for each assessment
         for (VeteranAssessment assessment : matchingAssessments) {
-            List<DataExportCell> xportedDataForOneAssessment = buildExportDataPerAssessment(dd, assessment, identifiedExportType, preFetchedData);
+            List<DataExportCell> xportedDataForOneAssessment = buildExportDataPerAssessment(assessment, identifiedExportType, preFetchedData);
             dataExportReport.add(xportedDataForOneAssessment);
         }
 
@@ -370,12 +373,17 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     @Override
     @Transactional
-    public AssessmentDataExport getAssessmentDataExport(Map<String, Table<String, String, String>> dd,
-                                                        ExportDataFormBean exportDataFormBean) {
+    public AssessmentDataExport getAssessmentDataExport(
+                                                        ExportDataFormBean exportDataFormBean, StopWatch sw) {
 
         if (exportDataFormBean.getHasParameter()) {
-            AssessmentDataExport assessmentDataExport = generateAssessmentDataExport(dd, exportDataFormBean);
-            saveDataExportAsZip(dd, assessmentDataExport);
+            if (sw != null) sw.start("data export");
+            AssessmentDataExport assessmentDataExport = generateAssessmentDataExport(exportDataFormBean);
+            if (sw != null) sw.stop();
+
+            if (sw != null) sw.start("save data as zip");
+            saveDataExportAsZip(assessmentDataExport);
+            if (sw != null) sw.stop();
 
             return assessmentDataExport;
         }
@@ -385,9 +393,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     @Override
     public void takeAssessmentSnapShot(Integer exportedById) {
-        logger.warn(">>>>>>[takeAssessmentSnapShot]DD-CREATE");
-
-        Map<String, Table<String, String, String>> dd = dds.createDataDictionary();
+        dds.tryPrepareDataDictionary(true);
 
         Date lastSnapshotDate = exportLogRepository.findLastSnapshotDate();
         ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
@@ -399,19 +405,19 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         exportDataFormBean.setExportedByUserId(exportedById);
         exportDataFormBean.setCommentText("snapshot taken before changing meta information");
 
-        getAssessmentDataExport(dd, exportDataFormBean);
+        getAssessmentDataExport(exportDataFormBean, null);
     }
 
-    private AssessmentDataExport generateAssessmentDataExport(Map<String, Table<String, String, String>> dd, ExportDataFormBean exportDataFormBean) {
+    private AssessmentDataExport generateAssessmentDataExport(ExportDataFormBean exportDataFormBean) {
         // ***Step#1*** Use the passed in filter criteria to pull in the matching assessments
         List<VeteranAssessment> matchingAssessments = veteranAssessmentService.searchVeteranAssessmentForExport(exportDataFormBean);
 
         // ***Step#2*** get data dictionary (optimized with table questions) + usr responses grouped by assessment and every
         // module
-        Map<String, Map<String, String>> prefetchedData = prepareData(dd, matchingAssessments, exportDataFormBean.getExportTypeId());
+        Map<String, Map<String, String>> prefetchedData = prepareData(matchingAssessments, exportDataFormBean.getExportTypeId());
 
         // ***Step#3*** prepare exportData from matching assessments and against the data dictionary
-        List<List<DataExportCell>> dataExportRows = createDataExportReport(dd, matchingAssessments, exportDataFormBean.getExportTypeId(), prefetchedData);
+        List<List<DataExportCell>> dataExportRows = createDataExportReport(matchingAssessments, exportDataFormBean.getExportTypeId(), prefetchedData);
 
         AssessmentDataExport assessmentDataExport = new AssessmentDataExport();
         assessmentDataExport.setHeaderAndRows(dataExportRows);
@@ -423,12 +429,11 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     /**
      * method to create a zip file and pack data-dict and data-export
      *
-     * @param dd         represent the data dictionary created at this time
      * @param dataExport csv data consisting of data export
      */
-    private void saveDataExportAsZip(Map<String, Table<String, String, String>> dd, AssessmentDataExport dataExport) {
+    private void saveDataExportAsZip(AssessmentDataExport dataExport) {
         ByteArrayOutputStream zippedBaos = new ByteArrayOutputStream();
-        String zipFileName = dedUtil.createZipFor(dd, dataExport, zippedBaos);
+        String zipFileName = dedUtil.createZipFor(dataExport, zippedBaos);
 
         //extract the byte[] so we can save them
         dataExport.getFilterOptions().setFilePath(zipFileName);
@@ -475,7 +480,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
      * @param identifiedExportType
      * @return
      */
-    private Map<String, Map<String, String>> prepareData(Map<String, Table<String, String, String>> dd,
+    private Map<String, Map<String, String>> prepareData(
                                                          List<VeteranAssessment> matchingAssessments,
                                                          Integer identifiedExportType) {
 
@@ -491,7 +496,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         for (VeteranAssessment assessment : matchingAssessments) {
             List<SurveyMeasureResponse> smrList = assessment.getSurveyMeasureResponseList();
 
-            for (String surveyName : dd.keySet()) {
+            for (String surveyName : dd.getModuleNames()) {
                 Map<String, String> usrRespMap = srh.prepareSurveyResponsesMap(surveyName, smrList, show);
                 if (usrRespMap == null) {
                     continue;
@@ -500,12 +505,12 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
                 miscDataMap.put(usrRespKey(assessment, surveyName), usrRespMap);
 
                 // get the table data (one sheet) for this survey
-                Table<String, String, String> surveyDD = dd.get(surveyName);
+                DataDictionarySheet surveySheet = dd.findSheet(surveyName);
 
                 // extract all rows/columnValues for column key=data.dict.column.var.name
-                Map<String, String> ddColumnData = surveyDD.column(exportNameKey);
+                Map<String, String> ddColumnData = surveySheet.column(exportNameKey);
                 // extract all answerType is Other or not
-                miscDataMap.put(answerTypeOtherKey(surveyName), createExportNameOtherMap(surveyDD.column(answerTypeKey)));
+                miscDataMap.put(answerTypeOtherKey(surveyName), createExportNameOtherMap(surveySheet.column(answerTypeKey)));
 
                 buildDictionaryHeaderFor(surveyName, syncTableQ(usrRespMap, ddColumnData), miscDataMap);
 

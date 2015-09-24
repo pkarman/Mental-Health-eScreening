@@ -1,7 +1,8 @@
 package gov.va.escreening.util;
 
 import com.google.common.collect.Sets;
-import com.google.common.collect.Table;
+import gov.va.escreening.service.export.DataDictionary;
+import gov.va.escreening.service.export.DataDictionarySheet;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -15,6 +16,7 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -23,38 +25,36 @@ import java.util.Set;
  * Created by munnoo on 1/18/15.
  */
 @Component("dataDictAsExcelUtil")
-public class DataDictExcelUtil implements MessageSourceAware{
+public class DataDictExcelUtil implements MessageSourceAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Resource(name = "theDataDictionary")
+    DataDictionary dd;
     private MessageSource messageSource;
-
     private Set<String> allowedHeaderColumns;
+
     @PostConstruct
-    private void initializeHeaderColumns(){
-        String headerColumnKeys=messageSource.getMessage("data.dict.column.show.list", null, null);
-        String[] headerColKeyArray=headerColumnKeys.split(",");
+    private void initializeHeaderColumns() {
+        String headerColumnKeys = messageSource.getMessage("data.dict.column.show.list", null, null);
+        String[] headerColKeyArray = headerColumnKeys.split(",");
 
         allowedHeaderColumns = Sets.newHashSet();
-        for(String colKey:headerColKeyArray){
+        for (String colKey : headerColKeyArray) {
             allowedHeaderColumns.add(messageSource.getMessage(colKey.trim(), null, null));
         }
     }
-    public void buildDdAsExcel(Map model, HSSFWorkbook workbook) {
 
-        Map<String, Table<String, String, String>> dataDictionary = (Map<String, Table<String, String, String>>) model.get("dataDictionary");
-
+    public void buildDdAsExcel(HSSFWorkbook workbook) {
         CellStyle csWrapText = workbook.createCellStyle();
         csWrapText.setWrapText(true);
-
-        for (String surveyName : dataDictionary.keySet()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("creating excel sheet for module:" + surveyName);
+        for (String moduleName : dd.getModuleNames()) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("creating excel sheet for module:" + moduleName);
             }
+            HSSFSheet sheet = workbook.createSheet(moduleName);
 
-            HSSFSheet sheet = workbook.createSheet(surveyName);
-
-            Table<String, String, String> measuresTable = dataDictionary.get(surveyName);
-            setExcelHeader(workbook, surveyName, sheet, measuresTable.columnKeySet());
-            setExcelRows(workbook, surveyName, sheet, measuresTable, csWrapText);
+            DataDictionarySheet ddSheet = dd.findSheet(moduleName);
+            setExcelHeader(workbook, moduleName, sheet, ddSheet.columnKeySet());
+            setExcelRows(workbook, moduleName, sheet, ddSheet, csWrapText);
 
             sheet.autoSizeColumn(0, true);
             sheet.setColumnWidth(1, 256 * 40);
@@ -108,17 +108,17 @@ public class DataDictExcelUtil implements MessageSourceAware{
     }
 
     private void setExcelRows(HSSFWorkbook workbook, String surveyName,
-                              HSSFSheet excelSheet, Table<String, String, String> measuresTable,
+                              HSSFSheet excelSheet, DataDictionarySheet ddSheet,
                               CellStyle cs) {
 
         int row = 4;
-        for (String rowId : measuresTable.rowKeySet()) {
+        for (String rowId : ddSheet.rowKeySet()) {
             int columnIndex = 0;
             HSSFRow excelRow = excelSheet.createRow(row++);
 
             StringBuilder debugString = new StringBuilder();
-            for (Map.Entry<String, String> rowData : measuresTable.row(rowId).entrySet()) {
-                if (logger.isDebugEnabled()) {
+            for (Map.Entry<String, String> rowData : ddSheet.row(rowId).entrySet()) {
+                if (logger.isTraceEnabled()) {
                     debugString.append(String.format("%s:%s:%s$", rowId, rowData.getKey(), rowData.getValue()));
                 }
 
@@ -126,7 +126,7 @@ public class DataDictExcelUtil implements MessageSourceAware{
                     HSSFCell aCell = excelRow.createCell(columnIndex);
                     aCell.setCellValue(rowData.getValue());
 
-                    if (columnIndex == 1 || columnIndex == 4) {
+                    if (cs != null && (columnIndex == 1 || columnIndex == 4)) {
                         aCell.setCellStyle(cs);
                     }
 
@@ -134,14 +134,14 @@ public class DataDictExcelUtil implements MessageSourceAware{
                 }
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(debugString.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace(debugString.toString());
             }
         }
     }
 
     @Override
     public void setMessageSource(MessageSource messageSource) {
-        this.messageSource=messageSource;
+        this.messageSource = messageSource;
     }
 }

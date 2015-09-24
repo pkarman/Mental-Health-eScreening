@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import gov.va.escreening.service.export.DataDictionary;
 import gov.va.escreening.util.DataDictExcelUtil;
 import gov.va.escreening.util.DataExportAndDictionaryUtil;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -32,10 +33,15 @@ public class DataDictionaryExcelView extends AbstractExcelView {
 	@Resource(name="dataDictAsExcelUtil")
 	DataDictExcelUtil ddutil;
 
+	@Resource(name = "theDataDictionary")
+	DataDictionary dd;
+
 	@Override
 	protected void buildExcelDocument(Map model, HSSFWorkbook workbook,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		ddutil.buildDdAsExcel(model, workbook);
+		dd.setWorkbook(workbook);
+		ddutil.buildDdAsExcel(dd.getWorkbook());
+		dd.markReady();
 	}
 }

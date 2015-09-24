@@ -95,9 +95,9 @@ public class SurveyPageRepositoryImpl extends AbstractHibernateRepository<Survey
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.getResultList();
         
-        if(logger.isDebugEnabled()){
+        if(logger.isTraceEnabled()){
             for(Object[] row: result)
-                logger.debug("Survey page ID: " + row[0] + ", has_skip: " + row[1]);
+                logger.trace("Survey page ID: " + row[0] + ", has_skip: " + row[1]);
         }
 
         return result;
