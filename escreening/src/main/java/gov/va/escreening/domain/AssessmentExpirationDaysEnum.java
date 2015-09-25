@@ -2,7 +2,7 @@ package gov.va.escreening.domain;
 
 public enum AssessmentExpirationDaysEnum {
 
-	CLEAN(5), INCOMPLETE(0), COMPLETE(0), REVIEWED(0), FINALIZED(2), ERROR(0);
+	CLEAN(2), INCOMPLETE(0), COMPLETE(0), REVIEWED(0), FINALIZED(2), ERROR(0);
 
 	private AssessmentExpirationDaysEnum(int expirationDays) {
 		this.expirationDays = expirationDays;
