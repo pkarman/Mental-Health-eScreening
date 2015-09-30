@@ -360,7 +360,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 // 3. ARRAY(“WP”,CommentIEN,1,#,0)=TEXT FOR LINE # (Step D8)
                 //respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),prepareTbiConsultReasonText(exportColumnsMap));
 
-                if(tbiReason.contains("\\|"))
+                if(tbiReason.contains("|"))
                 {
                     tbiReason = getTemplateText(veteranAssessment.getVeteran().getVeteranIen(),"", tbiReason);
                 }
