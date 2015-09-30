@@ -2,6 +2,7 @@ package gov.va.escreening.vista;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import gov.va.escreening.delegate.SaveToVistaContext;
 import gov.va.escreening.entity.SurveyMeasureResponse;
 import gov.va.escreening.entity.VeteranAssessment;
@@ -359,6 +360,10 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 // 3. ARRAY(“WP”,CommentIEN,1,#,0)=TEXT FOR LINE # (Step D8)
                 //respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),prepareTbiConsultReasonText(exportColumnsMap));
 
+                if(tbiReason.contains("\\|"))
+                {
+                    tbiReason = getTemplateText(veteranAssessment.getVeteran().getVeteranIen(),"", tbiReason);
+                }
                 respLstMap.put(RpcRequest.buildMultipleMSubscriptKey(String.format("\"WP\",%s,1,1,0", commentIEN)),tbiReason);
 
                 // 4. ARRAY(ClassIEN,1)= Class(“O” or “I”)(Step D6a)
@@ -585,11 +590,11 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 rpcParams.add(vetIen);
                 rpcParams.add(visitStr);
 
-                List<String> textLines = Lists.newArrayList();
+                Map<String, String> textLines = Maps.newHashMap();
                 int i = 1 ;
                 for(String l : lines)
                 {
-                    textLines.add(String.format("(%d,0)=%s", i++, l));
+                    textLines.put(RpcRequest.buildMultipleMSubscriptKey("\"" + String.valueOf(i++) + "\",0"), l);
                 }
                 rpcParams.add(textLines);
                 return rpcParams;
@@ -597,7 +602,11 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
             @Override
             protected String prepareResponse(String rawReponse) {
-                //logger.info("Response from TIU GET TEMPLATE TEXT === " + rawReponse);
+                int indx = rawReponse.lastIndexOf("^");
+                if(indx>0)
+                {
+                    return rawReponse.substring(indx+1);
+                }
                 return rawReponse;
             }
         };
