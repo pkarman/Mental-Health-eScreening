@@ -1,6 +1,8 @@
 package gov.va.escreening.service;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.entity.ClinicalReminder;
@@ -36,14 +38,7 @@ import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 import gov.va.escreening.vista.extractor.VistaRecord;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -464,24 +459,31 @@ public class VistaServiceImpl implements VistaService {
         // Fetch from DB.
         List<Clinic> clinicListDb = clinicService.getClinics();
 
-        Map<Long, Clinic> existingDbClinic = Maps.newHashMap();
+        Multimap<Long, Clinic> existingDbClinic = ArrayListMultimap.create();
 
         for (Clinic c : clinicListDb) {
-            existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c);
+            if (c.getVistaIen() != null && !c.getVistaIen().isEmpty()) {
+                existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c);
+            }
         }
 
-
         for (VistaLocation location : locationList) {
-            Clinic c = existingDbClinic.get(location.getIen());
-            if (c == null) {
+            Collection<Clinic> clinics = existingDbClinic.get(location.getIen());
+            if (clinics == null || clinics.isEmpty()) {
                 clinicService.create(location.getName(), location.getIen().toString());
                 ++insertCount;
-            } else if (!c.getName().equals(location.getName())) {
-                c.setName(location.getName());
-                clinicRepo.update(c);
-                ++updateCount;
+            } else {
+                for (Clinic c : clinics) {
+                    if (!c.getName().equals(location.getName()) && String.valueOf(location.getIen()).equals(c.getVistaIen())) {
+                        // set the ien to null as vista does not have this clinic but we need this clinic available for our system
+                        c.setVistaIen(null);
+                        ++updateCount;
+                        // add a new record with the right clinic details
+                        clinicService.create(location.getName(), location.getIen().toString());
+                        ++insertCount;
+                    }
+                }
             }
-
         }
         responseMap.put("updateCnt", updateCount);
         responseMap.put("insertCnt", insertCount);

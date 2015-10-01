@@ -36,7 +36,7 @@ public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> im
     
     @Override
     public List<Clinic> getClinicsByName(String query){
-    	String sql = "SELECT c FROM Clinic c WHERE c.name like :query ORDER BY c.name";
+    	String sql = "SELECT c FROM Clinic c WHERE c.name like :query and c.vistaIen is not null ORDER BY c.name";
 
         return entityManager
         	.createQuery(sql, Clinic.class)
@@ -58,12 +58,12 @@ public class ClinicRepositoryImpl extends AbstractHibernateRepository<Clinic> im
         return result;
     }
 
-	@Override
-	public List<Clinic> findByIen(String ien) {
-		String sql = "SELECT c FROM Clinic c where c.vistaIen = :ien";
-		TypedQuery<Clinic> query = entityManager.createQuery(sql, Clinic.class).setParameter("ien", ien);
-		List<Clinic> resultList = query.getResultList();
-		return resultList;
-	}
+    @Override
+    public Clinic findByIen(String ien) {
+        String sql = "SELECT c FROM Clinic c where c.vistaIen = :ien";
+        TypedQuery<Clinic> query = entityManager.createQuery(sql, Clinic.class).setParameter("ien", ien);
+        Clinic clinic = query.getSingleResult();
+        return clinic;
+    }
 
 }

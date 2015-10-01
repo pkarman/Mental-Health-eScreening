@@ -116,7 +116,7 @@ public class AssessmentCreateBatchPlusIndivTest extends AssessmentTestBase {
         model.put("isCprsVerified", escreenUser.getCprsVerified());
         model.put("isCreateMode", true);
 
-        Clinic c = clinicRepo.findByIen(clinicIen).iterator().next();
+        Clinic c = clinicRepo.findByIen(clinicIen);
 //        batchCreateFormBean.setSelectedClinicId(c.getClinicId());
 //
         model.put("clinic", c.getName());

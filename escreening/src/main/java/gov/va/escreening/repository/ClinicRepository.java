@@ -16,7 +16,7 @@ public interface ClinicRepository extends RepositoryInterface<Clinic> {
 
     List<Integer> getAllVeteranIds(Integer clinicId);
     
-    List<Clinic> findByIen(String ien);
+    Clinic findByIen(String ien);
     
     /**
      * Retrieves all clinics with a name value that includes query 
