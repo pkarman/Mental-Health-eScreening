@@ -313,6 +313,20 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     }
 
     @Override
+    public boolean invalidateDataDictionary() {
+        boolean mainThreadAvailable = false;
+        try {
+            mainThreadAvailable = mainThreadLock.tryLock();
+        } finally {
+            if (mainThreadAvailable) {
+                dd.markNotReady();
+                mainThreadLock.unlock();
+            }
+            return mainThreadAvailable;
+        }
+    }
+
+    @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
