@@ -63,6 +63,11 @@ public class Clinic implements Serializable {
         this.clinicId = clinicId;
     }
 
+    public Clinic(String vistaIen, String name) {
+        this.vistaIen = vistaIen;
+        this.name = name;
+    }
+
     public Clinic(Integer clinicId, String name, Date dateCreated) {
         this.clinicId = clinicId;
         this.name = name;
