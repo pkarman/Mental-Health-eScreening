@@ -15,4 +15,6 @@ public interface DataDictionaryService {
     public String createTableResponseVarName(String exportName);
 
     List<String> findAllFormulas(String surveyName);
+
+    boolean invalidateDataDictionary();
 }

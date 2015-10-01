@@ -14,6 +14,7 @@ import gov.va.escreening.dto.editors.SurveySectionInfo;
 import gov.va.escreening.entity.*;
 import gov.va.escreening.exception.EscreeningDataValidationException;
 import gov.va.escreening.repository.*;
+import gov.va.escreening.service.export.DataDictionaryService;
 import gov.va.escreening.transformer.EditorsQuestionViewTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import java.util.*;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
@@ -33,9 +35,9 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 public class SurveyServiceImpl implements SurveyService {
 
     private static final Logger logger = LoggerFactory.getLogger(SurveyServiceImpl.class);
-
+    @Resource(name = "dataDictionaryService")
+    DataDictionaryService dds;
     private SurveyRepository surveyRepository;
-
     @Autowired
     private SurveySectionRepository surveySectionRepository;
 
@@ -46,14 +48,11 @@ public class SurveyServiceImpl implements SurveyService {
     private SurveyPageRepository surveyPageRepository;
 
     @Autowired
-    private AssessmentVariableRepository assessmentVariableRepository;
+    private ClinicalReminderSurveyRepository clinicalReminderSurveyRepo;
 
     @Autowired
-    private ClinicalReminderSurveyRepository clinicalReminderSurveyRepo;
-    
-    @Autowired
     private ClinicalReminderRepository clinicalReminderRepo;
-    
+
     @Autowired
     public void setSurveyRepository(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
@@ -125,38 +124,39 @@ public class SurveyServiceImpl implements SurveyService {
         logger.debug("getSurveyList()");
         return toDtos(surveyRepository.getSurveyList(), Collections.<Integer>emptySet());
     }
-    
+
     @Transactional(readOnly = true)
     @Override
-    public List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId){
+    public List<SurveyDto> getSurveyListUnionAssessment(int veteranAssessmentId) {
         List<Survey> assessmentSurveys = surveyRepository.findForVeteranAssessmentId(veteranAssessmentId);
-        if(assessmentSurveys == null){
+        if (assessmentSurveys == null) {
             throw new IllegalArgumentException("Unknown assessment");
         }
         Set<Integer> allowableSurveys = Sets.newHashSetWithExpectedSize(assessmentSurveys.size());
-        for(Survey assessmentSurvey : assessmentSurveys){
+        for (Survey assessmentSurvey : assessmentSurveys) {
             allowableSurveys.add(assessmentSurvey.getSurveyId());
         }
-        
+
         return toDtos(surveyRepository.getSurveyList(), allowableSurveys);
     }
-    
+
     /**
      * Filters only public surveys and turns them into SurveyDtos
+     *
      * @param surveys
      * @param allowableSurveys - surveys that should be included even if they are not public
      * @return
      */
-    private List<SurveyDto> toDtos(List<Survey> surveys, Set<Integer> allowableSurveys){
+    private List<SurveyDto> toDtos(List<Survey> surveys, Set<Integer> allowableSurveys) {
         List<SurveyDto> surveyDtoList = new ArrayList<SurveyDto>();
         for (Survey survey : surveys) {
-            if(survey.isPublished() || allowableSurveys.contains(survey.getSurveyId())){
+            if (survey.isPublished() || allowableSurveys.contains(survey.getSurveyId())) {
                 surveyDtoList.add(new SurveyDto(survey));
             }
         }
         return surveyDtoList;
     }
-    
+
     /**
      * This will return all surveys regardless if they are published or not
      */
@@ -172,27 +172,27 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public SurveyInfo update(SurveyInfo surveyInfo) {
-        
-        if(surveyInfo.getSurveySectionInfo() == null || 
-                surveyInfo.getSurveySectionInfo().getSurveySectionId() == null){
+
+        if (surveyInfo.getSurveySectionInfo() == null ||
+                surveyInfo.getSurveySectionInfo().getSurveySectionId() == null) {
             ErrorBuilder.throwing(EscreeningDataValidationException.class)
-            .toAdmin("surveyInfo passed in with null section ID. Debug UI.")
-            .toUser("Invalid request. Please contact support")
-            .throwIt();
+                    .toAdmin("surveyInfo passed in with null section ID. Debug UI.")
+                    .toUser("Invalid request. Please contact support")
+                    .throwIt();
         }
-        
+
         Survey survey = surveyRepository.findOne(surveyInfo.getSurveyId());
         SurveySection newSurveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
         SurveySection oldSurveySection = survey.getSurveySection();
-            
+
         boolean updateOldSurveySectionOrdering = false;
         boolean isNewSection = !oldSurveySection.getSurveySectionId().equals(newSurveySection.getSurveySectionId());
-        if(isNewSection && surveyInfo.getDisplayOrderForSection() == null){
+        if (isNewSection && surveyInfo.getDisplayOrderForSection() == null) {
             //the module's section has changed and no order was set so set it the the next larger index
-            surveyInfo.setDisplayOrderForSection(newSurveySection.getSurveyList().size()+1);
+            surveyInfo.setDisplayOrderForSection(newSurveySection.getSurveyList().size() + 1);
             updateOldSurveySectionOrdering = true;
         }
-        
+
         // copy any changed properties from incoming surveyInfo to the data for database 'survey'
         copyProperties(surveyInfo, survey);
 
@@ -200,33 +200,32 @@ public class SurveyServiceImpl implements SurveyService {
         survey.setSurveySection(newSurveySection);
 
         surveyRepository.update(survey);
-        
-        if(updateOldSurveySectionOrdering){
+
+        if (updateOldSurveySectionOrdering) {
             reorderSurveySection(oldSurveySection, survey);
         }
-        
+
         clinicalReminderSurveyRepo.removeSurveyMapping(surveyInfo.getSurveyId());
-        
-        if(surveyInfo.getClinicalReminderIdList() != null && !surveyInfo.getClinicalReminderIdList().isEmpty())
-        {
-        	for(Integer crId : surveyInfo.getClinicalReminderIdList())
-        	{
-        		clinicalReminderSurveyRepo.createClinicalReminderSurvey(crId, surveyInfo.getSurveyId());
-        	}
+
+        if (surveyInfo.getClinicalReminderIdList() != null && !surveyInfo.getClinicalReminderIdList().isEmpty()) {
+            for (Integer crId : surveyInfo.getClinicalReminderIdList()) {
+                clinicalReminderSurveyRepo.createClinicalReminderSurvey(crId, surveyInfo.getSurveyId());
+            }
         }
-        
+        dds.invalidateDataDictionary();
         return surveyInfo;
     }
-    
-    private void reorderSurveySection(SurveySection surveySection, Survey removedSurvey){
+
+    private void reorderSurveySection(SurveySection surveySection, Survey removedSurvey) {
         int index = 1;
-        for(Survey survey : surveySection.getSurveyList()){
-            if(!survey.equals(removedSurvey)){
+        for (Survey survey : surveySection.getSurveyList()) {
+            if (!survey.equals(removedSurvey)) {
                 survey.setDisplayOrderForSection(index++);
             }
         }
-        
+
         surveySectionRepository.update(surveySection);
+        dds.invalidateDataDictionary();
     }
 
     @Override
@@ -256,7 +255,7 @@ public class SurveyServiceImpl implements SurveyService {
 
             }
         }
-
+        dds.invalidateDataDictionary();
     }
 
     @Override
@@ -270,6 +269,7 @@ public class SurveyServiceImpl implements SurveyService {
         surveyPage.setSurvey(survey);
 
         surveyPageRepository.create(surveyPage);
+        dds.invalidateDataDictionary();
     }
 
     @Override
@@ -317,7 +317,7 @@ public class SurveyServiceImpl implements SurveyService {
                 } else {
                     gov.va.escreening.dto.ae.Measure measureDTO = measureRepository.createMeasure(EditorsQuestionViewTransformer.transformQuestionInfo(questionInfo));
                     measures.add(measureRepository.findOne(measureDTO.getMeasureId()));
-                    
+
                     // update questionInfo's id with measure id
                     questionInfo.setId(measureDTO.getMeasureId());
                 }
@@ -335,6 +335,7 @@ public class SurveyServiceImpl implements SurveyService {
 
         survey.setSurveyPageList(surveyPageList);
         surveyRepository.update(survey);
+        dds.invalidateDataDictionary();
     }
 
     @Override
@@ -346,7 +347,7 @@ public class SurveyServiceImpl implements SurveyService {
         List<SurveyPageInfo> surveyPageInfos = new ArrayList<SurveyPageInfo>();
         for (SurveyPage surveyPage : surveyPages) {
 
-            if (pageNumber==-1 || surveyPage.getPageNumber()==pageNumber) {
+            if (pageNumber == -1 || surveyPage.getPageNumber() == pageNumber) {
                 SurveyPageInfo spi = new SurveyPageInfo();
                 BeanUtils.copyProperties(surveyPage, spi);
 
@@ -364,27 +365,28 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional
     public SurveyInfo createSurvey(SurveyInfo surveyInfo) {
         SurveySection surveySection = surveySectionRepository.findOne(surveyInfo.getSurveySectionInfo().getSurveySectionId());
-        
+
         //we have to always set this to the last index of the section
         surveyInfo.setDisplayOrderForSection(surveySection.getSurveyList().size() + 1);
-        
+
         Survey survey = new Survey();
         BeanUtils.copyProperties(surveyInfo, survey);
         survey.setSurveySection(surveySection);
-        
+
 
         surveyRepository.create(survey);
-        
-        for(Integer crId:surveyInfo.getClinicalReminderIdList())
-        {
-        	ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
-        	ClinicalReminder reminder = clinicalReminderRepo.findOne(crId);
-        	cr.setClinicalReminder(reminder);
-        	cr.setSurvey(survey);
-        	clinicalReminderSurveyRepo.create(cr);
-        	
+
+        for (Integer crId : surveyInfo.getClinicalReminderIdList()) {
+            ClinicalReminderSurvey cr = new ClinicalReminderSurvey();
+            ClinicalReminder reminder = clinicalReminderRepo.findOne(crId);
+            cr.setClinicalReminder(reminder);
+            cr.setSurvey(survey);
+            clinicalReminderSurveyRepo.create(cr);
+
         }
-        return toSurveyInfo(Arrays.asList(survey)).iterator().next();
+        SurveyInfo surveyInfoResult = toSurveyInfo(Arrays.asList(survey)).iterator().next();
+        dds.invalidateDataDictionary();
+        return surveyInfoResult;
     }
 
     @Override
@@ -401,20 +403,19 @@ public class SurveyServiceImpl implements SurveyService {
                 copyProperties(survey.getSurveySection(), ssInfo);
 
                 si.setSurveySectionInfo(ssInfo);
-                
-                if(survey.getClinicalReminderSurveyList()!=null && !survey.getClinicalReminderSurveyList().isEmpty())
-                {
-                	for(ClinicalReminderSurvey cr : survey.getClinicalReminderSurveyList())
-                	{
-                		si.getClinicalReminderIdList().add(cr.getClinicalReminder().getClinicalReminderId());
-                	}
+
+                if (survey.getClinicalReminderSurveyList() != null && !survey.getClinicalReminderSurveyList().isEmpty()) {
+                    for (ClinicalReminderSurvey cr : survey.getClinicalReminderSurveyList()) {
+                        si.getClinicalReminderIdList().add(cr.getClinicalReminder().getClinicalReminderId());
+                    }
                 }
-                
+
                 return si;
             }
         };
 
-        return Lists.newArrayList(Collections2.transform(surveyList, transformerFun));
+        ArrayList<SurveyInfo> surveyInfos = Lists.newArrayList(Collections2.transform(surveyList, transformerFun));
+        return surveyInfos;
     }
 
     @Override
@@ -449,6 +450,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional
     public void removeSurveyPage(Integer surveyId, Integer pageId) {
         surveyPageRepository.deleteById(pageId);
+        dds.invalidateDataDictionary();
     }
 
     @Override
