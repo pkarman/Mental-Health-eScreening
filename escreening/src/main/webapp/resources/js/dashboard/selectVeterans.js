@@ -158,7 +158,7 @@ $(document).ready(function() {
 				  var items = [];
 				  $.each(data, function(index, clinic){
 					  items.push({
-						"id": clinic.stateId,
+						"id": clinic.stateId+'|'+clinic.stateName,
 					   	"text": clinic.stateName,
 					  });	
 				  });
