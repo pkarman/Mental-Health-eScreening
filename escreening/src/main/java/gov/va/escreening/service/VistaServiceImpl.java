@@ -736,7 +736,8 @@ public class VistaServiceImpl implements VistaService {
         for(HealthFactor hf : hfList)
         {
             eventService.deleteEventForHealthFactor(hf);
-            healthFactorRepo.delete(hf);
+            hf.setVistaIen(null);
+            healthFactorRepo.update(hf);
             logger.info("Removed Health Factor " + hf.getName() + hf.getVistaIen());
         }
 
