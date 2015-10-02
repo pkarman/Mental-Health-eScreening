@@ -322,6 +322,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
                 dd.markNotReady();
                 mainThreadLock.unlock();
             }
+            logger.warn(String.format("Data Dictionary cache %s invalidated as Data Export %s operation", mainThreadAvailable ? "has been" : "could not be", mainThreadAvailable ? "is not in" : "is in"));
             return mainThreadAvailable;
         }
     }
