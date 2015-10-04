@@ -1,8 +1,10 @@
 package gov.va.escreening.service;
 
+import gov.va.escreening.domain.AssessmentStatusEnum;
 import gov.va.escreening.domain.ClinicDto;
 import gov.va.escreening.domain.ProgramDto;
 import gov.va.escreening.dto.DropDownObject;
+import gov.va.escreening.entity.AssessmentStatus;
 import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.entity.ClinicProgram;
 import gov.va.escreening.entity.Program;
@@ -48,8 +50,10 @@ public class ClinicServiceImpl implements ClinicService {
         clinicDto.setClinicName(clinic.getName());
         clinicDto.setClinicIen(clinic.getVistaIen());
 
-        for (ClinicProgram cp:clinic.getClinicProgramList()){
-            clinicDto.getProgramDtos().add(createProgramDto(cp.getProgram()));
+        if (clinic.getClinicProgramList() != null) {
+            for (ClinicProgram cp : clinic.getClinicProgramList()) {
+                clinicDto.getProgramDtos().add(createProgramDto(cp.getProgram()));
+            }
         }
         return clinicDto;
     }
@@ -60,15 +64,15 @@ public class ClinicServiceImpl implements ClinicService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<DropDownObject> getClinicOptionsByName(String query){
-    	List<Clinic> clinics = clinicRepository.getClinicsByName(query);
-    	List<DropDownObject> clinicList = new ArrayList<DropDownObject>(clinics.size());
+    public List<DropDownObject> getClinicOptionsByName(String query) {
+        List<Clinic> clinics = clinicRepository.getClinicsByName(query);
+        List<DropDownObject> clinicList = new ArrayList<DropDownObject>(clinics.size());
         for (Clinic c : clinics) {
             clinicList.add(new DropDownObject(c.getVistaIen(), c.getName()));
         }
-    	return clinicList;
+        return clinicList;
     }
-    
+
     @Transactional(readOnly = true)
     @Override
     public List<DropDownObject> getDropDownObjectsByProgramId(int programId) {
@@ -78,7 +82,7 @@ public class ClinicServiceImpl implements ClinicService {
         List<ClinicProgram> cpList = clinicRepository.findByProgramId(programId);
 
         for (ClinicProgram cp : cpList) {
-            Clinic clinic=cp.getClinic();
+            Clinic clinic = cp.getClinic();
             dropDownObjectList.add(new DropDownObject(clinic.getClinicId().toString(), clinic.getName()));
         }
 
@@ -100,7 +104,7 @@ public class ClinicServiceImpl implements ClinicService {
     @Override
     public String getClinicNameById(Integer clinicId) {
         Clinic c = clinicRepository.findOne(clinicId);
-        if (c!=null){
+        if (c != null) {
             return c.getName();
         }
         return null;
@@ -112,7 +116,28 @@ public class ClinicServiceImpl implements ClinicService {
     }
 
     @Override
+    @Transactional
     public ClinicDto getClinicDtoByIen(String varClinicIen) {
-        return createClinicDto(clinicRepository.findByIen(varClinicIen));
+        int dividerPos = varClinicIen.indexOf("|");
+        String clinicIen = varClinicIen.substring(0, dividerPos);
+        String clinicName = varClinicIen.substring(dividerPos + 1);
+
+        Clinic clinicByIen = clinicRepository.findByIen(clinicIen);
+        Clinic selectedClinic = selectClinicByIenAndName(clinicByIen, clinicIen, clinicName);
+
+        return createClinicDto(selectedClinic);
+    }
+
+    private Clinic selectClinicByIenAndName(Clinic clinicByIen, String clinicIen, String clinicName) {
+        Clinic selectedClinic = null;
+        if (clinicName.equals(clinicByIen.getName())) {
+            selectedClinic = clinicByIen;
+        } else {
+            clinicByIen.setVistaIen(null);
+            selectedClinic = new Clinic(clinicIen, clinicName);
+            clinicRepository.create(selectedClinic);
+        }
+
+        return selectedClinic;
     }
 }

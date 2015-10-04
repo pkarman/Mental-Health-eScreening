@@ -70,7 +70,8 @@ public class BatchCreateController {
         model.addAttribute("isPostBack", true);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
-        String clinicIen = selectVeteranFormBean.getSelectedClinic();
+        String clinicIenPlusClinicName = selectVeteranFormBean.getSelectedClinic();
+        String clinicIen=clinicIenPlusClinicName.split("[|]")[0];
         if (clinicIen == null) {
             result.reject("clinicIen");
             return "dashboard/selectVeterans";

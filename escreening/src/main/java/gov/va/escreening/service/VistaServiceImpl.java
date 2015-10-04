@@ -1,5 +1,8 @@
 package gov.va.escreening.service;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.entity.Clinic;
 import gov.va.escreening.entity.ClinicalReminder;
@@ -35,14 +38,7 @@ import gov.va.escreening.vista.dto.VistaVeteranAppointment;
 import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 import gov.va.escreening.vista.extractor.VistaRecord;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -59,14 +55,11 @@ import javax.annotation.Resource;
 public class VistaServiceImpl implements VistaService {
 
     private static final Logger logger = LoggerFactory.getLogger(VistaServiceImpl.class);
-
+    @Resource(name = "veteranService")
+    VeteranService vs;
     private ClinicalReminderService clinicalReminderService;
     private ClinicService clinicService;
     private NoteTitleService noteTitleService;
-
-    @Resource(name="veteranService")
-    VeteranService vs;
-
     @Autowired
     private NoteTitleRepository noteTitleRepo;
 
@@ -75,8 +68,8 @@ public class VistaServiceImpl implements VistaService {
 
     @Autowired
     private ClinicRepository clinicRepo;
-    
-    @Autowired 
+
+    @Autowired
     private EventService eventService;
 
     @Autowired
@@ -84,7 +77,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Autowired
     private SurveyRepository surveyRepo;
-    
+
     /**
      * The primary station number of the VistA Server. If this system ever support more than one VistA Server at a time,
      * then this will have to be supplied by the end-user to know which VistA server we are working with.
@@ -140,7 +133,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public String callRpc(String division, String vpid, String duz, String appProxyName, String rpcContext,
-            String rpcName, List<VistaRpcParam> vistaRpcParamList) {
+                          String rpcName, List<VistaRpcParam> vistaRpcParamList) {
         logger.debug("VistaServiceImpl::callRpc");
         return vistaRepository.callRpc(division, vpid, duz, appProxyName, rpcContext, rpcName, vistaRpcParamList);
     }
@@ -152,7 +145,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<VeteranDto> searchVeteran(String division, String vpid, String duz, String appProxyName,
-            String lastName, String ssnLastFour) {
+                                          String lastName, String ssnLastFour) {
 
         String lastNameSsn = "";
 
@@ -175,11 +168,11 @@ public class VistaServiceImpl implements VistaService {
         } else {
             // look for these in local database too, if they are found in local database then update the veteranId,
             // as veteranId belongs to the local db PK
-            for(VeteranDto vDto:resultList){
+            for (VeteranDto vDto : resultList) {
                 List<VeteranDto> localDbMatchingVeterans = vs.findVeterans(vDto);
-                if (localDbMatchingVeterans!=null && !localDbMatchingVeterans.isEmpty()){
-                    for (VeteranDto localDbMatchingVeteran:localDbMatchingVeterans){
-                        if (localDbMatchingVeteran.equals(vDto)){
+                if (localDbMatchingVeterans != null && !localDbMatchingVeterans.isEmpty()) {
+                    for (VeteranDto localDbMatchingVeteran : localDbMatchingVeterans) {
+                        if (localDbMatchingVeteran.equals(vDto)) {
                             vDto.setVeteranId(localDbMatchingVeteran.getVeteranId());
                             break;
                         }
@@ -231,7 +224,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<VistaVeteranAppointment> getVeteranAppointments(String division, String vpid, String duz,
-            String appProxyName, String veteranIen) {
+                                                                String appProxyName, String veteranIen) {
         logger.debug("VistaServiceImpl::getAppointments");
 
         return vistaRepository.getVeteranAppointments(division, vpid, duz, appProxyName, veteranIen);
@@ -239,7 +232,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<VeteranDto> findVeterans(String division, String vpid, String duz, String appProxyName,
-            String ssnLastFour, String lastName, Date birthDate, String middleName) {
+                                         String ssnLastFour, String lastName, Date birthDate, String middleName) {
 
         boolean isMiddleNameRequired = StringUtils.isNotBlank(middleName);
         boolean isBirthDateRequired = (birthDate != null);
@@ -286,7 +279,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<VistaVeteranClinicalReminder> getVeteranClinicalReminders(String division, String vpid, String duz,
-            String appProxyName, String veteranIen) {
+                                                                          String appProxyName, String veteranIen) {
 
         return vistaRepository.getVeteranClinicalReminders(division, vpid, duz, appProxyName, veteranIen);
     }
@@ -299,7 +292,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<VistaClinicAppointment> getAppointmentsForClinic(String division, String vpid, String duz,
-            String appProxyName, String clinicIen, Date fromAppointmentDate, Date toAppointmentDate) {
+                                                                 String appProxyName, String clinicIen, Date fromAppointmentDate, Date toAppointmentDate) {
 
         return vistaRepository.getAppointmentsForClinic(division, vpid, duz, appProxyName, clinicIen,
                 fromAppointmentDate, toAppointmentDate);
@@ -307,14 +300,14 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<VistaClinicalReminderAndCategory> getClinicalReminderAndCategories(String division, String vpid,
-            String duz, String appProxyName) {
+                                                                                   String duz, String appProxyName) {
 
         return vistaRepository.getClinicalReminderAndCategories(division, vpid, duz, appProxyName);
     }
 
     public void saveHealthFactor(String locationIen, String clinicalNoteIen, String veteranIen,
-            String visitLocationIen, Date visitDate, String parentVisitIen, String healthFactorIen,
-            String healthFactorName) {
+                                 String visitLocationIen, Date visitDate, String parentVisitIen, String healthFactorIen,
+                                 String healthFactorName) {
 
         List<VistaRecord> vistaRecordList = new ArrayList<VistaRecord>();
 
@@ -376,7 +369,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public List<DialogPrompt> getDialogPrompt(String division, String vpid, String duz, String appProxyName,
-            String dialogElementIen, Boolean isHistorical, String findingType) {
+                                              String dialogElementIen, Boolean isHistorical, String findingType) {
 
         return vistaRepository.getDialogPrompt(division, vpid, duz, appProxyName, dialogElementIen, isHistorical,
                 findingType);
@@ -404,8 +397,7 @@ public class VistaServiceImpl implements VistaService {
                 locationNameStartRow = tempResultList.get(tempResultList.size() - 1).getName();
 
                 resultList.addAll(tempResultList);
-            }
-            else {
+            } else {
                 locationNameStartRow = null;
             }
         }
@@ -421,7 +413,7 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     public VistaBrokerUserInfo doVistaSignon(String division, String applicationName, String accessCode,
-            String verifyCode, String clientIp) {
+                                             String verifyCode, String clientIp) {
 
         return vistaRepository.doVistaSignon(division, applicationName, accessCode, verifyCode, clientIp);
     }
@@ -449,51 +441,53 @@ public class VistaServiceImpl implements VistaService {
 
     @Override
     @Transactional
-    public int refreshClinicList(String division, String vpid, String duz, String appProxyName) {
+    public Map<String, Integer> refreshClinicList(String division, String vpid, String duz, String appProxyName) {
+        Map<String, Integer> responseMap = Maps.newHashMap();
+        int updateCount = 0;
+        int insertCount = 0;
+        responseMap.put("updateCnt", updateCount);
+        responseMap.put("insertCnt", insertCount);
 
         // Fetch all Clinic list from VistA.
         List<VistaLocation> locationList = getLocationList(division, vpid, duz, appProxyName);
 
         // If we didn't get anything, then just return.
         if (locationList == null || locationList.size() < 1) {
-            return 0;
+            return responseMap;
         }
 
         // Fetch from DB.
         List<Clinic> clinicListDb = clinicService.getClinics();
 
-        HashMap<String, Clinic> existingDbClinic = new HashMap<String, Clinic>(clinicListDb.size());
+        Multimap<Long, Clinic> existingDbClinic = ArrayListMultimap.create();
 
         for (Clinic c : clinicListDb) {
-            existingDbClinic.put(c.getName(), c);
+            if (c.getVistaIen() != null && !c.getVistaIen().isEmpty()) {
+                existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c);
+            }
         }
-
-        int refreshCount = 0;
 
         for (VistaLocation location : locationList) {
-            if (!existingDbClinic.containsKey(location.getName())) {
+            Collection<Clinic> clinics = existingDbClinic.get(location.getIen());
+            if (clinics == null || clinics.isEmpty()) {
                 clinicService.create(location.getName(), location.getIen().toString());
-                ++refreshCount;
-            }
-            else
-            {
-                Clinic c = existingDbClinic.get(location.getName());
-                if (c.getVistaIen() == null || !c.getVistaIen().equals(location.getIen().toString()))
-                {
-                    c.setVistaIen(location.getIen().toString());
-                    clinicRepo.update(c);
-
-                    ++refreshCount;
+                ++insertCount;
+            } else {
+                for (Clinic c : clinics) {
+                    if (!c.getName().equals(location.getName()) && String.valueOf(location.getIen()).equals(c.getVistaIen())) {
+                        // set the ien to null as vista does not have this clinic but we need this clinic available for our system
+                        c.setVistaIen(null);
+                        ++updateCount;
+                        // add a new record with the right clinic details
+                        clinicService.create(location.getName(), location.getIen().toString());
+                        ++insertCount;
+                    }
                 }
             }
-
         }
-        if (refreshCount > 0)
-        {
-            clinicRepo.commit();
-        }
-        return refreshCount;
-
+        responseMap.put("updateCnt", updateCount);
+        responseMap.put("insertCnt", insertCount);
+        return responseMap;
     }
 
     @Override
@@ -529,61 +523,58 @@ public class VistaServiceImpl implements VistaService {
         int refreshCount = 0;
 
         Iterator<VistaClinicalReminderAndCategory> crItr = clinicalReminderList.iterator();
-        while(crItr.hasNext()){
-        	
-        	VistaClinicalReminderAndCategory cr = crItr.next();
+        while (crItr.hasNext()) {
+
+            VistaClinicalReminderAndCategory cr = crItr.next();
 
             // This RPC returns both 'Category' and 'Clinical Reminder'.
             // Don't need to look at Categories.
-        	if(StringUtils.equalsIgnoreCase("C", cr.getClinicalReminderTypeName())){
-        		crItr.remove();
-        	}
-        	else if (existingDbClinicalReminder.containsKey(cr.getClinicalReminderName())){
-            	crItr.remove();
-            	
-            	// update IEN if needed
+            if (StringUtils.equalsIgnoreCase("C", cr.getClinicalReminderTypeName())) {
+                crItr.remove();
+            } else if (existingDbClinicalReminder.containsKey(cr.getClinicalReminderName())) {
+                crItr.remove();
+
+                // update IEN if needed
                 ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderName());
-                if (existing.getVistaIen() == null 
-                		|| !existing.getVistaIen().equals(cr.getClinicalReminderIen())
-                		|| !existing.getPrintName().equals(cr.getPrintName())){
-                	existing.setVistaIen(cr.getClinicalReminderIen());
-                	existing.setPrintName(cr.getPrintName());
-                	clinicalReminderRepo.update(existing);
-                	++refreshCount;
-                	logger.info("Updated IEN of an existing clinical reminder {}", existing);
+                if (existing.getVistaIen() == null
+                        || !existing.getVistaIen().equals(cr.getClinicalReminderIen())
+                        || !existing.getPrintName().equals(cr.getPrintName())) {
+                    existing.setVistaIen(cr.getClinicalReminderIen());
+                    existing.setPrintName(cr.getPrintName());
+                    clinicalReminderRepo.update(existing);
+                    ++refreshCount;
+                    logger.info("Updated IEN of an existing clinical reminder {}", existing);
                 }
             }
         }
-        
+
         //At this point only CRs that don't match in name are left to add (this assumes that IENs are unique in clinicalReminderList)
-        for(VistaClinicalReminderAndCategory cr : clinicalReminderList){
-        	ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderIen());
-        	if(existing != null){
-        		if(!existing.getName().equals(cr.getClinicalReminderName()) ||
-        				!existing.getPrintName().equals(cr.getPrintName())){
-        		
-        			existing.setName(cr.getClinicalReminderName());
-        			existing.setPrintName(cr.getPrintName());
-        			clinicalReminderRepo.update(existing);
-        			++refreshCount;
-        			logger.info("Updated Name of an existing clinical reminder with same IEN {}", existing);
-        		}
-        	}
-        	else{
-	            Integer crId = clinicalReminderService.create(cr.getClinicalReminderName(),
+        for (VistaClinicalReminderAndCategory cr : clinicalReminderList) {
+            ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderIen());
+            if (existing != null) {
+                if (!existing.getName().equals(cr.getClinicalReminderName()) ||
+                        !existing.getPrintName().equals(cr.getPrintName())) {
+
+                    existing.setName(cr.getClinicalReminderName());
+                    existing.setPrintName(cr.getPrintName());
+                    clinicalReminderRepo.update(existing);
+                    ++refreshCount;
+                    logger.info("Updated Name of an existing clinical reminder with same IEN {}", existing);
+                }
+            } else {
+                Integer crId = clinicalReminderService.create(cr.getClinicalReminderName(),
                         cr.getClinicalReminderIen(),
                         cr.getPrintName(),
-                        cr.getClinicalReminderClass()); 
-	            ++refreshCount;
-	            logger.info("Created a new clinical reminder (with clinical_reminder_id {}): {}", crId, cr);
-	        }
+                        cr.getClinicalReminderClass());
+                ++refreshCount;
+                logger.info("Created a new clinical reminder (with clinical_reminder_id {}): {}", crId, cr);
+            }
         }
-        
-        if (refreshCount > 0)
-        {
+
+        if (refreshCount > 0) {
             clinicalReminderRepo.commit();
         }
-      
+
         refreshMHAIens(division, vpid, duz, appProxyName);
 
         return refreshCount;
@@ -624,12 +615,9 @@ public class VistaServiceImpl implements VistaService {
                         .create(nt.getNoteTitleName(), nt.getNoteTitleIen().toString());
                 ++refreshCount;
                 logger.info("Added new note title: " + nt.getNoteTitleName());
-            }
-            else
-            {
+            } else {
                 NoteTitle noteTitle = existingDbNoteTitle.get(nt.getNoteTitleName());
-                if (noteTitle.getVistaIen() == null || !noteTitle.getVistaIen().equals(nt.getNoteTitleIen().toString()))
-                {
+                if (noteTitle.getVistaIen() == null || !noteTitle.getVistaIen().equals(nt.getNoteTitleIen().toString())) {
                     noteTitle.setVistaIen(nt.getNoteTitleIen().toString());
                     noteTitleRepo.update(noteTitle);
 
@@ -640,8 +628,7 @@ public class VistaServiceImpl implements VistaService {
             }
 
         }
-        if (refreshCount > 0)
-        {
+        if (refreshCount > 0) {
             noteTitleRepo.commit();
         }
 
@@ -658,12 +645,10 @@ public class VistaServiceImpl implements VistaService {
         /** Clinical Reminder IEN is the key, HealthFactor name/healthFactor map is the value **/
         Map<String, Map<String, HealthFactor>> crToHFMap = new HashMap<String, Map<String, HealthFactor>>();
 
-        for (HealthFactor hf : hfList)
-        {
+        for (HealthFactor hf : hfList) {
             String crIen = hf.getClinicalReminder().getVistaIen();
 
-            if (!crToHFMap.containsKey(crIen))
-            {
+            if (!crToHFMap.containsKey(crIen)) {
                 crToHFMap.put(crIen, new HashMap<String, HealthFactor>());
             }
 
@@ -672,24 +657,20 @@ public class VistaServiceImpl implements VistaService {
 
         List<ClinicalReminder> clinicalReminders = clinicalReminderRepo.findAll();
 
-        for(ClinicalReminder cr : clinicalReminders)
-        {
-        	String crIen = cr.getVistaIen();
-        	if(crIen == null || crIen.isEmpty() || cr.getClinicalReminderSurveyList()==null 
-        			|| cr.getClinicalReminderSurveyList().isEmpty())
-        	{
-        		continue;
-        	}
+        for (ClinicalReminder cr : clinicalReminders) {
+            String crIen = cr.getVistaIen();
+            if (crIen == null || crIen.isEmpty() || cr.getClinicalReminderSurveyList() == null
+                    || cr.getClinicalReminderSurveyList().isEmpty()) {
+                continue;
+            }
             List<DialogComponent> componentList = vistaRepository.getClinicalReminderDialogs(division, vpid, duz,
                     appProxyName, crIen);
             Map<String, String> hfIenMap = new HashMap<String, String>();
 
             HashSet<String> componentIenSet = new HashSet<String>();
-            for (DialogComponent comp : componentList)
-            {
+            for (DialogComponent comp : componentList) {
                 String ien = comp.getDialogComponentIen();
-                if (!componentIenSet.contains(ien))
-                {
+                if (!componentIenSet.contains(ien)) {
                     Map<String, String> ienMap = vistaRepository.getHealthFactorIENMap(division, vpid, duz,
                             appProxyName, ien);
 
@@ -699,42 +680,36 @@ public class VistaServiceImpl implements VistaService {
             }
 
             Map<String, HealthFactor> healthFactorMap = crToHFMap.get(crIen);
-            
-            for(Map.Entry<String, String> entry : hfIenMap.entrySet())
-            {
-            	String name = entry.getKey();
-            	String ien = entry.getValue();
-            	if(healthFactorMap!=null && healthFactorMap.containsKey(entry.getKey()))
-            	{
-            		HealthFactor hf = healthFactorMap.get(name);
+
+            for (Map.Entry<String, String> entry : hfIenMap.entrySet()) {
+                String name = entry.getKey();
+                String ien = entry.getValue();
+                if (healthFactorMap != null && healthFactorMap.containsKey(entry.getKey())) {
+                    HealthFactor hf = healthFactorMap.get(name);
                     hfList.remove(hf);
-            		if (hf.getVistaIen() == null || !hf.getVistaIen().equals(ien))
-                    {
+                    if (hf.getVistaIen() == null || !hf.getVistaIen().equals(ien)) {
                         hf.setVistaIen(hfIenMap.get(name));
                         healthFactorRepo.update(hf);
                         eventService.updateHealthFactorEvent(hf);
                         logger.info("Updated vistaIen for HealthFactor " + hf.getName() + " to " + hfIenMap.get(name));
                         numRecord++;
                     }
-            	}
-            	else
-            	{
-            		HealthFactor newHf = new HealthFactor();
-            		newHf.setClinicalReminder(cr);
-            		newHf.setDateCreated(Calendar.getInstance().getTime());
-            		newHf.setName(name);
-            		newHf.setVistaIen(ien);
-            		newHf.setIsHistorical(false);
-            		healthFactorRepo.create(newHf);
-            		eventService.updateHealthFactorEvent(newHf);
-            		numRecord++;
-            	}
+                } else {
+                    HealthFactor newHf = new HealthFactor();
+                    newHf.setClinicalReminder(cr);
+                    newHf.setDateCreated(Calendar.getInstance().getTime());
+                    newHf.setName(name);
+                    newHf.setVistaIen(ien);
+                    newHf.setIsHistorical(false);
+                    healthFactorRepo.create(newHf);
+                    eventService.updateHealthFactorEvent(newHf);
+                    numRecord++;
+                }
             }
         }
 
         //Now, remove the remaining Health Factors because they do not exist in vistA.
-        for(HealthFactor hf : hfList)
-        {
+        for (HealthFactor hf : hfList) {
             eventService.deleteEventForHealthFactor(hf);
             healthFactorRepo.delete(hf);
             logger.info("Removed Health Factor " + hf.getName() + hf.getVistaIen());
@@ -753,12 +728,10 @@ public class VistaServiceImpl implements VistaService {
         List<Survey> surveyList = surveyRepo.getMhaSurveyList();
 
         logger.debug("refreshing MHA IENs for surveys");
-        for (Survey s : surveyList)
-        {
-            if (s.getClinicalReminderSurveyList() != null && !s.getClinicalReminderSurveyList().isEmpty())
-            {
+        for (Survey s : surveyList) {
+            if (s.getClinicalReminderSurveyList() != null && !s.getClinicalReminderSurveyList().isEmpty()) {
                 String ien = s.getClinicalReminderSurveyList().get(0).getClinicalReminder().getVistaIen();
-                
+
                 List<DialogComponent> componentList = vistaRepository.getClinicalReminderDialogs(division, vpid, duz,
                         appProxyName, ien);
 
@@ -766,13 +739,11 @@ public class VistaServiceImpl implements VistaService {
                 // 2^3746^1.8.1.1^PC PTSD
 
                 Iterator<DialogComponent> it = componentList.iterator();
-                while (it.hasNext())
-                {
+                while (it.hasNext()) {
                     DialogComponent c = it.next();
-                    if (!c.getResultGroupListString().isEmpty() && !c.getExcludeMentalHealthTestFromProgressNote())
-                    {
+                    if (!c.getResultGroupListString().isEmpty() && !c.getExcludeMentalHealthTestFromProgressNote()) {
                         String resultGrpIen = c.getResultGroupListString();
-                        
+
 //                        RPC Name: "ORQQPXRM DIALOG PROMPTS"
 //                            Input parameter 0: 663000737
 //                            Input parameter 1: 0
@@ -783,30 +754,25 @@ public class VistaServiceImpl implements VistaService {
 //                            ========END RESULTS======
 
                         String displayText = null;
-                        
+
 
                         String[] promptResult = vistaRepository.getDialogPromptsAsString(division, vpid, duz, appProxyName, c.getDialogComponentIen());
-                        
-                        if(promptResult != null)
-                        {
-                            for(String str : promptResult)
-                            {
-                                if(str.contains("^MH^"))
-                                {
+
+                        if (promptResult != null) {
+                            for (String str : promptResult) {
+                                if (str.contains("^MH^")) {
                                     String[] pieces = StringUtils.splitPreserveAllTokens(str, '^');
-                                    displayText=pieces[7];
+                                    displayText = pieces[7];
                                     break;
                                 }
-                                        
+
                             }
                         }
-                        
-                        if (displayText != null && displayText.equals(s.getMhaTestName()))
-                        {
+
+                        if (displayText != null && displayText.equals(s.getMhaTestName())) {
                             logger.info("Found MHA data for " + s);
                             // now check and update resultGrpIEN
-                            if (s.getMhaResultGroupIen() == null || !s.getMhaResultGroupIen().equals(resultGrpIen))
-                            {
+                            if (s.getMhaResultGroupIen() == null || !s.getMhaResultGroupIen().equals(resultGrpIen)) {
                                 s.setMhaResultGroupIen(resultGrpIen);
                                 numRecord++;
                                 break;
@@ -818,8 +784,7 @@ public class VistaServiceImpl implements VistaService {
             }
         }
 
-        if (numRecord > 0)
-        {
+        if (numRecord > 0) {
             surveyRepo.commit();
         }
         return numRecord;

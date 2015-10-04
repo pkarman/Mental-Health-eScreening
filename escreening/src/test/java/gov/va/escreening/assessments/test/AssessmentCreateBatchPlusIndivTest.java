@@ -2,7 +2,6 @@ package gov.va.escreening.assessments.test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import gov.va.escreening.constants.TemplateConstants.ViewType;
 import gov.va.escreening.controller.dashboard.EditVeteranAssessmentController;
 import gov.va.escreening.delegate.BatchBatteryCreateDelegate;
 import gov.va.escreening.delegate.CreateAssessmentDelegate;
@@ -13,29 +12,18 @@ import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 import gov.va.escreening.dto.BatchBatteryCreateResult;
 import gov.va.escreening.dto.DropDownObject;
 import gov.va.escreening.entity.*;
-import gov.va.escreening.exception.IllegalSystemStateException;
-import gov.va.escreening.exception.TemplateProcessorException;
-import gov.va.escreening.repository.BatteryRepository;
 import gov.va.escreening.repository.ClinicRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.TemplateRepository;
 import gov.va.escreening.security.EscreenUser;
-import gov.va.escreening.service.TemplateService;
-import gov.va.escreening.templateprocessor.TemplateProcessorService;
 import gov.va.escreening.vista.dto.VistaClinicAppointment;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 @Transactional

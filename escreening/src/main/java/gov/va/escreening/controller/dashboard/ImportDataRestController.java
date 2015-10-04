@@ -5,6 +5,7 @@ import gov.va.escreening.security.EscreenUser;
 import gov.va.escreening.service.VistaService;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -21,7 +22,7 @@ public class ImportDataRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportDataRestController.class);
 
-    @Resource(name="vistaService")
+    @Resource(name = "vistaService")
     private VistaService vistaService;
 
     @RequestMapping(value = "/importData/clinics/refresh", method = RequestMethod.POST)
@@ -31,26 +32,26 @@ public class ImportDataRestController {
         logger.debug("In importClinicListFromVista");
 
         HashMap<String, String> result = new HashMap<String, String>();
-        int count = 0;
         boolean hasError = false;
-
+        int updateCnt = 0;
+        int insertCnt = 0;
         try {
-            count = vistaService.refreshClinicList(escreenUser.getVistaDivision(), escreenUser.getVistaVpid(),
+            Map<String, Integer> refreshResponseMap = vistaService.refreshClinicList(escreenUser.getVistaDivision(), escreenUser.getVistaVpid(),
                     escreenUser.getVistaDuz(), null);
-        }
-        catch (Exception e) {
+            updateCnt = refreshResponseMap.get("updateCnt");
+            insertCnt = refreshResponseMap.get("insertCnt");
+        } catch (Exception e) {
             hasError = true;
-            logger.error("Failed to import Clinic list from VistA: " , e);
+            logger.error("Failed to import Clinic list from VistA: ", e);
         }
 
         if (hasError) {
             result.put("hasError", "true");
             result.put("userMessage", "An unexpected error occured while trying to import Clinic list from VistA.");
-        }
-        else {
+        } else {
             result.put("hasError", "false");
             result.put("userMessage",
-                    String.format("Successfully processed Clinic list from VistA. Imported %s records.", count));
+                    String.format("Successfully processed Clinic list from VistA. Changed %s records. Added %s records", updateCnt, insertCnt));
         }
 
         return result;
@@ -69,8 +70,7 @@ public class ImportDataRestController {
         try {
             count = vistaService.refreshClinicalReminderList(escreenUser.getVistaDivision(),
                     escreenUser.getVistaVpid(), escreenUser.getVistaDuz(), null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             hasError = true;
             logger.error("Failed to import Clinical Reminder list from VistA: " + e);
         }
@@ -79,8 +79,7 @@ public class ImportDataRestController {
             result.put("hasError", "true");
             result.put("userMessage",
                     "An unexpected error occured while trying to import Clinical Reminder list from VistA.");
-        }
-        else {
+        } else {
             result.put("hasError", "false");
             result.put("userMessage",
                     String.format("Successfully processed Clinical Reminder list from VistA. Imported %s records.",
@@ -103,8 +102,7 @@ public class ImportDataRestController {
         try {
             count = vistaService.refreshNoteTitleList(escreenUser.getVistaDivision(), escreenUser.getVistaVpid(),
                     escreenUser.getVistaDuz(), null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             hasError = true;
             logger.error("Failed to import Note Title list from VistA: " + e);
         }
@@ -112,8 +110,7 @@ public class ImportDataRestController {
         if (hasError) {
             result.put("hasError", "true");
             result.put("userMessage", "An unexpected error occured while trying to import Note Title list from VistA.");
-        }
-        else {
+        } else {
             result.put("hasError", "false");
             result.put("userMessage",
                     String.format("Successfully processed Note Title list from VistA. Imported %s records.", count));
@@ -121,7 +118,7 @@ public class ImportDataRestController {
 
         return result;
     }
-    
+
     @RequestMapping(value = "/importData/hf/refresh", method = RequestMethod.POST)
     @ResponseBody
     public HashMap<String, String> importHealthFactorsFromVista(@CurrentUser EscreenUser escreenUser) {
@@ -135,8 +132,7 @@ public class ImportDataRestController {
         try {
             count = vistaService.refreshHealthFactors(escreenUser.getVistaDivision(), escreenUser.getVistaVpid(),
                     escreenUser.getVistaDuz(), null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             hasError = true;
             logger.error("Failed to import Health Factors from VistA: " + e);
         }
@@ -144,8 +140,7 @@ public class ImportDataRestController {
         if (hasError) {
             result.put("hasError", "true");
             result.put("userMessage", "An unexpected error occured while trying to import Health Factors from VistA.");
-        }
-        else {
+        } else {
             result.put("hasError", "false");
             result.put("userMessage",
                     String.format("Successfully processed Health Factors from VistA. Imported %s records.", count));
@@ -153,5 +148,5 @@ public class ImportDataRestController {
 
         return result;
     }
-    
+
 }
