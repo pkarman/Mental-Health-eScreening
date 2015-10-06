@@ -120,24 +120,8 @@ public class ClinicServiceImpl implements ClinicService {
     public ClinicDto getClinicDtoByIen(String varClinicIen) {
         int dividerPos = varClinicIen.indexOf("|");
         String clinicIen = varClinicIen.substring(0, dividerPos);
-        String clinicName = varClinicIen.substring(dividerPos + 1);
 
         Clinic clinicByIen = clinicRepository.findByIen(clinicIen);
-        Clinic selectedClinic = selectClinicByIenAndName(clinicByIen, clinicIen, clinicName);
-
-        return createClinicDto(selectedClinic);
-    }
-
-    private Clinic selectClinicByIenAndName(Clinic clinicByIen, String clinicIen, String clinicName) {
-        Clinic selectedClinic = null;
-        if (clinicName.equals(clinicByIen.getName())) {
-            selectedClinic = clinicByIen;
-        } else {
-            clinicByIen.setVistaIen(null);
-            selectedClinic = new Clinic(clinicIen, clinicName);
-            clinicRepository.create(selectedClinic);
-        }
-
-        return selectedClinic;
+        return createClinicDto(clinicByIen);
     }
 }
