@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import gov.va.escreening.domain.VeteranDto;
@@ -39,6 +40,8 @@ import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 import gov.va.escreening.vista.extractor.VistaRecord;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -443,10 +446,8 @@ public class VistaServiceImpl implements VistaService {
     @Transactional
     public Map<String, Integer> refreshClinicList(String division, String vpid, String duz, String appProxyName) {
         Map<String, Integer> responseMap = Maps.newHashMap();
-        int updateCount = 0;
-        int insertCount = 0;
-        responseMap.put("updateCnt", updateCount);
-        responseMap.put("insertCnt", insertCount);
+        responseMap.put("updateCnt", 0);
+        responseMap.put("insertCnt", 0);
 
         // Fetch all Clinic list from VistA.
         List<VistaLocation> locationList = getLocationList(division, vpid, duz, appProxyName);
@@ -470,24 +471,45 @@ public class VistaServiceImpl implements VistaService {
         for (VistaLocation location : locationList) {
             Collection<Clinic> clinics = existingDbClinic.get(location.getIen());
             if (clinics == null || clinics.isEmpty()) {
-                clinicService.create(location.getName(), location.getIen().toString());
-                ++insertCount;
+                existingDbClinic.put(location.getIen(), new Clinic("" + location.getIen(), location.getName()));
             } else {
-                for (Clinic c : clinics) {
-                    if (!c.getName().equals(location.getName()) && String.valueOf(location.getIen()).equals(c.getVistaIen())) {
-                        // set the ien to null as vista does not have this clinic but we need this clinic available for our system
-                        c.setVistaIen(null);
-                        ++updateCount;
-                        // add a new record with the right clinic details
-                        clinicService.create(location.getName(), location.getIen().toString());
-                        ++insertCount;
-                    }
+                Map<String, Clinic> clinicsByName = clinics.stream().collect(Collectors.toMap(Clinic::getName, (c) -> c));
+                if (clinicsByName.get(location.getName()) == null) {
+                    clinics.stream().forEach(c -> c.setVistaIen(null));
+                    clinics.add(new Clinic("" + location.getIen(), location.getName()));
                 }
             }
         }
-        responseMap.put("updateCnt", updateCount);
-        responseMap.put("insertCnt", insertCount);
+
+        //todo remove these test lines
+
+//        IntStream.range(0, 300000).forEach(i -> {
+//            Long now = System.nanoTime();
+//            String clinicAsStr = "test" + now;
+//            Long ien = now;
+//            String data = "data" + clinicAsStr;
+//            Clinic c = new Clinic("" + ien, data);
+//            existingDbClinic.put(ien, c);
+//        });
+
+        existingDbClinic.values().stream().forEach(c -> {
+            if (c.getVistaIen() == null || c.getClinicId() == null) {
+                clinicRepo.update(c);
+            }
+        });
+
+        countStats(existingDbClinic, responseMap);
         return responseMap;
+    }
+
+    private void countStats(Multimap<Long, Clinic> existingDbClinic, Map<String, Integer> responseMap) {
+        existingDbClinic.values().stream().forEach(c -> {
+            if (c.getVistaIen() == null) {
+                responseMap.put("updateCnt", responseMap.get("updateCnt") + 1);
+            } else if (c.getClinicId() == null) {
+                responseMap.put("insertCnt", responseMap.get("insertCnt") + 1);
+            }
+        });
     }
 
     @Override
