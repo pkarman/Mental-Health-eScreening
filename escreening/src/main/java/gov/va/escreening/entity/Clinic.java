@@ -163,7 +163,7 @@ public class Clinic implements Serializable {
 
     @Override
     public String toString() {
-        return "gov.va.escreening.entity.Clinic[ clinicId=" + clinicId + " ]";
+        return String.format("cid=%s|cname=%s|ien=%s", clinicId,name,vistaIen);
     }
 
 }

@@ -450,50 +450,52 @@ public class VistaServiceImpl implements VistaService {
         responseMap.put("insertCnt", 0);
 
         // Fetch all Clinic list from VistA.
-        List<VistaLocation> locationList = getLocationList(division, vpid, duz, appProxyName);
+        List<VistaLocation> vistaLocations = getLocationList(division, vpid, duz, appProxyName);
 
         // If we didn't get anything, then just return.
-        if (locationList == null || locationList.size() < 1) {
+        if (vistaLocations == null || vistaLocations.size() < 1) {
+            logger.warn("No clinics imported from Vista. Returning from here");
             return responseMap;
         }
+        logger.debug("total clinics retrieved from vista:{}", vistaLocations.size());
 
         // Fetch from DB.
-        List<Clinic> clinicListDb = clinicService.getClinics();
+        List<Clinic> escreeningClinics = clinicService.getClinics();
+        logger.debug("total clinics retrieved from escreening db:{}", escreeningClinics.size());
 
         Multimap<Long, Clinic> existingDbClinic = ArrayListMultimap.create();
 
-        for (Clinic c : clinicListDb) {
-            if (c.getVistaIen() != null && !c.getVistaIen().isEmpty()) {
-                existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c);
-            }
-        }
+        escreeningClinics.stream().filter(c -> c.getVistaIen() != null && !c.getVistaIen().isEmpty()).forEach(c -> existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c));
+        logger.debug("usable clinics retrieved from escreening db:{}", existingDbClinic.size());
 
-        for (VistaLocation location : locationList) {
-            Collection<Clinic> clinics = existingDbClinic.get(location.getIen());
+        for (VistaLocation vistaLocation : vistaLocations) {
+            Collection<Clinic> clinics = existingDbClinic.get(vistaLocation.getIen());
             if (clinics == null || clinics.isEmpty()) {
-                existingDbClinic.put(location.getIen(), new Clinic("" + location.getIen(), location.getName()));
+                existingDbClinic.put(vistaLocation.getIen(), new Clinic("" + vistaLocation.getIen(), vistaLocation.getName()));
+                if (logger.isTraceEnabled()) {
+                    logger.trace("vista location not found in escreening db--adding {}", vistaLocation);
+                }
             } else {
                 Map<String, Clinic> clinicsByName = clinics.stream().collect(Collectors.toMap(Clinic::getName, (c) -> c));
-                if (clinicsByName.get(location.getName()) == null) {
+                if (clinicsByName.get(vistaLocation.getName()) == null) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("vista location is out of sync with escreening db--synching {}", vistaLocation);
+                        logger.debug("escreening clinics' ien will be set to null {}", clinics);
+                    }
                     clinics.stream().forEach(c -> c.setVistaIen(null));
-                    clinics.add(new Clinic("" + location.getIen(), location.getName()));
+                    clinics.add(new Clinic("" + vistaLocation.getIen(), vistaLocation.getName()));
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("escreening clinics after synch with vista {}", clinics);
+                    }
                 }
             }
         }
 
-        //todo remove these test lines
-
-//        IntStream.range(0, 300000).forEach(i -> {
-//            Long now = System.nanoTime();
-//            String clinicAsStr = "test" + now;
-//            Long ien = now;
-//            String data = "data" + clinicAsStr;
-//            Clinic c = new Clinic("" + ien, data);
-//            existingDbClinic.put(ien, c);
-//        });
-
         existingDbClinic.values().stream().forEach(c -> {
             if (c.getVistaIen() == null || c.getClinicId() == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("clinic is being {} -- {}", c.getClinicId() == null ? "added" : "changed", c);
+                }
                 clinicRepo.update(c);
             }
         });
