@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import gov.va.escreening.domain.VeteranDto;
@@ -39,6 +40,8 @@ import gov.va.escreening.vista.dto.VistaVeteranClinicalReminder;
 import gov.va.escreening.vista.extractor.VistaRecord;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -443,51 +446,72 @@ public class VistaServiceImpl implements VistaService {
     @Transactional
     public Map<String, Integer> refreshClinicList(String division, String vpid, String duz, String appProxyName) {
         Map<String, Integer> responseMap = Maps.newHashMap();
-        int updateCount = 0;
-        int insertCount = 0;
-        responseMap.put("updateCnt", updateCount);
-        responseMap.put("insertCnt", insertCount);
+        responseMap.put("updateCnt", 0);
+        responseMap.put("insertCnt", 0);
 
         // Fetch all Clinic list from VistA.
-        List<VistaLocation> locationList = getLocationList(division, vpid, duz, appProxyName);
+        List<VistaLocation> vistaLocations = getLocationList(division, vpid, duz, appProxyName);
 
         // If we didn't get anything, then just return.
-        if (locationList == null || locationList.size() < 1) {
+        if (vistaLocations == null || vistaLocations.size() < 1) {
+            logger.warn("No clinics imported from Vista. Returning from here");
             return responseMap;
         }
+        logger.debug("total clinics retrieved from vista:{}", vistaLocations.size());
 
         // Fetch from DB.
-        List<Clinic> clinicListDb = clinicService.getClinics();
+        List<Clinic> escreeningClinics = clinicService.getClinics();
+        logger.debug("total clinics retrieved from escreening db:{}", escreeningClinics.size());
 
         Multimap<Long, Clinic> existingDbClinic = ArrayListMultimap.create();
 
-        for (Clinic c : clinicListDb) {
-            if (c.getVistaIen() != null && !c.getVistaIen().isEmpty()) {
-                existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c);
-            }
-        }
+        escreeningClinics.stream().filter(c -> c.getVistaIen() != null && !c.getVistaIen().isEmpty()).forEach(c -> existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c));
+        logger.debug("usable clinics retrieved from escreening db:{}", existingDbClinic.size());
 
-        for (VistaLocation location : locationList) {
-            Collection<Clinic> clinics = existingDbClinic.get(location.getIen());
+        for (VistaLocation vistaLocation : vistaLocations) {
+            Collection<Clinic> clinics = existingDbClinic.get(vistaLocation.getIen());
             if (clinics == null || clinics.isEmpty()) {
-                clinicService.create(location.getName(), location.getIen().toString());
-                ++insertCount;
+                existingDbClinic.put(vistaLocation.getIen(), new Clinic("" + vistaLocation.getIen(), vistaLocation.getName()));
+                if (logger.isTraceEnabled()) {
+                    logger.trace("vista location not found in escreening db--adding {}", vistaLocation);
+                }
             } else {
-                for (Clinic c : clinics) {
-                    if (!c.getName().equals(location.getName()) && String.valueOf(location.getIen()).equals(c.getVistaIen())) {
-                        // set the ien to null as vista does not have this clinic but we need this clinic available for our system
-                        c.setVistaIen(null);
-                        ++updateCount;
-                        // add a new record with the right clinic details
-                        clinicService.create(location.getName(), location.getIen().toString());
-                        ++insertCount;
+                Map<String, Clinic> clinicsByName = clinics.stream().collect(Collectors.toMap(Clinic::getName, (c) -> c));
+                if (clinicsByName.get(vistaLocation.getName()) == null) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("vista location is out of sync with escreening db--synching {}", vistaLocation);
+                        logger.debug("escreening clinics' ien will be set to null {}", clinics);
+                    }
+                    clinics.stream().forEach(c -> c.setVistaIen(null));
+                    clinics.add(new Clinic("" + vistaLocation.getIen(), vistaLocation.getName()));
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("escreening clinics after synch with vista {}", clinics);
                     }
                 }
             }
         }
-        responseMap.put("updateCnt", updateCount);
-        responseMap.put("insertCnt", insertCount);
+
+        existingDbClinic.values().stream().forEach(c -> {
+            if (c.getVistaIen() == null || c.getClinicId() == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("clinic is being {} -- {}", c.getClinicId() == null ? "added" : "changed", c);
+                }
+                clinicRepo.update(c);
+            }
+        });
+
+        countStats(existingDbClinic, responseMap);
         return responseMap;
+    }
+
+    private void countStats(Multimap<Long, Clinic> existingDbClinic, Map<String, Integer> responseMap) {
+        existingDbClinic.values().stream().forEach(c -> {
+            if (c.getVistaIen() == null) {
+                responseMap.put("updateCnt", responseMap.get("updateCnt") + 1);
+            } else if (c.getClinicId() == null) {
+                responseMap.put("insertCnt", responseMap.get("insertCnt") + 1);
+            }
+        });
     }
 
     @Override

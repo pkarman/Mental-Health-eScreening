@@ -24,7 +24,7 @@ public class VistaLocation implements Serializable {
 
     @Override
     public String toString() {
-        return "VistaLocation [ien=" + ien + ", name=" + name + "]";
+        return String.format("ien=%s|name=%s", ien, name);
     }
 
 }
