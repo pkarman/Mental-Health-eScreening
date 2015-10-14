@@ -605,9 +605,9 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
                 int indx = rawReponse.lastIndexOf("^");
                 if(indx>0)
                 {
-                    return rawReponse.substring(indx+1);
+                    return rawReponse.substring(indx+1).trim();
                 }
-                return rawReponse;
+                return rawReponse.trim();
             }
         };
 
