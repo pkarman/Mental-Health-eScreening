@@ -70,17 +70,17 @@ class ExportName implements DataExtractor {
 
     /**
      * Method to evaluate if this is The master Answer of TableQuestion parent.
-     * <p/>
+     * <p>
      * TableQuestions could be as follows:
      * Question : Hobbies, none (Hobbies and none, both are click able).
-     * <p/>
+     * <p>
      * If user clicks on Hobbies then the first table question will appear with a hobby name,
      * followed by once again an option to add more hobbies and so forth
-     * <p/>
+     * <p>
      * If user clicking on 'none'--that would mean that there are no hobbies
-     * <p/>
+     * <p>
      * Scenarios:
-     * <p/>
+     * <p>
      * <ol>
      * <li>User clicks on 'none': System will record this intent of the user by setting the SMR->booleanValue as true.
      * But for data export this has to be shown as false, as data export is showing the intent of user from business perspective.
@@ -126,10 +126,12 @@ class ExportName implements DataExtractor {
      * @return
      */
     private boolean findChildMeasures(Measure parentMeasure, VeteranAssessment va) {
-        for (SurveyMeasureResponse smr : va.getSurveyMeasureResponseList()) {
-            final Measure parent = smr.getMeasureAnswer().getMeasure().getParent();
-            if (parent != null && parent.getMeasureId().equals(parentMeasure.getMeasureId())) {
-                return true;
+        if (va != null) {
+            for (SurveyMeasureResponse smr : va.getSurveyMeasureResponseList()) {
+                final Measure parent = smr.getMeasureAnswer().getMeasure().getParent();
+                if (parent != null && parentMeasure != null && parent.getMeasureId().equals(parentMeasure.getMeasureId())) {
+                    return true;
+                }
             }
         }
         return false;
