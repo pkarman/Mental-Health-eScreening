@@ -128,9 +128,15 @@ class ExportName implements DataExtractor {
     private boolean findChildMeasures(Measure parentMeasure, VeteranAssessment va) {
         if (va != null) {
             for (SurveyMeasureResponse smr : va.getSurveyMeasureResponseList()) {
-                final Measure parent = smr.getMeasureAnswer().getMeasure().getParent();
-                if (parent != null && parentMeasure != null && parent.getMeasureId().equals(parentMeasure.getMeasureId())) {
-                    return true;
+                MeasureAnswer ma = smr.getMeasureAnswer();
+                if (ma != null) {
+                    Measure measure = ma.getMeasure();
+                    if (measure != null) {
+                        final Measure parent = measure.getParent();
+                        if (parent != null && parentMeasure != null && parent.getMeasureId().equals(parentMeasure.getMeasureId())) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
