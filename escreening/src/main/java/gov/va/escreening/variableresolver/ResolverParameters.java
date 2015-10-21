@@ -160,12 +160,12 @@ public class ResolverParameters {
                 for(Answer answer : response.getAnswers()){
                     AssessmentVariable answerAv = getAnswerAv(answer.getAnswerId());
                     if(answerAv == null){
-                        logger.debug("An answer was submitted which was not recorded during construction of this object. measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId());
+                        logger.trace("An answer was submitted which was not recorded during construction of this object. measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId());
                         continue;
                     }
                     MeasureAnswer ma = avIdToMeasureAnswerMap.get(answerAv.getAssessmentVariableId());
                     if(ma == null){
-                        logger.debug("No measure answer mapping found for answer with measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId() );
+                        logger.trace("No measure answer mapping found for answer with measureAnswerId: {}. This submitted answer will not be available.", answer.getAnswerId() );
                         continue;
                     }
                     addMeasureResponse(measureId, new Answer(ma, answer));  

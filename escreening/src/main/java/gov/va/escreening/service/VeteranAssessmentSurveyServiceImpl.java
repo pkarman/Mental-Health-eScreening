@@ -54,7 +54,7 @@ public class VeteranAssessmentSurveyServiceImpl implements
 
     @Override
     public void updateProgress(int veteranAssessmentId, long startTime) {
-        logger.debug("updateProgress");
+        logger.trace("updateProgress");
 
         // Run the SQL and get the list of counts.
         List<Object[]> resultList = veteranAssessmentSurveyRepository

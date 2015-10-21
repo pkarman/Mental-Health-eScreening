@@ -147,7 +147,7 @@ public class EditorRestController {
     @ResponseBody
     public Response<Map<String, List<QuestionInfo>>> getQuestionsBySurveyId(@PathVariable("surveyId") Integer surveyId,
                                            @CurrentUser EscreenUser escreenUser) {
-        logger.debug("getQuestions");
+        logger.trace("getQuestions");
 
         List<QuestionInfo> questions = EditorsQuestionViewTransformer.transformQuestions(measureRepo.getMeasureDtoBySurveyID(surveyId));
 
@@ -177,7 +177,7 @@ public class EditorRestController {
     @ResponseBody
     public Response<SurveyInfo> addSurvey(@RequestBody SurveyInfo survey,
                               @CurrentUser EscreenUser escreenUser) {
-        logger.debug("create new survey:" + survey);
+        logger.trace("create new survey:" + survey);
 
         ErrorResponse errorResponse = new ErrorResponse();
 
@@ -222,7 +222,7 @@ public class EditorRestController {
     @ResponseBody
     public Response<SurveyInfo> getSurvey(@PathVariable("surveyId") Integer surveyId,
                               @CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSurvey");
+        logger.trace("getSurvey");
 
         SurveyInfo surveyInfo = editorsViewDelegate.findSurvey(surveyId);
         return new Response<SurveyInfo>(new ResponseStatus(ResponseStatus.Request.Succeeded), surveyInfo);
@@ -231,7 +231,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/surveys", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Response<Map<String, List<SurveyInfo>>> getSurveys(@CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSurveys");
+        logger.trace("getSurveys");
 
         List<SurveyInfo> surveyInfoList = editorsViewDelegate.getSurveys();
 
@@ -299,7 +299,7 @@ public class EditorRestController {
     @ResponseBody
     public Map<String, Object> getBattery(@PathVariable("batteryId") Integer batteryId,
                           @CurrentUser EscreenUser escreenUser) {
-        logger.debug("getBattery");
+        logger.trace("getBattery");
 
         // Call service class here instead of hard coding it.
         BatteryInfo batteryInfo = editorsViewDelegate.getBattery(batteryId);
@@ -309,7 +309,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/batteries", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Map<String, Object> getBatteries(@CurrentUser EscreenUser escreenUser) {
-        logger.debug("getBatteries");
+        logger.trace("getBatteries");
 
         List<BatteryInfo> batteryInfoList = editorsViewDelegate.getBatteries();
 
@@ -331,7 +331,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/surveySections", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Map<String, Object> getSections(@CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSections");
+        logger.trace("getSections");
 
         List<SurveySectionInfo> surveySectionInfoList = editorsViewDelegate.getSections();
 
@@ -343,7 +343,7 @@ public class EditorRestController {
     public Map<String, Object> getSection(
             @PathVariable("sectionId") Integer sectionId,
             @CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSection");
+        logger.trace("getSection");
 
         // Call service class here instead of hard coding it.
         SurveySectionInfo surveySectionInfo = editorsViewDelegate.getSection(sectionId);
@@ -356,10 +356,10 @@ public class EditorRestController {
     public Map<String, Object> addSection(
             @RequestBody SurveySectionInfo surveySectionInfo,
             @CurrentUser EscreenUser escreenUser) {
-        /*logger.debug("addSection");
+        /*logger.trace("addSection");
         ErrorResponse errorResponse = new ErrorResponse();
         if (surveySectionItem != null) {
-            logger.debug(surveySectionItem.toString());
+            logger.tracesurveySectionItem.toString());
 
             // Data validation.
             if (StringUtils.isBlank(surveySectionItem.getName())) {
@@ -372,7 +372,7 @@ public class EditorRestController {
 
             // Call service class here.
             Integer surveySectionId = editorDelegate.createSection(surveySectionItem);
-            logger.debug("surveySectionId: " + surveySectionId);
+            logger.trace("surveySectionId: " + surveySectionId);
         } else {
             errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Object", "Cannot be null.");
         }
@@ -390,7 +390,7 @@ public class EditorRestController {
             @PathVariable("sectionId") Integer sectionId,
             @RequestBody SurveySectionInfo surveySectionInfo,
             @CurrentUser EscreenUser escreenUser) {
-        logger.debug("updateSection");
+        logger.trace("updateSection");
         ErrorResponse errorResponse = new ErrorResponse();
         SurveySectionInfo updatedSurveySectionInfo = null;
         if (sectionId != null) {
@@ -433,7 +433,7 @@ public class EditorRestController {
     @RequestMapping(value = "/services/clinicalReminders", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Map getClinicalReminders(@CurrentUser EscreenUser escreenUser) {
-        logger.debug("getSections");
+        logger.trace("getSections");
 
         List<ClinicalReminderDto> crDtoList = clinicalReminderSvc.findAll();
 

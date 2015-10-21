@@ -55,7 +55,7 @@ public class VeteranProgressHistoryAsciiGraphTest {
         
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
-        logger.debug(graph);
+        logger.trace(graph);
         //System.out.println(graph);
     }
     
@@ -88,7 +88,7 @@ public class VeteranProgressHistoryAsciiGraphTest {
         
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
-        logger.debug(graph);
+        logger.trace(graph);
         //System.out.println(graph);
     }
     
@@ -115,7 +115,7 @@ public class VeteranProgressHistoryAsciiGraphTest {
         
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
-        logger.debug(graph);
+        logger.trace(graph);
         //System.out.println(graph);
     }
     
@@ -148,7 +148,7 @@ public class VeteranProgressHistoryAsciiGraphTest {
         
         String graph = VeteranProgressHistoryAsciiGraph.generateHistoricalGraph("PHQ-9", graphParams, historicalValues);
         
-        logger.debug(graph);
+        logger.trace(graph);
         //System.out.println(graph);
         
         assertTrue(graph.contains(" 0|"));

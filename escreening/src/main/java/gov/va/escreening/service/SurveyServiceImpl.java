@@ -68,12 +68,12 @@ public class SurveyServiceImpl implements SurveyService {
         // workaround for it.
         if (surveyList != null) {
             for (Survey survey : surveyList) {
-                // logger.debug(survey.getName());
+                // logger.tracesurvey.getName());
 
                 List<SurveyPage> spLst = survey.getSurveyPageList();
                 if (spLst != null) {
                     for (SurveyPage surveyPage : spLst) {
-                        // logger.debug(surveyPage.getTitle());
+                        // logger.tracesurveyPage.getTitle());
 
                         List<Measure> mLst = surveyPage != null ? surveyPage.getMeasures() : null;
                         exhaustMeasures(mLst);
@@ -88,12 +88,12 @@ public class SurveyServiceImpl implements SurveyService {
     private void exhaustMeasures(Collection<Measure> mLst) {
         if (mLst != null) {
             for (Measure measure : mLst) {
-                // logger.debug(measure.getMeasureText());
+                // logger.tracemeasure.getMeasureText());
 
                 List<MeasureAnswer> maLst = measure != null ? measure.getMeasureAnswerList() : null;
                 if (maLst != null) {
                     for (MeasureAnswer measureAnswer : maLst) {
-                        // logger.debug(measureAnswer.getAnswerText());
+                        // logger.tracemeasureAnswer.getAnswerText());
                     }
                 }
 
@@ -106,7 +106,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<SurveyDto> getSurveyListForVeteranAssessment(
             int veteranAssessmentId) {
-        logger.debug("getVeteranAssessmentSurveys()");
+        logger.trace("getVeteranAssessmentSurveys()");
 
         List<Survey> surveys = surveyRepository.findForVeteranAssessmentId(veteranAssessmentId);
 
@@ -121,7 +121,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional(readOnly = true)
     @Override
     public List<SurveyDto> getSurveyList() {
-        logger.debug("getSurveyList()");
+        logger.trace("getSurveyList()");
         return toDtos(surveyRepository.getSurveyList(), Collections.<Integer>emptySet());
     }
 
@@ -456,7 +456,7 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public List<SurveyDto> getSurveyListByNames(List<String> surveyNames) {
 
-        logger.debug("getSurveyListByNames()");
+        logger.trace("getSurveyListByNames()");
 
         List<Survey> surveys = surveyRepository.getSurveyList();
 

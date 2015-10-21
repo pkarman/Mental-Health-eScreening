@@ -57,7 +57,7 @@ public class TIU_LOAD_BOILERPLATE_TEXT_VistaLinkRequest extends VistaLinkBaseReq
 
         if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
-        logger.debug("Load Boilerplate Text for Progress Note: " + response.getResults());
+        logger.trace("Load Boilerplate Text for Progress Note: " + response.getResults());
 
         String[] existingBoilerplateText = new String[0];
 

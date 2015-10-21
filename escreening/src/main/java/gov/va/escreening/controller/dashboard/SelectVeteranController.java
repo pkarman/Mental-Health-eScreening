@@ -49,7 +49,7 @@ public class SelectVeteranController {
      */
     @ModelAttribute
     public SelectVeteranFormBean getSelectVeteranFormBean() {
-        logger.debug("Creating new SelectVeteranFormBean");
+        logger.trace("Creating new SelectVeteranFormBean");
         return new SelectVeteranFormBean();
     }
 
@@ -111,7 +111,7 @@ public class SelectVeteranController {
     public String searchPageSelectVeteran(HttpServletRequest request, @Valid @ModelAttribute SelectVeteranFormBean selectVeteranFormBean,
                                           BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug(selectVeteranFormBean.toString());
+        logger.trace(selectVeteranFormBean.toString());
 
         // If there is an error, return the same view.
         if (result.hasErrors()) {

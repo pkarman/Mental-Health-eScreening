@@ -17,18 +17,18 @@ public class DashboardLoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model) {
-        logger.debug("In the dashboard login controller.");
+        logger.trace("In the dashboard login controller.");
 
         return "dashboardLogin";
     }
 
     @RequestMapping(value = "/handleLogoutRequest")
     public String handleLoginRequest(Model model, HttpSession session) {
-        logger.debug("In the logout controller.");
+        logger.trace("In the logout controller.");
 
         // delete everything out of the session
         session.invalidate();
-        logger.debug("Cleared the session for the user.");
+        logger.trace("Cleared the session for the user.");
 
         // After logging out redirect to the login page.
 

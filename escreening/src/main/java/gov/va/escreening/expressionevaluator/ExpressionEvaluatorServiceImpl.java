@@ -144,7 +144,7 @@ public class ExpressionEvaluatorServiceImpl implements
                 resolved = resolved.replaceAll(variablePattern, String.format(" ( %s ) ", resolvedChild));
             }
         }
-        logger.debug("Expanded formula: {} to: {}", formula, resolved);
+        logger.trace("Expanded formula: {} to: {}", formula, resolved);
         return resolved;
     }
 
@@ -152,7 +152,7 @@ public class ExpressionEvaluatorServiceImpl implements
     public String evaluateFormula(FormulaDto formulaDto)
             throws NoSuchMethodException, SecurityException {
         String workingTemplate = formulaDto.getExpressionTemplate();
-        logger.debug("Evaluating unresolved formula: {}", workingTemplate);
+        logger.trace("Evaluating unresolved formula: {}", workingTemplate);
 
         String originalFormulaTemplate = workingTemplate;
 //        workingTemplate = mergeChildFormulasIntoTemplate(workingTemplate,
@@ -183,13 +183,13 @@ public class ExpressionEvaluatorServiceImpl implements
     public String evaluateFormula(String formulaAsStr,
                                   Map<Integer, AssessmentVariableDto> variableMap) {
 
-        logger.debug("Evaluating resolved formula: {}", formulaAsStr);
+        logger.trace("Evaluating resolved formula: {}", formulaAsStr);
         ExpressionExtentionUtil extentionUtil = new ExpressionExtentionUtil().setVariableMap(variableMap);
 
         String testResult = parser.parseExpression(formulaAsStr).getValue(
                 stdContext, extentionUtil, String.class);
 
-        logger.debug("The result of {} is: {}", formulaAsStr, testResult);
+        logger.trace("The result of {} is: {}", formulaAsStr, testResult);
 
         return testResult;
     }

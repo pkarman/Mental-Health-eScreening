@@ -47,7 +47,7 @@ public class ProgramEditViewController {
 	 */
 	@ModelAttribute
 	public ProgramEditViewFormBean getProgramEditViewFormBean() {
-		logger.debug("Creating new ProgramEditViewFormBean");
+		logger.trace("Creating new ProgramEditViewFormBean");
 		return new ProgramEditViewFormBean();
 	}
 
@@ -71,7 +71,7 @@ public class ProgramEditViewController {
 	@RequestMapping(value = "/programEditView", method = RequestMethod.POST, params = "cancelButton")
 	public String processCancel(Model model) {
 
-		logger.debug("In processCancel");
+		logger.trace("In processCancel");
 
 		return "redirect:/dashboard/programListView";
 	}
@@ -91,7 +91,7 @@ public class ProgramEditViewController {
 			BindingResult result, Model model,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In processSave");
+		logger.trace("In processSave");
 
 		// If there is an error, return the same view.
 		if (result.hasErrors()) {
@@ -100,7 +100,7 @@ public class ProgramEditViewController {
 		}
 
 		if (programEditViewFormBean.getProgramId() != null && programEditViewFormBean.getProgramId() > 0) {
-			logger.debug("Edit mode");
+			logger.trace("Edit mode");
 
 			Integer progId = programEditViewFormBean.getProgramId();
 			String progName = programEditViewFormBean.getName();
@@ -111,10 +111,10 @@ public class ProgramEditViewController {
 
 			programService.updateProgram(progId, progName, progDisabled, selectedBatteryIds, selectedClinicIds, selectedNoteTitleIds);
 		} else {
-			logger.debug("Add mode");
+			logger.trace("Add mode");
 			Integer programId = programService.createProgram(programEditViewFormBean.getName(), programEditViewFormBean.getIsDisabled(), programEditViewFormBean.getSelectedClinicIdList(), programEditViewFormBean.getSelectedNoteTitleIdList());
 
-			logger.debug("Created new Program with programId: " + programId);
+			logger.trace("Created new Program with programId: " + programId);
 		}
 
 		return "redirect:/dashboard/programListView";
@@ -152,8 +152,8 @@ public class ProgramEditViewController {
 			@RequestParam(value = "pid", required = false) Integer programId,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In setUpPageProgramEditView");
-		logger.debug("pid: " + programId);
+		logger.trace("In setUpPageProgramEditView");
+		logger.trace("pid: " + programId);
 
 		populateModel(model);
 

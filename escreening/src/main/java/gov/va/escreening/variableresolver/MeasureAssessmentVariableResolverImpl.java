@@ -49,7 +49,7 @@ public class MeasureAssessmentVariableResolverImpl implements
     public AssessmentVariableDto resolveAssessmentVariable(
             AssessmentVariable assessmentVariable, 
             ResolverParameters params) {
-        //logger.debug("Resolving measure variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
+        //logger.trace("Resolving measure variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
         
         Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
@@ -83,7 +83,7 @@ public class MeasureAssessmentVariableResolverImpl implements
             }
         }
         
-        //logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
+        //logger.trace("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
         return variableDto;
     }
 

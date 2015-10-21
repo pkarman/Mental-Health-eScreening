@@ -322,7 +322,7 @@ public class ProgramServiceImpl implements ProgramService {
                                                    List<Integer> batteryIdList) {
 
         if (logger.isDebugEnabled()) {
-            logger.debug("associating {} batteries with program id {}", batteryIdList.size(), program.getProgramId());
+            logger.trace("associating {} batteries with program id {}", batteryIdList.size(), program.getProgramId());
         }
 
         // delete old relationships

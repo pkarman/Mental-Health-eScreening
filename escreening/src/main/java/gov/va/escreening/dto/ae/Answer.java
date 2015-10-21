@@ -213,7 +213,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
             answerDisplayResponse = answerText;
         }
         
-        //logger.debug("Set answerDisplayResponse to: {}", answerDisplayResponse);
+        //logger.trace("Set answerDisplayResponse to: {}", answerDisplayResponse);
     }
     
     /**
@@ -240,7 +240,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
     
     public Answer(MeasureAnswer measureAnswer, SurveyMeasureResponse measureResponse){
         this(measureAnswer);
-        //logger.debug("Creating answer using measure answer {} with response {}", measureAnswer, measureResponse);
+        //logger.trace("Creating answer using measure answer {} with response {}", measureAnswer, measureResponse);
         
         checkNotNull(measureResponse, "measureResponse is required");
         
@@ -272,7 +272,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
      */
     public Answer(MeasureAnswer measureAnswer, Answer otherAnswer){
         this(measureAnswer);
-        //logger.debug("Creating answer using measure answer {} and other answer {}", measureAnswer, otherAnswer);
+        //logger.trace("Creating answer using measure answer {} and other answer {}", measureAnswer, otherAnswer);
         
         checkNotNull(otherAnswer, "otherAnswer is required");
         setRowId(otherAnswer.getRowId());
@@ -294,7 +294,7 @@ public class Answer implements Serializable, MeasureAnswerBaseProperties {
         this.answerId = answerId;
         this.answerText = answerText;
         this.answerResponse = answerResponse;
-        //logger.debug("Creating with: answerId {}, answerText {}, answerResponse {}", new Object[]{ answerId, answerText, answerResponse});
+        //logger.trace("Creating with: answerId {}, answerText {}, answerResponse {}", new Object[]{ answerId, answerText, answerResponse});
     }
 
     @Override

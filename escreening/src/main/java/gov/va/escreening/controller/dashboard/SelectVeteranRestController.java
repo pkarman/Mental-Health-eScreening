@@ -33,7 +33,7 @@ public class SelectVeteranRestController extends BaseDashboardRestController {
     @ResponseBody
     public VeteranDto getVeteran(HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In VeteranSearchRestController searchVeterans");
+        logger.trace("In VeteranSearchRestController searchVeterans");
 
         // Get the search criteria sent by the client.
         // Need to figure out how we can get Spring to serialize this instead of doing this ourselves.

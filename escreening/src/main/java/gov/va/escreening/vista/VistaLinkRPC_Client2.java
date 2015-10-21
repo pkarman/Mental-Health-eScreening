@@ -76,7 +76,7 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
 
             RpcResponse vResp;
             try {
-                if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",rpcReq.getRpcName(),reqParams));}
+                if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]", rpcReq.getRpcName(), reqParams));}
                 vResp = vistaLinkConnection.executeRPC(rpcReq);
             } catch (VistaLinkFaultException e) {
                 throw new VistaLinkClientException(e);
@@ -249,10 +249,10 @@ public class VistaLinkRPC_Client2 extends VistaLinkRPC_Client implements
     private Long getTbiServiceName(String refTbiServiceName) {
         Map<String, Long> svcmap = getConsultationServiceNameDataSet2("1", "1",
                 true);
-        logger.debug("tbi service names from Vista {}", svcmap);
+        logger.trace("tbi service names from Vista {}", svcmap);
 
         Long serviceNameIen=svcmap.get(refTbiServiceName);
-        logger.debug("serviceNameIen for service name {} is {}", refTbiServiceName, serviceNameIen);
+        logger.trace("serviceNameIen for service name {} is {}", refTbiServiceName, serviceNameIen);
         return serviceNameIen;
     }
 

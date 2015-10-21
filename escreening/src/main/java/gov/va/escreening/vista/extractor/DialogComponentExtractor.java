@@ -30,7 +30,7 @@ public class DialogComponentExtractor implements VistaRecordExtractor<DialogComp
             dialogComponent = extractModeOneData(record);
         }
         else if ("0".equals(mode)) {
-            logger.debug("Encountered 0 mode: {}", record);
+            logger.trace("Encountered 0 mode: {}", record);
         }
         else {
             logger.error("Unrecognized 'mode': " + mode);
@@ -46,7 +46,7 @@ public class DialogComponentExtractor implements VistaRecordExtractor<DialogComp
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
         Integer size = fields.length;
 
-        logger.debug("Mode {}, Size {}: ", fields[0], size);
+        logger.trace("Mode {}, Size {}: ", fields[0], size);
 
         if (size < 1) {
             return null;
@@ -78,7 +78,7 @@ public class DialogComponentExtractor implements VistaRecordExtractor<DialogComp
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
         Integer size = fields.length;
 
-        logger.debug("Mode {}, Size {}: ", fields[0], size);
+        logger.trace("Mode {}, Size {}: ", fields[0], size);
 
         if (size < 1) {
             return null;

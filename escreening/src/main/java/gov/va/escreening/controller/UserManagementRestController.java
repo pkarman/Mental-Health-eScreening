@@ -38,10 +38,10 @@ public class UserManagementRestController {
     @RequestMapping(value = "/services/GetClinicsList", method = RequestMethod.GET)
     @ResponseBody
     public DataTableObject getClinicDtoList() {
-        logger.debug("getClinicDtoList");
+        logger.trace("getClinicDtoList");
 
         List<ClinicDto> clinicDtoList = clinicService.getClinicDtoList();
-        logger.debug("getClinicDtoList.size(): " + clinicDtoList.size());
+        logger.trace("getClinicDtoList.size(): " + clinicDtoList.size());
 
         DataTableObject<ClinicDto> dataTableObject = new DataTableObject<ClinicDto>();
         dataTableObject.setAaData(clinicDtoList);
@@ -52,7 +52,7 @@ public class UserManagementRestController {
     @RequestMapping(value = "/services/GetRoleList", method = RequestMethod.GET)
     @ResponseBody
     public List<DropDownObject> getRoleDropDownObjectList() {
-        logger.debug("getRoleDropDownObjectList");
+        logger.trace("getRoleDropDownObjectList");
 
         return roleService.getRoleDropDownObjects();
     }
@@ -60,7 +60,7 @@ public class UserManagementRestController {
     @RequestMapping(value = "/services/GetUserStatusList", method = RequestMethod.GET)
     @ResponseBody
     public List<DropDownObject> getUserStatusDropDownObjectList() {
-        logger.debug("getUserStatusDropDownObjectList");
+        logger.trace("getUserStatusDropDownObjectList");
 
         return userStatusService.getUserStatusDropDownObjects();
     }
@@ -69,11 +69,11 @@ public class UserManagementRestController {
     @RequestMapping(value = "/services/GetUsersList", method = RequestMethod.GET)
     @ResponseBody
     public DataTableObject getUserListDtoList() {
-        logger.debug("getUserListDtoList");
+        logger.trace("getUserListDtoList");
 
         List<UserListDto> userListDtoList = userService.getUserListDtoList();
 
-        logger.debug("getUserListDtoList.size(): " + userListDtoList.size());
+        logger.trace("getUserListDtoList.size(): " + userListDtoList.size());
 
         DataTableObject<UserListDto> dataTableObject = new DataTableObject<UserListDto>();
         dataTableObject.setAaData(userListDtoList);

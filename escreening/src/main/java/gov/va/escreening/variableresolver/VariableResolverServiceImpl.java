@@ -118,7 +118,7 @@ public class VariableResolverServiceImpl implements VariableResolverService {
         }
         catch(CouldNotResolveVariableException cnrve) {
             //This exception is not an error, it just means that a variable could not be resolved which is legitimate
-            //logger.debug("CouldNotResolveVariableException for assessmentVariableId: {} and Veteran Assessment id: {}, exception message was: {}", 
+            //logger.trace("CouldNotResolveVariableException for assessmentVariableId: {} and Veteran Assessment id: {}, exception message was: {}",
             //        assessmentVariable.getAssessmentVariableId(), params.getAssessmentId(), cnrve.getMessage());
         }
         return Optional.absent();

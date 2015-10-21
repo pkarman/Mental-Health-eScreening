@@ -23,7 +23,7 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
 
     @Override
     public List<Survey> getRequiredSurveys() {
-        logger.debug("in getRequiredSurveys()");
+        logger.trace("in getRequiredSurveys()");
         String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE ss.surveySectionId = :surveySectionId AND s.isPublished = true ORDER BY s.displayOrderForSection";
 
         TypedQuery<Survey> query = entityManager.createQuery(sql, Survey.class);
@@ -37,7 +37,7 @@ public class SurveyRepositoryImpl extends AbstractHibernateRepository<Survey>
     @Override
     public List<Survey> findForVeteranAssessmentId(int veteranAssessmentId) {
 
-        logger.debug("in findForVeteranAssessmentId()");
+        logger.trace("in findForVeteranAssessmentId()");
         //TODO: This might have to be ordered by s.displayOrderForSection
         String sql = "SELECT s FROM Survey s JOIN s.surveySection ss WHERE s.surveyId IN (SELECT s2.surveyId FROM VeteranAssessment va JOIN va.veteranAssessmentSurveyList vas JOIN vas.survey s2 WHERE va.veteranAssessmentId = :veteranAssessmentId) ORDER BY ss.displayOrder";
 

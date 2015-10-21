@@ -71,7 +71,7 @@ public class EditVeteranAssessmentController {
      */
     @ModelAttribute
     public EditVeteranAssessmentFormBean getEditVeteranAssessmentFormBean() {
-        logger.debug("Creating new EditVeteranAssessmentFormBean");
+        logger.trace("Creating new EditVeteranAssessmentFormBean");
         return new EditVeteranAssessmentFormBean();
     }
 
@@ -97,7 +97,7 @@ public class EditVeteranAssessmentController {
             @RequestParam(value = "programId", required = false) Integer programId,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("Using the assessment dashboard mapping");
+        logger.trace("Using the assessment dashboard mapping");
 
         if (veteranId == null && veteranAssessmentId == null) {
             throw new IllegalArgumentException("Both Veteran Assessment ID and Veteran ID are missing.");
@@ -313,7 +313,7 @@ public class EditVeteranAssessmentController {
             @RequestParam(value = "vid", required = false) Integer veteranId,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug(editVeteranAssessmentFormBean.toString());
+        logger.trace(editVeteranAssessmentFormBean.toString());
 
         // First check if the Veteran stated taking the assessment while the
         // staff member was trying to edit the data.
@@ -512,7 +512,7 @@ public class EditVeteranAssessmentController {
             @ModelAttribute EditVeteranAssessmentFormBean editVeteranAssessmentFormBean,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug(editVeteranAssessmentFormBean.toString());
+        logger.trace(editVeteranAssessmentFormBean.toString());
 
         model.addAttribute("vid", editVeteranAssessmentFormBean.getVeteranId());
         return "redirect:/dashboard/veteranDetail";

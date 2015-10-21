@@ -61,7 +61,7 @@ public class ORWU_NEWPERS_VistaLinkRequest extends VistaLinkBaseRequest<VistaCli
                 startingNameSearchCriteria = existingClinician;
                 if(firstNameFilterSearchCriteria == null && lastNameFilterSearchCriteria == null) {
                     if (existingClinician.contains(firstNameFilterSearchCriteria)) {
-                        logger.debug("Existing Clinician: " + existingClinician);
+                        logger.trace("Existing Clinician: " + existingClinician);
                         String[] clinicianArray = super.parseRpcResponseLineWithCarrotDelimiter(existingClinician.getBytes());
                         if (clinicianArray.length == 0) {
                             throw new VistaLinkNoResponseException("Response is empty for RPC: ORWU NEWPERS.  Expected a response.");
@@ -81,7 +81,7 @@ public class ORWU_NEWPERS_VistaLinkRequest extends VistaLinkBaseRequest<VistaCli
                     }
                 } else if (firstNameFilterSearchCriteria != null && lastNameFilterSearchCriteria == null) {
                     if (existingClinician.contains(firstNameFilterSearchCriteria)) {
-                        logger.debug("Existing Clinician: " + existingClinician);
+                        logger.trace("Existing Clinician: " + existingClinician);
                         String[] clinicianArray = super.parseRpcResponseLineWithCarrotDelimiter(existingClinician.getBytes());
 
                         if (clinicianArray.length == 0) {
@@ -97,7 +97,7 @@ public class ORWU_NEWPERS_VistaLinkRequest extends VistaLinkBaseRequest<VistaCli
                     }
                 } else if(firstNameFilterSearchCriteria == null && lastNameFilterSearchCriteria !=null){
                     if (existingClinician.contains(lastNameFilterSearchCriteria)) {
-                        logger.debug("Existing Clinician: " + existingClinician);
+                        logger.trace("Existing Clinician: " + existingClinician);
                         String[] clinicianArray = super.parseRpcResponseLineWithCarrotDelimiter(existingClinician.getBytes());
                         if (clinicianArray.length == 0) {
                             throw new VistaLinkNoResponseException("Response is empty for RPC: ORWU NEWPERS.  Expected a response.");
@@ -111,7 +111,7 @@ public class ORWU_NEWPERS_VistaLinkRequest extends VistaLinkBaseRequest<VistaCli
                         }
                     }
                 } else {
-                    logger.debug("Existing Clinician: " + existingClinician);
+                    logger.trace("Existing Clinician: " + existingClinician);
                     String[] clinicianArray = super.parseRpcResponseLineWithCarrotDelimiter(existingClinician.getBytes());
                     if (clinicianArray.length == 0) {
                         throw new VistaLinkNoResponseException("Response is empty for RPC: ORWU NEWPERS.  Expected a response.");
@@ -168,7 +168,7 @@ public class ORWU_NEWPERS_VistaLinkRequest extends VistaLinkBaseRequest<VistaCli
 
         if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
-        logger.debug("Find Clinician: " + response.getResults());
+        logger.trace("Find Clinician: " + response.getResults());
 
         VistaClinician[] existingClinicians = new VistaClinician[0];
         try {

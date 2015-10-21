@@ -66,7 +66,7 @@ public class BatchCreateController {
             BindingResult result,
             Model model) {
 
-        logger.debug("In VeteranSearchRestController searchVeterans by clinic");
+        logger.trace("In VeteranSearchRestController searchVeterans by clinic");
         model.addAttribute("isPostBack", true);
         model.addAttribute("isCprsVerified", escreenUser.getCprsVerified());
 
@@ -270,7 +270,7 @@ public class BatchCreateController {
      */
     @ModelAttribute("selectVeteranFormBean")
     public VeteranClinicApptSearchFormBean getSelectVeteranFormBean() {
-        logger.debug("Creating new SelectVeteranFormBean");
+        logger.trace("Creating new SelectVeteranFormBean");
         return new VeteranClinicApptSearchFormBean();
     }
 

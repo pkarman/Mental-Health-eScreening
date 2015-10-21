@@ -57,7 +57,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 	public AssessmentVariableDto resolveAssessmentVariable(
 			AssessmentVariable assessmentVariable, ResolverParameters params) {
 
-	    logger.debug("\n\nResolving formula {} \nWith expression: {}", 
+	    logger.trace("\n\nResolving formula {} \nWith expression: {}",
 	            assessmentVariable.getAssessmentVariableId(), 
 	            assessmentVariable.getFormulaTemplate());
 	    
@@ -182,7 +182,7 @@ public class FormulaAssessmentVariableResolverImpl implements
 	            variable = resolveDependency(childAv, params);
 	        }
 	        catch(CouldNotResolveVariableException resolverException){
-	            logger.debug("Child variable could not be resolved:\n{}", childAv);
+	            logger.trace("Child variable could not be resolved:\n{}", childAv);
 	        }
 	        
 	        String value = null;
@@ -200,10 +200,10 @@ public class FormulaAssessmentVariableResolverImpl implements
 	        
 	        if(value != null && value != DEFAULT_VALUE){
 	            valueMap.put(avId, value);
-	            logger.debug("Value of variable {} is {}", avId, value);
+	            logger.trace("Value of variable {} is {}", avId, value);
 	        }
 	        else{
-	            logger.debug("Variable DTO {} could not be resolved to a value", avId);
+	            logger.trace("Variable DTO {} could not be resolved to a value", avId);
 	        }
 	    }
 	    return valueMap;

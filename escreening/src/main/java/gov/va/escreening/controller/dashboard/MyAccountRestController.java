@@ -48,7 +48,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
     @RequestMapping(value = "/myAccount/services/users/active/init", method = RequestMethod.GET)
     @ResponseBody
     public MyAccountFormBean getsForm() {
-        logger.debug("In myAccount ");
+        logger.trace("In myAccount ");
 
         MyAccountFormBean myAccountFormBean = new MyAccountFormBean();
 
@@ -60,7 +60,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
     public String processForm(@Valid @RequestBody MyAccountFormBean myAccountFormBean, BindingResult result,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In MyAccountRestController processForm ");
+        logger.trace("In MyAccountRestController processForm ");
 
         // Call Spring validator to compare new and confirmed password field.
         new MyAccountFormBeanValidator().validate(myAccountFormBean, result);
@@ -85,7 +85,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
     @RequestMapping(value = "/myAccount/services/users/active/myInfo", method = RequestMethod.GET)
     @ResponseBody
     public HashMap<String, String> getMyInfo(HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
-        logger.debug("In getMyInfo ");
+        logger.trace("In getMyInfo ");
 
         User user = userService.findUser(escreenUser.getUserId());
 
@@ -109,7 +109,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
     public HashMap<String, String> verifyVistaAccount(HttpServletRequest request, @CurrentUser EscreenUser escreenUser, 
     		@RequestParam String accessCode, @RequestParam String verifyCode) {
 
-        logger.debug("In verifyVistaAccount ");
+        logger.trace("In verifyVistaAccount ");
 
         int vistaVerifyAccountCount = 0;
 
@@ -133,7 +133,7 @@ public class MyAccountRestController extends BaseDashboardRestController {
         
         if (!hasError) {
             String clientIp = request.getRemoteAddr();
-            logger.debug(clientIp);
+            logger.trace(clientIp);
 
             try {
                 vistaService.verifyVistaAccount(escreenUser.getUserId(), accessCode, verifyCode, clientIp);

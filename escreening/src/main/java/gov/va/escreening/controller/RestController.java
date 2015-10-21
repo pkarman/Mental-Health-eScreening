@@ -16,7 +16,7 @@ public abstract class RestController {
 	private static final Logger logger = LoggerFactory.getLogger(RestController.class);
 	
 	protected void logRequest(Logger logger, HttpServletRequest request){
-		logger.debug(request.getMethod() + ": "+ request.getRequestURL());
+		logger.trace(request.getMethod() + ": "+ request.getRequestURL());
 	}
 
 	/**

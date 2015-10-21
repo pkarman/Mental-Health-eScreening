@@ -100,7 +100,7 @@ public class SaveToVistaContext {
     }
 
     public void requestDone(PendingOperation pendingOperationName) {
-        logger.debug("done requested by {}, current pending operations {}", pendingOperationName, this.pendingOperations);
+        logger.trace("done requested by {}, current pending operations {}", pendingOperationName, this.pendingOperations);
         if (!hasErrors(pendingOperationName)) {
             this.pendingOperations.remove(pendingOperationName);
         }
@@ -122,7 +122,7 @@ public class SaveToVistaContext {
         errorFree &= msgTypeMap.get(MsgType.usrErr) == null || msgTypeMap.get(MsgType.usrErr).isEmpty();
 
         boolean hasErrors=!errorFree;
-        logger.debug("hasErrors: MsgTypes for PendingOperation {} are {}",po, msgTypeMap);
+        logger.trace("hasErrors: MsgTypes for PendingOperation {} are {}",po, msgTypeMap);
         return hasErrors;
     }
 

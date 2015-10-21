@@ -55,7 +55,7 @@ public class AssessmentVariableDto {
 	public AssessmentVariableDto(){};
 
 	public AssessmentVariableDto(Integer variableId, String key, String type, String name, Integer column) {
-	    //logger.debug("Creating variable {} (constructor 1)", name);
+	    //logger.trace("Creating variable {} (constructor 1)", name);
 		this.variableId = variableId;
 		this.key = key;
 		this.type = type;
@@ -65,7 +65,7 @@ public class AssessmentVariableDto {
 	
 	public AssessmentVariableDto(Integer variableId, String key, String type, String name, String value,
 			String displayText, String overrideText, String otherText, Integer column) {
-	    //logger.debug("Creating variable with: name '{}' displayText {} (constructor 2)", name, displayText);
+	    //logger.trace("Creating variable with: name '{}' displayText {} (constructor 2)", name, displayText);
 		this.variableId = variableId;
 		this.key = key;
 		this.type = type;
@@ -96,7 +96,7 @@ public class AssessmentVariableDto {
 		column = createColumn(av);
 		displayName = av.getDisplayName();
 
-		//logger.debug("Creating variable with name '{}' and displayName '{}' (AssessmentVariable constructor)", name, displayName);
+		//logger.trace("Creating variable with name '{}' and displayName '{}' (AssessmentVariable constructor)", name, displayName);
 		
 		if(av.getAssessmentVariableTypeId().getAssessmentVariableTypeId() == AssessmentConstants.ASSESSMENT_VARIABLE_TYPE_MEASURE_ANSWER){
 			

@@ -48,7 +48,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 			VeteranSearchFormBean veteranSearchFormBean, BindingResult result,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In VeteranSearchRestController searchVeterans");
+		logger.trace("In VeteranSearchRestController searchVeterans");
 
 		// Get the search criteria sent by the client.
 		// Need to figure out how we can get Spring to serialize this instead of
@@ -73,7 +73,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 		
 		// Start populating the response.
 		String echo = request.getParameter("sEcho");
-		logger.debug("sEcho: " + echo);
+		logger.trace("sEcho: " + echo);
 
 		DataTableResponse<VeteranSearchResult> dataTableResponse = new DataTableResponse<VeteranSearchResult>();
 		dataTableResponse.setEcho(echo);
@@ -159,7 +159,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 			VeteranSearchFormBean veteranSearchFormBean, BindingResult result,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("--------------generating Veteran Search PDF Report ----------");
+		logger.trace("--------------generating Veteran Search PDF Report ----------");
 
 		Map<String, Object> parameterMap = getReportParameterMap(request, veteranSearchFormBean, escreenUser);
 
@@ -176,7 +176,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 			VeteranSearchFormBean veteranSearchFormBean, BindingResult result,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("--------------generating Veteran Search CSV Report ----------");
+		logger.trace("--------------generating Veteran Search CSV Report ----------");
 
 		Map<String, Object> parameterMap = getReportParameterMap(request, veteranSearchFormBean, escreenUser);
 
@@ -193,7 +193,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 			VeteranSearchFormBean veteranSearchFormBean, BindingResult result,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("--------------generating Veteran Search CSV Report ----------");
+		logger.trace("--------------generating Veteran Search CSV Report ----------");
 
 		Map<String, Object> parameterMap = getReportParameterMap(request, veteranSearchFormBean, escreenUser);
 
@@ -256,7 +256,7 @@ public class VeteranSearchRestController extends BaseDashboardRestController {
 			searchResult = veteranService.searchVeterans(veteranSearchFormBean.getVeteranId(), veteranSearchFormBean.getLastName(), veteranSearchFormBean.getSsnLastFour(), escreenUser.getProgramIdList(), searchAttributes);
 		
 		} else {
-			logger.debug("Veteran search criteria was not provided, returning an empty result set.");
+			logger.trace("Veteran search criteria was not provided, returning an empty result set.");
 
 			searchResult = new SearchResult<VeteranSearchResult>();
 			searchResult.setResultList(new ArrayList<VeteranSearchResult>());

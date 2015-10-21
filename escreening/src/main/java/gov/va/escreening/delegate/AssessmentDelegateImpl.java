@@ -85,7 +85,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	@Override
 	public List<VeteranDto> findVeterans(VeteranDto veteran) {
-		logger.debug("findVeterans");
+		logger.trace("findVeterans");
 		return veteranService.findVeterans(veteran);
 	}
 
@@ -112,7 +112,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	@Transactional
 	public void setUpAssessmentContext(VeteranDto veteran,
 			VeteranAssessment veteranAssessment) {
-		logger.debug("Set up assessment context");
+		logger.trace("Set up assessment context");
 
 		assessmentContext.setVeteran(veteran);
 		assessmentContext.setVeteranAssessmentId(veteranAssessment.getVeteranAssessmentId());
@@ -249,7 +249,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 
 	@Override
 	public List<SurveySection> getAssessmentSections() {
-		logger.debug("Getting surveys for current assessment");
+		logger.trace("Getting surveys for current assessment");
 		ensureValidAssessmentContext();
 
 		assessmentContext.getSurveyPageList();
@@ -270,7 +270,7 @@ public class AssessmentDelegateImpl implements AssessmentDelegate {
 	public AssessmentResponse processPage(AssessmentRequest assessmentRequest) {
 
 		if (assessmentRequest != null) {
-			//logger.debug("Assessment request: {}", assessmentRequest);
+			//logger.trace("Assessment request: {}", assessmentRequest);
 
 			// we set the assessment ID from the context (not from the request)
 			assessmentRequest.setAssessmentId(assessmentContext.getVeteranAssessmentId());

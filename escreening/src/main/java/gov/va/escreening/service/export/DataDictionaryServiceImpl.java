@@ -135,27 +135,27 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     }
 
     private boolean proceedMainTask(boolean force) {
-        logger.debug("1-tryPrepareDataDictionary {}", dd);
+        logger.trace("1-tryPrepareDataDictionary {}", dd);
         if (force || !dd.isReady()) {
             updateDataDictionary();
-            logger.debug("2-tryPrepareDataDictionary {}", dd);
+            logger.trace("2-tryPrepareDataDictionary {}", dd);
 
-            logger.debug("3-tryPrepareDataDictionary {}", dd);
+            logger.trace("3-tryPrepareDataDictionary {}", dd);
             if (!force) {
                 asyncExecLongRunningTask();
             } else {
                 updateExcelWorkbook();
             }
-            logger.debug("4-tryPrepareDataDictionary {}", dd);
+            logger.trace("4-tryPrepareDataDictionary {}", dd);
         } else {
-            logger.debug("5-tryPrepareDataDictionary {dd already ready} {}", dd);
+            logger.trace("5-tryPrepareDataDictionary {dd already ready} {}", dd);
             Preconditions.checkState(dd.isReady(), "Data Dictionary must be ready to be used...");
         }
         return dd.isReady();
     }
 
     private void asyncExecLongRunningTask() {
-        logger.debug("1-asyncExecLongRunningTask {}", dd);
+        logger.trace("1-asyncExecLongRunningTask {}", dd);
         try {
             Future<DataDictionary> future = taskExecuter.submit(ddCallable);
             // Waits if necessary for at most 120 seconds for the
@@ -168,7 +168,7 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
         } catch (TimeoutException e) {
             Throwables.propagate(e);
         }
-        logger.debug("2-asyncExecLongRunningTask {}", dd);
+        logger.trace("2-asyncExecLongRunningTask {}", dd);
     }
 
     private void tryUpdateExcelWorkbook() {
@@ -184,19 +184,19 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
     }
 
     private void proceedWorkerTask() {
-        logger.debug("1-tryUpdateExcelWorkbook {}", dd);
+        logger.trace("1-tryUpdateExcelWorkbook {}", dd);
         updateExcelWorkbook();
-        logger.debug("2-tryUpdateExcelWorkbook {}", dd);
+        logger.trace("2-tryUpdateExcelWorkbook {}", dd);
     }
 
     private void updateExcelWorkbook() {
-        logger.debug("1-updateExcelWorkbook {}", dd);
+        logger.trace("1-updateExcelWorkbook {}", dd);
         dd.setWorkbook(new HSSFWorkbook());
-        logger.debug("2-updateExcelWorkbook {}", dd);
+        logger.trace("2-updateExcelWorkbook {}", dd);
         ddeutil.buildDdAsExcel(dd.getWorkbook());
-        logger.debug("3-updateExcelWorkbook {}", dd);
+        logger.trace("3-updateExcelWorkbook {}", dd);
         dd.markReady();
-        logger.debug("4-updateExcelWorkbook {}", dd);
+        logger.trace("4-updateExcelWorkbook {}", dd);
     }
 
     private void updateDataDictionary() {
@@ -238,13 +238,13 @@ public class DataDictionaryServiceImpl implements DataDictionaryService, Message
                     logger.debug(String.format("%s--%s||%s-%s", "sheet name", s.getName(), "sheet size (total number of elements) (rows*columns)", sheet.size()));
                 }
                 if (logger.isTraceEnabled()) {
-                    logger.debug(String.format("details of sheet are--%s", sheet));
+                    logger.trace(String.format("details of sheet are--%s", sheet));
                 }
 
                 // bind the survey (or module with its sheet)
                 dd.put(s.getName(), sheet);
 
-                //logger.debug("sheet data for Survey={} =>> {}", s.getName(), sheet);
+                //logger.trace("sheet data for Survey={} =>> {}", s.getName(), sheet);
             }
 
             if (logger.isTraceEnabled()) {
