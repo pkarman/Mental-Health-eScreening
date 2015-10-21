@@ -43,9 +43,10 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void updateMeasureEvent(Measure measure){
-        if(measure.getMeasureType().getMeasureTypeId() != AssessmentConstants.MEASURE_TYPE_INSTRUCTION){
+        //Ticket 988 -- measure event should be created even if the measure is an instruction type.
+        //if(measure.getMeasureType().getMeasureTypeId() != AssessmentConstants.MEASURE_TYPE_INSTRUCTION){
             updateEvent(measure.getMeasureId(), EVENT_TYPE_SHOW_QUESTION, measure.getVariableName(), measure.getMeasureText());
-        }
+       // }
     }
     
     @Override
