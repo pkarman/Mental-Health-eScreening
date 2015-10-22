@@ -1,5 +1,6 @@
 package gov.va.escreening.delegate;
 
+import com.google.common.collect.Lists;
 import gov.va.escreening.domain.VeteranDto;
 import gov.va.escreening.domain.VeteranWithClinicalReminderFlag;
 import gov.va.escreening.dto.BatchBatteryCreateResult;
@@ -91,7 +92,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 
 			if(appList == null || appList.isEmpty())
 			{
-				return new ArrayList<VistaClinicAppointment>();
+				return Lists.newArrayList();
 			}
 			
 			Map<String, VistaClinicAppointment> appMap = new HashedMap<String, VistaClinicAppointment>();
@@ -99,6 +100,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			// Now, go through the veterans and only return the closest
 			// appointment to the startDate???
 			for (VistaClinicAppointment app : appList) {
+				if (app==null) continue;
 				String vetIen = app.getVeteranIen();
 				if (appMap.containsKey(vetIen)) {
 					Date appTime = app.getAppointmentDate();

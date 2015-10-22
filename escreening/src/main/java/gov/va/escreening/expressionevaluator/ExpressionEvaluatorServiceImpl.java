@@ -350,6 +350,10 @@ public class ExpressionEvaluatorServiceImpl implements
     @Transactional(readOnly = true)
     public Map<String, Object> fetchFormulaFromDbById(Integer formulaId) {
         AssessmentVariable av = findAvById(formulaId);
+        if (av == null) {
+            logger.warn("No Assessmenet Variable was found with an id of {}. Returning am empty data set from here", formulaId);
+            return Collections.EMPTY_MAP;
+        }
         final Map<String, Object> asFormulaVar = av.getAsFormulaVar();
 
         asFormulaVar.put("selectedTokens", buildSelectedTokensFor(av));
