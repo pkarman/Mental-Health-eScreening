@@ -53,12 +53,12 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
         return veteranAssessmentList;
     }
-    
+
     @Override
     public List<VeteranAssessment> findAllByVeteranIdAndAssessmentStatusIdList(
-    		Integer veteranId, List<Integer> assessmentStatusIdList){
-    	
-    	List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
+            Integer veteranId, List<Integer> assessmentStatusIdList) {
+
+        List<VeteranAssessment> veteranAssessmentList = new ArrayList<VeteranAssessment>();
 
         String sql = "SELECT va FROM VeteranAssessment va JOIN va.veteran v JOIN va.assessmentStatus ast WHERE v.veteranId = :veteranId AND ast.assessmentStatusId IN (:assessmentStatusIdList) ORDER BY va.veteranAssessmentId";
 
@@ -201,13 +201,13 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
             criteriaList.add(criteriaBuilder.equal(createdByUserJoin.get("userId"), createdByUserId));
         }
 
-		if (fromAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), fromAssessmentDate));
-		}
+        if (fromAssessmentDate != null) {
+            criteriaList.add(criteriaBuilder.greaterThanOrEqualTo(veteranAssessmentRoot.<Date>get("dateUpdated"), fromAssessmentDate));
+        }
 
-		if (toAssessmentDate != null) {
-			criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date> get("dateUpdated"), toAssessmentDate));
-		}
+        if (toAssessmentDate != null) {
+            criteriaList.add(criteriaBuilder.lessThanOrEqualTo(veteranAssessmentRoot.<Date>get("dateUpdated"), toAssessmentDate));
+        }
 
         if (programIdList != null && programIdList.size() > 0) {
             Expression<Integer> exp = programJoin.get("programId");
@@ -222,33 +222,33 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         @SuppressWarnings("rawtypes")
         Expression orderByPath = veteranAssessmentRoot.get("veteranAssessmentId");
 
-		if (StringUtils.isNotBlank(searchAttributes.getSortColumn())) {
-			if (searchAttributes.getSortColumn().equalsIgnoreCase("programName")) {
-				orderByPath = programJoin.get("name");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("clinicianName")) {
-				orderByPath = clinicianJoin.get("lastName");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createdBy")) {
-				orderByPath = createdByUserJoin.get("lastName");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("createDate")) {
-				orderByPath = veteranAssessmentRoot.get("dateCreated");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
-				orderByPath = veteranAssessmentRoot.get("dateUpdated");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("completeDate")) {
-				orderByPath = veteranAssessmentRoot.get("dateCompleted");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranId")) {
-				orderByPath = veteranJoin.get("veteranId");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranName")) {
-				orderByPath = veteranJoin.get("lastName");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentStatusName")) {
-				orderByPath = assessmentStatusJoin.get("name");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("ssnLastFour")) {
-				orderByPath = veteranJoin.get("ssnLastFour");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("duration")) {
-				orderByPath = veteranAssessmentRoot.get("duration");
-			} else if (searchAttributes.getSortColumn().equalsIgnoreCase("percentComplete")) {
-				orderByPath = veteranAssessmentRoot.get("percentComplete");
-			}
-		}
+        if (StringUtils.isNotBlank(searchAttributes.getSortColumn())) {
+            if (searchAttributes.getSortColumn().equalsIgnoreCase("programName")) {
+                orderByPath = programJoin.get("name");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("clinicianName")) {
+                orderByPath = clinicianJoin.get("lastName");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("createdBy")) {
+                orderByPath = createdByUserJoin.get("lastName");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("createDate")) {
+                orderByPath = veteranAssessmentRoot.get("dateCreated");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentDate")) {
+                orderByPath = veteranAssessmentRoot.get("dateUpdated");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("completeDate")) {
+                orderByPath = veteranAssessmentRoot.get("dateCompleted");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranId")) {
+                orderByPath = veteranJoin.get("veteranId");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("veteranName")) {
+                orderByPath = veteranJoin.get("lastName");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("assessmentStatusName")) {
+                orderByPath = assessmentStatusJoin.get("name");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("ssnLastFour")) {
+                orderByPath = veteranJoin.get("ssnLastFour");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("duration")) {
+                orderByPath = veteranAssessmentRoot.get("duration");
+            } else if (searchAttributes.getSortColumn().equalsIgnoreCase("percentComplete")) {
+                orderByPath = veteranAssessmentRoot.get("percentComplete");
+            }
+        }
 
         if (searchAttributes.getSortDirection() == SortDirection.SORT_DESCENDING) {
 
@@ -388,7 +388,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     public Integer getBatteryCountFor593(String fromDate, String toDate, List<Integer> clinicIds) {
 
         Query q = entityManager.createNativeQuery("SELECT count(*) FROM veteran_assessment " +
-                " WHERE date_completed >= :fromDate AND date_completed <= :toDate " +
+                " WHERE assessment_status_id <> 7 AND date_completed >= :fromDate AND date_completed <= :toDate " +
                 "AND clinic_id IN (:clinicIds) AND date_completed IS NOT NULL ");
 
 
@@ -406,7 +406,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     public Integer getAvgDurantionFor593(String fromDate, String toDate, List<Integer> clinicIds) {
 
         Query q = entityManager.createNativeQuery("SELECT avg(duration) FROM veteran_assessment " +
-                " WHERE date_completed >= :fromDate AND date_completed <= :toDate " +
+                " WHERE assessment_status_id <> 7 AND date_completed >= :fromDate AND date_completed <= :toDate " +
                 "AND clinic_id IN (:clinicIds) AND date_completed IS NOT NULL ");
 
         setParametersFor593(q, fromDate, toDate, clinicIds);
@@ -423,7 +423,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     public Integer getVetWithMultipleBatteriesFor593(String fromDate, String toDate, List<Integer> clinicIds) {
 
         Query q = entityManager.createNativeQuery("SELECT  count(veteran_id) FROM veteran_assessment " +
-                " WHERE date_completed >= :fromDate AND date_completed <= :toDate " +
+                " WHERE assessment_status_id <> 7 AND date_completed >= :fromDate AND date_completed <= :toDate " +
                 "AND clinic_id IN (:clinicIds) AND date_completed IS NOT NULL " +
                 "GROUP BY veteran_id " +
                 "HAVING count(*) > 1 ");
@@ -446,7 +446,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
                 "count(*) " +
                 "FROM " +
                 "veteran_assessment va, clinic c, user u " +
-                "WHERE " +
+                "WHERE va.assessment_status_id <> 7 AND" +
                 "va.clinic_id = c.clinic_id AND " +
                 "va.clinician_id = u.user_id AND " +
                 "va.date_completed BETWEEN :fromDate AND :toDate AND " +
@@ -467,7 +467,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         Query q = entityManager.createNativeQuery("SELECT date_format(date_completed, '%m/%d/%Y'), date_format(date_completed, '%W'), " +
                 " count(*)" +
                 " FROM veteran_assessment " +
-                " WHERE date_completed >= :fromDate AND date_completed <= :toDate " +
+                " WHERE assessment_status_id <> 7 AND date_completed >= :fromDate AND date_completed <= :toDate " +
                 "AND clinic_id IN (:clinicIds) AND date_completed IS NOT NULL " +
                 "GROUP BY date_format( date_completed, '%Y%m%d' ) " +
                 "ORDER BY date_format( date_completed, '%Y%m%d' ) ");
@@ -495,7 +495,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         Query q = entityManager.createNativeQuery("SELECT date_format(date_completed, '%m/%d/%Y'), date_format(date_completed, '%W'), " +
                 " count(*)" +
                 " FROM veteran_assessment " +
-                " WHERE date_completed >= :fromDate AND date_completed <= :toDate " +
+                " WHERE assessment_status_id <> 7 AND date_completed >= :fromDate AND date_completed <= :toDate " +
                 "AND clinic_id IN (:clinicIds) AND date_completed IS NOT NULL " +
                 "AND  extract(HOUR FROM date_completed) >= :fr AND extract(HOUR FROM date_completed) <= :to " +
                 "GROUP BY date_format( date_completed, '%Y%m%d' ) " +
@@ -745,7 +745,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
                 "WHERE measure_answer_id IN (:measureAnswerIds) " +
                 "AND veteran_assessment_id IN ( " +
                 "SELECT DISTINCT veteran_assessment_id FROM veteran_assessment " +
-                "WHERE date_completed >= :fromDate AND date_completed <=:toDate " +
+                "WHERE assessment_status_id <> 7 AND date_completed >= :fromDate AND date_completed <=:toDate " +
                 "AND date_completed IS NOT NULL AND clinic_id IN (:clinicIds)  " +
                 ") AND boolean_value IS NOT NULL " +
                 "GROUP BY measure_answer_id ORDER BY measure_answer_id");
@@ -776,7 +776,8 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
 
         Query q = entityManager.createNativeQuery("SELECT count(*) FROM veteran_assessment_question_presence  " +
                         "WHERE measure_id = :measureId AND skipped = -1 AND veteran_assessment_id IN (" +
-                        " SELECT veteran_assessment_id FROM veteran_assessment WHERE clinic_id IN (:clinicIds) AND date_completed >= :fromDate" +
+                        " SELECT veteran_assessment_id FROM veteran_assessment WHERE assessment_status_id <> 7 " +
+                        "AND clinic_id IN (:clinicIds) AND date_completed >= :fromDate" +
                         " AND date_completed <= :toDate AND date_completed IS NOT NULL) "
         );
 
@@ -794,7 +795,10 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
                 "SELECT avg(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365), min(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365), " +
                         "max(datediff(CURDATE(), STR_TO_DATE(text_value, '%m/%d/%Y'))/365)" +
                         " FROM survey_measure_response WHERE measure_answer_id = 170 " +
-                        " AND text_value IS NOT NULL AND veteran_assessment_id IN (SELECT veteran_assessment_id FROM veteran_assessment WHERE clinic_id IN (:clinicIds) AND date_completed >= :fromDate " +
+                        " AND text_value IS NOT NULL AND veteran_assessment_id IN " +
+                        "(SELECT veteran_assessment_id FROM veteran_assessment WHERE " +
+                        "assessment_status_id <> 7 AND clinic_id IN (:clinicIds) AND " +
+                        "date_completed >= :fromDate " +
                         " AND date_completed <= :toDate AND date_completed IS NOT NULL)");
         setParametersFor593(q, fromDate, toDate, cList);
         List r = q.getResultList();
@@ -823,7 +827,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         Query q = entityManager.createNativeQuery(
                 "SELECT avg(numOfDeployment), min(numOfDeployment), max(numOfDeployment) FROM (SELECT count(*) AS numOfDeployment" +
                         " FROM survey_measure_response WHERE measure_answer_id = 1210 " +
-                        " AND text_value IS NOT NULL AND veteran_assessment_id IN (SELECT veteran_assessment_id FROM veteran_assessment WHERE clinic_id IN (:clinicIds) AND date_completed >= :fromDate " +
+                        " AND text_value IS NOT NULL AND veteran_assessment_id IN (SELECT veteran_assessment_id FROM veteran_assessment WHERE assessment_status_id <> 7 AND clinic_id IN (:clinicIds) AND date_completed >= :fromDate " +
                         " AND date_completed <= :toDate AND date_completed IS NOT NULL)" +
                         " GROUP BY veteran_assessment_id) a ");
         setParametersFor593(q, fromDate, toDate, cList);
@@ -852,7 +856,7 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     @Override
     public int getAssessmentCount(String fromDate, String toDate, List<Integer> clinicIds) {
         Query q = entityManager.createNativeQuery("SELECT count(*) FROM veteran_assessment " +
-                " WHERE  clinic_id IN (:clinicIds) AND date_completed >= :fromDate " +
+                " WHERE assessment_status_id <> 7 AND clinic_id IN (:clinicIds) AND date_completed >= :fromDate " +
                 " AND date_completed <= :toDate AND date_completed IS NOT NULL ");
 
         setParametersFor593(q, fromDate, toDate, clinicIds);
