@@ -49,7 +49,8 @@ public class DataDictionaryHelper implements MessageSourceAware {
                                                       Multimap mvMap, Collection<AssessmentVariable> avList,
                                                       Set<String> avUsed) {
         DataDictionarySheet t = new DataDictionarySheet();
-        for (Measure m : smList) {
+        Set<Measure> uniqueMeasures = Sets.newLinkedHashSet(smList);
+        for (Measure m : uniqueMeasures) {
             addDictionaryRowsFor(m, s, mvMap, t, SALT_DEFAULT);
         }
 
@@ -82,6 +83,7 @@ public class DataDictionaryHelper implements MessageSourceAware {
                 String indexAsStr = String.format("%s_%s_%s", FORMULA_KEY_PREFIX, s.getSurveyId(), index++);
 
                 t.put(indexAsStr, msg("ques.type"), "formula");
+                t.put(indexAsStr, msg("ques.multi.select"), "false");
                 t.put(indexAsStr, msg("ques.desc"), getPlainText(formulaTokens.next()));
                 t.put(indexAsStr, msg("var.name"), formulaTokens.next());
 
