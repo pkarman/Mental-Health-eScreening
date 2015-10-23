@@ -49,7 +49,8 @@ public class DataDictionaryHelper implements MessageSourceAware {
                                                       Multimap mvMap, Collection<AssessmentVariable> avList,
                                                       Set<String> avUsed) {
         DataDictionarySheet t = new DataDictionarySheet();
-        for (Measure m : smList) {
+        Set<Measure> uniqueMeasures = Sets.newLinkedHashSet(smList);
+        for (Measure m : uniqueMeasures) {
             addDictionaryRowsFor(m, s, mvMap, t, SALT_DEFAULT);
         }
 
