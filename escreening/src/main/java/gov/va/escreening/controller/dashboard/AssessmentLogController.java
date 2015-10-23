@@ -18,9 +18,9 @@ public class AssessmentLogController {
     public String setupPage(Model model,
             @RequestParam(value = "vaid", required = false) Integer veteranAssessmentId) {
 
-        logger.debug("In AuditLogController::setupPage");
+        logger.trace("In AuditLogController::setupPage");
 
-        logger.debug("veteranAssessmentId: " + veteranAssessmentId);
+        logger.trace("veteranAssessmentId: " + veteranAssessmentId);
 
         return "dashboard/assessmentLog";
     }

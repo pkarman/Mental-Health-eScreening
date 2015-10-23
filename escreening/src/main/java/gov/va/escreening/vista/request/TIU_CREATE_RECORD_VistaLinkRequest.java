@@ -115,13 +115,13 @@ public class TIU_CREATE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest<Str
         logger.info("TIU CREATE RECORD params:" + requestParams.toString());
         if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
-        logger.debug("Create Progress Note Response: " + response.getResults());
+        logger.trace("Create Progress Note Response: " + response.getResults());
 
         try {
             String[] responseArray = parseRpcResponse(response);
             if(responseArray.length == 1) {
                 progressNote = new VistaProgressNote(Long.parseLong(responseArray[0].trim()));
-                logger.debug("Create Progress Note IEN: " + progressNote.getIEN());
+                logger.trace("Create Progress Note IEN: " + progressNote.getIEN());
             } else if(responseArray.length == 2) {
                 throw new VistaLinkFaultException(responseArray[1]);
             } else {

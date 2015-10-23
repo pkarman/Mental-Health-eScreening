@@ -36,7 +36,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
     @Override
     public AssessmentVariableDto resolveAssessmentVariable(AssessmentVariable assessmentVariable,
             ResolverParameters params, Answer response) {
-        //logger.debug("Resolving answer variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
+        //logger.trace("Resolving answer variable with AV ID: {}", assessmentVariable.getAssessmentVariableId());
 
         Integer avId = assessmentVariable.getAssessmentVariableId();
         params.checkUnresolvable(avId);
@@ -53,7 +53,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                     .throwIt();
     
             if(response == null){
-                //logger.debug("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
+                //logger.trace("Resolving of an answer is not passing in a response object. This will result in only the first row value being used.");
                 List<Answer>responses = params.getAnswerResponse(measureAnswer.getMeasureAnswerId());
                 //this is a temporary fix until something better is figured out
                 if(!responses.isEmpty()){
@@ -86,7 +86,7 @@ public class MeasureAnswerAssessmentVariableResolverImpl implements MeasureAnswe
                 throw e;
             }
         }
-        //logger.debug("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
+        //logger.trace("Resolved answer variable with AV ID: {} to:\n{}", assessmentVariable.getAssessmentVariableId(), variableDto);
         return variableDto;
     }
 

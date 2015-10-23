@@ -105,7 +105,7 @@ public class TemplateServiceTest extends AssessmentTestBase {
 		}
 
 		try {
-			logger.debug(templateSvc.generateCPRSNote(
+			logger.trace(templateSvc.generateCPRSNote(
 					assessment.getVeteranAssessmentId(), ViewType.TEXT));
 		} catch (TemplateProcessorException | IllegalSystemStateException e) {
 

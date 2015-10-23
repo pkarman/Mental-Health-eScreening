@@ -28,7 +28,7 @@ public class TIU_DELETE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest imp
     @Override
     protected String[] parseRpcResponse(RpcResponse response) throws Exception {
         String [] parsedRpcResponse = super.parseRpcSimpleResponseWithCarrotDelimiter(response);
-        logger.debug("Delete Progress Note Response: " + response.getResults());
+        logger.trace("Delete Progress Note Response: " + response.getResults());
         return parsedRpcResponse;
     }
 
@@ -49,7 +49,7 @@ public class TIU_DELETE_RECORD_VistaLinkRequest extends VistaLinkBaseRequest imp
         Boolean progressNoteDeleted = false;
         List<String> requestParams = new ArrayList<String>();
         requestParams.add(progressNoteIEN.toString()); // IEN of progress note. Required
-        logger.debug("Delete Progress Note IEN: " + progressNoteIEN);
+        logger.trace("Delete Progress Note IEN: " + progressNoteIEN);
 
         request.setRpcName("TIU DELETE RECORD");
         request.clearParams();

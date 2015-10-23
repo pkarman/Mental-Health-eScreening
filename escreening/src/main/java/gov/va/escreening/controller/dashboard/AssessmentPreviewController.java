@@ -37,9 +37,9 @@ public class AssessmentPreviewController {
     @RequestMapping(value = "/assessmentPreview", method = RequestMethod.GET)
     public String setupPage(Model model, @RequestParam(value = "vaid", required = false) Integer veteranAssessmentId) {
 
-        logger.debug("In AssessmentReportController::setupPageAssessmentReport");
+        logger.trace("In AssessmentReportController::setupPageAssessmentReport");
 
-        logger.debug("veteranId: " + veteranAssessmentId);
+        logger.trace("veteranId: " + veteranAssessmentId);
 
         // Get the veteran assessment.
         VeteranAssessment veteranAssessment = veteranAssessmentService.findByVeteranAssessmentId(veteranAssessmentId);

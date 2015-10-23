@@ -43,7 +43,7 @@ public class CreateVeteranController {
      */
     @ModelAttribute
     public CreateVeteranFormBean getCreateVeteranFormBean() {
-        logger.debug("Creating new CreateVeteranFormBean");
+        logger.trace("Creating new CreateVeteranFormBean");
         return new CreateVeteranFormBean();
     }
 
@@ -139,7 +139,7 @@ public class CreateVeteranController {
     public String cancelCreateVeteran(HttpServletRequest request,@Valid @ModelAttribute CreateVeteranFormBean createVeteranFormBean,
                                       BindingResult result, Model model) {
 
-        logger.debug("In cancelCreateVeteran");
+        logger.trace("In cancelCreateVeteran");
 
         request.getSession().setAttribute("lastName", createVeteranFormBean.getLastName());
         request.getSession().setAttribute("ssnLastFour", createVeteranFormBean.getSsnLastFour());

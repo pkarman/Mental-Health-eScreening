@@ -46,7 +46,7 @@ public class MapVeteranToVistaRecordController {
      */
     @ModelAttribute
     public MapVeteranToVistaRecordFormBean getMapVeteranToVistaRecordFormBean() {
-        logger.debug("Creating new MapVeteranToVistaRecordFormBean");
+        logger.trace("Creating new MapVeteranToVistaRecordFormBean");
         return new MapVeteranToVistaRecordFormBean();
     }
 
@@ -66,7 +66,7 @@ public class MapVeteranToVistaRecordController {
 
         mapVeteranToVistaRecordFormBean.setVeteranId(veteranId);
 
-        logger.debug("setUp: " + mapVeteranToVistaRecordFormBean.toString());
+        logger.trace("setUp: " + mapVeteranToVistaRecordFormBean.toString());
         
         VeteranDto veteranDto = createAssessmentDelegate.fetchVeteran(escreenUser, veteranId, null, false, false);
 
@@ -94,7 +94,7 @@ public class MapVeteranToVistaRecordController {
             @Valid @ModelAttribute MapVeteranToVistaRecordFormBean mapVeteranToVistaRecordFormBean,
             BindingResult result, Model model, @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug(mapVeteranToVistaRecordFormBean.toString());
+        logger.trace(mapVeteranToVistaRecordFormBean.toString());
 
         // If there is an error, return the same view.
         if (result.hasErrors()) {
@@ -128,8 +128,8 @@ public class MapVeteranToVistaRecordController {
     public String createPageSelectVeteran(Model model,
             @ModelAttribute MapVeteranToVistaRecordFormBean mapVeteranToVistaRecordFormBean) {
 
-        logger.debug("veteranId: " + mapVeteranToVistaRecordFormBean.getVeteranId());
-        logger.debug("veteranIen: " + mapVeteranToVistaRecordFormBean.getSelectedVeteranIen());
+        logger.trace("veteranId: " + mapVeteranToVistaRecordFormBean.getVeteranId());
+        logger.trace("veteranIen: " + mapVeteranToVistaRecordFormBean.getSelectedVeteranIen());
 
         // Update database.
         createAssessmentDelegate.updateVeteranIen(mapVeteranToVistaRecordFormBean.getVeteranId(),

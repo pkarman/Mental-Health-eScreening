@@ -43,7 +43,7 @@ public class AssessmentVariableController {
 	@ResponseBody
 	public ErrorResponse handleEntityNotFoundException(
 			EntityNotFoundException enfe) {
-		logger.debug(enfe.getMessage());
+		logger.trace(enfe.getMessage());
 		return enfe.getErrorResponse();
 	}
 
@@ -51,7 +51,7 @@ public class AssessmentVariableController {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponse handleIllegalArgumentException(Exception iae) {
-		logger.debug(iae.getMessage());
+		logger.trace(iae.getMessage());
 		ErrorResponse er = new ErrorResponse();
 
 		er.setDeveloperMessage(iae.getMessage());

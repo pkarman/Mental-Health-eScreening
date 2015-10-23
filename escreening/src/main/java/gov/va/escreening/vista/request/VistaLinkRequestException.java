@@ -27,7 +27,7 @@ public class VistaLinkRequestException extends VistaLinkClientException {
         
         if(logType.equals(LogTypes.ERROR)) logger.error(message);
         if(logType.equals(LogTypes.WARNING)) logger.warn(message);
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(message);
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(message);
         if(logType.equals(LogTypes.INFO)) logger.info(message);
         
     }
@@ -44,12 +44,12 @@ public class VistaLinkRequestException extends VistaLinkClientException {
 
         if(logType.equals(LogTypes.ERROR)) logger.error(message);
         if(logType.equals(LogTypes.WARNING)) logger.warn(message);
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(message);
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(message);
         if(logType.equals(LogTypes.INFO)) logger.info(message);
         
         if(logType.equals(LogTypes.ERROR)) logger.error(printRequestParams(requestParams));
         if(logType.equals(LogTypes.WARNING)) logger.warn(printRequestParams(requestParams));
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(printRequestParams(requestParams));
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(printRequestParams(requestParams));
         if(logType.equals(LogTypes.INFO)) logger.info(printRequestParams(requestParams));
     }
 
@@ -74,12 +74,12 @@ public class VistaLinkRequestException extends VistaLinkClientException {
 
         if(logType.equals(LogTypes.ERROR)) logger.error(message);
         if(logType.equals(LogTypes.WARNING)) logger.warn(message);
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(message);
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(message);
         if(logType.equals(LogTypes.INFO)) logger.info(message);
         
         if(logType.equals(LogTypes.ERROR)) logger.error(printRequestParams(requestParams));
         if(logType.equals(LogTypes.WARNING)) logger.warn(printRequestParams(requestParams));
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(printRequestParams(requestParams));
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(printRequestParams(requestParams));
         if(logType.equals(LogTypes.INFO)) logger.info(printRequestParams(requestParams));
     }
 

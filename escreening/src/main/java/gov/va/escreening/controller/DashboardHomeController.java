@@ -35,21 +35,21 @@ public class DashboardHomeController {
 
     @RequestMapping(value = "/")
     public String defaultpage(Model model, HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
-        logger.debug("Using the / mapping");
+        logger.trace("Using the / mapping");
         return homePage(model, request, escreenUser);
     }
 
     @RequestMapping(value = "/home")
     public String homePage(Model model, HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
-        logger.debug("Using the home mapping");
-        // logger.debug("BasicUser.fullName: " + escreenUser.getFullName());
+        logger.trace("Using the home mapping");
+        // logger.trace("BasicUser.fullName: " + escreenUser.getFullName());
         return "dashboardHome";
     }
 
     @RequestMapping(value = "/allowedTabs", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Boolean> getTabPermissions(HttpServletRequest request) {
-        logger.debug("Request for tab permissions");
+        logger.trace("Request for tab permissions");
 
         List<String> tabs = Arrays.asList("home", "assessmentDashboard", "createBattery", 
 										  "assessmentReport", "veteranSearch", "exportData", "formsEditor",

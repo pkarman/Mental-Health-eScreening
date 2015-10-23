@@ -48,7 +48,7 @@ public class EditVeteranAssessmentRestController {
     public List<DropDownObject> getClinicForProgramId(@PathVariable Integer programId,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In getClinicForProgramId");
+        logger.trace("In getClinicForProgramId");
 
         List<DropDownObject> resultList = clinicService.getDropDownObjectsByProgramId(programId);
 
@@ -60,7 +60,7 @@ public class EditVeteranAssessmentRestController {
     public List<DropDownObject> getClinicianForProgramId(@PathVariable Integer programId,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In getClinicianForClinicId");
+        logger.trace("In getClinicianForClinicId");
 
         List<DropDownObject> resultList = userService.getClinicianDropDownObjects(programId);
 
@@ -72,7 +72,7 @@ public class EditVeteranAssessmentRestController {
     public List<DropDownObject> getNotTitleForProgramId(@PathVariable Integer programId,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In getNotTitleForProgramId");
+        logger.trace("In getNotTitleForProgramId");
 
         List<DropDownObject> resultList = noteTitleService.getNoteTitleList(programId);
 

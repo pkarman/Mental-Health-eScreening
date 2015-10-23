@@ -18,7 +18,7 @@ public class FormsEditorController {
 	
 	@RequestMapping(value = "/formsEditor" , method = RequestMethod.GET)
 	public ModelAndView formsEditorDo(Locale locale, Model model) {
-		logger.debug("In formsEditor");
+		logger.trace("In formsEditor");
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("formsEditor");
 		return modelAndView;

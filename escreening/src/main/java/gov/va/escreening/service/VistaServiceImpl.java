@@ -137,7 +137,7 @@ public class VistaServiceImpl implements VistaService {
     @Override
     public String callRpc(String division, String vpid, String duz, String appProxyName, String rpcContext,
                           String rpcName, List<VistaRpcParam> vistaRpcParamList) {
-        logger.debug("VistaServiceImpl::callRpc");
+        logger.trace("VistaServiceImpl::callRpc");
         return vistaRepository.callRpc(division, vpid, duz, appProxyName, rpcContext, rpcName, vistaRpcParamList);
     }
 
@@ -162,7 +162,7 @@ public class VistaServiceImpl implements VistaService {
             lastNameSsn += StringUtils.right(ssnLastFour, 4);
         }
 
-        logger.debug("VistaServiceImpl::searchVeteran " + lastNameSsn);
+        logger.trace("VistaServiceImpl::searchVeteran " + lastNameSsn);
 
         List<VeteranDto> resultList = vistaRepository.searchVeteran(division, vpid, duz, appProxyName, lastNameSsn);
 
@@ -200,7 +200,7 @@ public class VistaServiceImpl implements VistaService {
     @Override
     public VeteranDto getVeteran(String division, String vpid, String duz, String appProxyName, String veteranIen) {
 
-        logger.debug("VistaServiceImpl::getVeteran " + veteranIen);
+        logger.trace("VistaServiceImpl::getVeteran " + veteranIen);
 
         VeteranDto veteranDto = vistaRepository.getVeteran(division, vpid, duz, appProxyName, veteranIen);
 
@@ -228,7 +228,7 @@ public class VistaServiceImpl implements VistaService {
     @Override
     public List<VistaVeteranAppointment> getVeteranAppointments(String division, String vpid, String duz,
                                                                 String appProxyName, String veteranIen) {
-        logger.debug("VistaServiceImpl::getAppointments");
+        logger.trace("VistaServiceImpl::getAppointments");
 
         return vistaRepository.getVeteranAppointments(division, vpid, duz, appProxyName, veteranIen);
     }
@@ -247,7 +247,7 @@ public class VistaServiceImpl implements VistaService {
             // Lastname is always required for this method.
             if (!lastName.equalsIgnoreCase(veterans.get(i).getLastName())) {
                 // remove from list
-                logger.debug("Last names do not equal {} != {}", lastName, veterans.get(i).getLastName());
+                logger.trace("Last names do not equal {} != {}", lastName, veterans.get(i).getLastName());
                 veterans.remove(i);
                 --i;
                 continue;
@@ -256,7 +256,7 @@ public class VistaServiceImpl implements VistaService {
             if (isMiddleNameRequired) {
                 if (!middleName.equalsIgnoreCase(veterans.get(i).getMiddleName())) {
                     // remove from list
-                    logger.debug("Middle names do not equal {} != {}", lastName, veterans.get(i).getMiddleName());
+                    logger.trace("Middle names do not equal {} != {}", lastName, veterans.get(i).getMiddleName());
                     veterans.remove(i);
                     --i;
                     continue;
@@ -267,7 +267,7 @@ public class VistaServiceImpl implements VistaService {
                 if (veterans.get(i).getBirthDate() == null
                         || (DateTimeComparator.getDateOnlyInstance().compare(birthDate, veterans.get(i).getBirthDate()) != 0)) {
                     // remove from list
-                    logger.debug("Birth dates do not equal {} != {}", birthDate, veterans.get(i).getBirthDate());
+                    logger.trace("Birth dates do not equal {} != {}", birthDate, veterans.get(i).getBirthDate());
 
                     veterans.remove(i);
                     --i;
@@ -457,16 +457,16 @@ public class VistaServiceImpl implements VistaService {
             logger.warn("No clinics imported from Vista. Returning from here");
             return responseMap;
         }
-        logger.debug("total clinics retrieved from vista:{}", vistaLocations.size());
+        logger.trace("total clinics retrieved from vista:{}", vistaLocations.size());
 
         // Fetch from DB.
         List<Clinic> escreeningClinics = clinicService.getClinics();
-        logger.debug("total clinics retrieved from escreening db:{}", escreeningClinics.size());
+        logger.trace("total clinics retrieved from escreening db:{}", escreeningClinics.size());
 
         Multimap<Long, Clinic> existingDbClinic = ArrayListMultimap.create();
 
         escreeningClinics.stream().filter(c -> c.getVistaIen() != null && !c.getVistaIen().isEmpty()).forEach(c -> existingDbClinic.put(Long.valueOf(c.getVistaIen().trim()), c));
-        logger.debug("usable clinics retrieved from escreening db:{}", existingDbClinic.size());
+        logger.trace("usable clinics retrieved from escreening db:{}", existingDbClinic.size());
 
         for (VistaLocation vistaLocation : vistaLocations) {
             Collection<Clinic> clinics = existingDbClinic.get(vistaLocation.getIen());
@@ -525,16 +525,16 @@ public class VistaServiceImpl implements VistaService {
 
         // If we didn't get anything, then just return.
         if (clinicalReminderList == null || clinicalReminderList.size() < 1) {
-            logger.debug("Fetched clinical reminders from VistA: null or 0");
+            logger.trace("Fetched clinical reminders from VistA: null or 0");
             return 0;
         }
 
-        logger.debug("Fetched clinical reminders from VistA: " + clinicalReminderList.size());
+        logger.trace("Fetched clinical reminders from VistA: " + clinicalReminderList.size());
 
         // Fetch from DB.
         List<ClinicalReminder> clinicalReminderListDb = clinicalReminderRepo.findAll();
 
-        logger.debug("Fetched clinical reminders from DB: " + clinicalReminderListDb.size());
+        logger.trace("Fetched clinical reminders from DB: " + clinicalReminderListDb.size());
 
         HashMap<String, ClinicalReminder> existingDbClinicalReminder = new HashMap<String, ClinicalReminder>(
                 clinicalReminderList.size());
@@ -613,16 +613,16 @@ public class VistaServiceImpl implements VistaService {
 
         // If we didn't get anything, then just return.
         if (noteTitleList == null || noteTitleList.size() < 1) {
-            logger.debug("Fetched note titles from VistA: null or 0");
+            logger.trace("Fetched note titles from VistA: null or 0");
             return 0;
         }
 
-        logger.debug("Fetched note titles from VistA: " + noteTitleList.size());
+        logger.trace("Fetched note titles from VistA: " + noteTitleList.size());
 
         // Fetch from DB.
         List<NoteTitle> noteTitleListDb = noteTitleService.findAll();
 
-        logger.debug("Fetched note titles from DB: " + noteTitleListDb.size());
+        logger.trace("Fetched note titles from DB: " + noteTitleListDb.size());
 
         HashMap<String, NoteTitle> existingDbNoteTitle = new HashMap<String, NoteTitle>();
 
@@ -752,7 +752,7 @@ public class VistaServiceImpl implements VistaService {
         int numRecord = 0;
         List<Survey> surveyList = surveyRepo.getMhaSurveyList();
 
-        logger.debug("refreshing MHA IENs for surveys");
+        logger.trace("refreshing MHA IENs for surveys");
         for (Survey s : surveyList) {
             if (s.getClinicalReminderSurveyList() != null && !s.getClinicalReminderSurveyList().isEmpty()) {
                 String ien = s.getClinicalReminderSurveyList().get(0).getClinicalReminder().getVistaIen();

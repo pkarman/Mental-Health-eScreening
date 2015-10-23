@@ -71,7 +71,7 @@ public class ORQQPXRM_MENTAL_HEALTH_SAVE_VistaLinkRequest extends VistaLinkBaseR
         request.clearParams();
         request.setParams(requestParams);
 
-        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]", request.getRpcName(), requestParams));}
         RpcResponse response = connection.executeRPC(request);
 
         try {

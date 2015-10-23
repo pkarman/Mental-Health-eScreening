@@ -51,15 +51,15 @@ public class AssessmentSummaryRestController extends RestController{
     @ResponseBody
     public List<String> getHealthFactorTitleList(@PathVariable Integer veteranAssessmentId,
             @CurrentUser EscreenUser escreenUser) {
-        logger.debug("veteranSummary");
-        logger.debug("getHealthFactorTitleList");
+        logger.trace("veteranSummary");
+        logger.trace("getHealthFactorTitleList");
 
         // Call service class here.
 
         List<String> healthFactorTitleList = veteranAssessmentService.getHealthFactorReport(veteranAssessmentId);
 
         if (healthFactorTitleList != null) {
-            logger.debug(healthFactorTitleList.toString());
+            logger.trace(healthFactorTitleList.toString());
 
             List<String> formattedList = new ArrayList<String>();
 
@@ -78,7 +78,7 @@ public class AssessmentSummaryRestController extends RestController{
     public String getCprsNote(@PathVariable Integer veteranAssessmentId, 
             HttpServletRequest request) {
         logRequest(logger, request);
-        logger.debug("getCprsNote");
+        logger.trace("getCprsNote");
         String progressNoteContent = null;
 
         try {
@@ -97,7 +97,7 @@ public class AssessmentSummaryRestController extends RestController{
             }
         }
         
-        logger.debug("Returning note:\n{}", progressNoteContent);
+        logger.trace("Returning note:\n{}", progressNoteContent);
 
         return progressNoteContent;
     }
@@ -109,7 +109,7 @@ public class AssessmentSummaryRestController extends RestController{
     public String getVeteranSummary(@PathVariable Integer veteranAssessmentId, 
             HttpServletRequest request) {
         logRequest(logger, request);
-        logger.debug("getVeteranSummary");
+        logger.trace("getVeteranSummary");
         
         String progressNoteContent = null;
 
@@ -135,7 +135,7 @@ public class AssessmentSummaryRestController extends RestController{
             }
         }
         
-        logger.debug("Returrning note:\n{}", progressNoteContent);
+        logger.trace("Returrning note:\n{}", progressNoteContent);
 
         return progressNoteContent;
     }
@@ -145,7 +145,7 @@ public class AssessmentSummaryRestController extends RestController{
     public Map<String, Double> getAssessmentVariableTimeSeires(@PathVariable Integer veteranId, 
     		@PathVariable Integer assessmentVarId, @PathVariable Integer numMonth, HttpServletRequest request) {
         logRequest(logger, request);
-        logger.debug("getAssessmentVariableTimeSeires: Get time series for veteran {}, assessment variable ID {}.", veteranId, assessmentVarId);
+        logger.trace("getAssessmentVariableTimeSeires: Get time series for veteran {}, assessment variable ID {}.", veteranId, assessmentVarId);
     	
     	return veteranAssessmentService.getVeteranAssessmentVariableSeries(veteranId, assessmentVarId, numMonth);
    }

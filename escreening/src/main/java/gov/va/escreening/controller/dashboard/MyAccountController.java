@@ -15,7 +15,7 @@ public class MyAccountController {
 
     @RequestMapping(value = "/myAccount", method = RequestMethod.GET)
     public String setupPage(Model model) {
-        logger.debug("In myAccount ");
+        logger.trace("In myAccount ");
 
         return "dashboard/myAccount";
     }

@@ -425,7 +425,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         try {
             veteranAssessment = veteranAssessmentRepository.findOne(veteranAssessmentId);
         } catch (Exception ex) {
-            logger.debug("Veteran Assessment not found for ID: " + veteranAssessmentId);
+            logger.trace("Veteran Assessment not found for ID: " + veteranAssessmentId);
         }
 
         return veteranAssessment;
@@ -772,7 +772,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
     @Override
     public void initializeVisibilityFor(VeteranAssessment veteranAssessment) {
-        logger.debug("Initializing visibility settings for optional questions in veteran assessment {}", veteranAssessment);
+        logger.trace("Initializing visibility settings for optional questions in veteran assessment {}", veteranAssessment);
 
         Integer veteranAssessmentId = veteranAssessment.getVeteranAssessmentId();
 
@@ -839,7 +839,7 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         // for any work then.
         if (veteranAssessment.getHealthFactors() != null) {
             for (HealthFactor healthFactor : veteranAssessment.getHealthFactors()) {
-                logger.debug("Found HF: " + healthFactor.getName());
+                logger.trace("Found HF: " + healthFactor.getName());
                 // healthFactor.getVistaIen();
                 // healthFactor.getName();
                 // healthFactor.getIsHistorical();
@@ -1450,10 +1450,10 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
         String ssnLastFour=assessmentSummaryFormBean.getSsnLastFour();
         if (null!=lastName && null!=ssnLastFour) {
             Veteran veteran = veteranRepository.findOne(assessmentSummaryFormBean.getVeteranId());
-            logger.debug("Veteran before update {}", veteran);
+            logger.trace("Veteran before update {}", veteran);
             veteran.setLastName(lastName);
             veteran.setSsnLastFour(ssnLastFour);
-            logger.debug("Veteran after lastName & ssn last four changed {}", veteran);
+            logger.trace("Veteran after lastName & ssn last four changed {}", veteran);
         }
     }
 }

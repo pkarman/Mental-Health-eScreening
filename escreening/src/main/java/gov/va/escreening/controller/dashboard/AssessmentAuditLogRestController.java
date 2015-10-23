@@ -31,7 +31,7 @@ public class AssessmentAuditLogRestController extends BaseDashboardRestControlle
     @RequestMapping(method = RequestMethod.GET, value = "assessments/{assessmentId}/assessmentAuditLog/report/pdf")
     public ModelAndView generateAssessmentAuditLogReport(ModelAndView modelAndView, @PathVariable Integer assessmentId) {
     	
-        logger.debug("Generating assessment audit log for assessment id: " + assessmentId);
+        logger.trace("Generating assessment audit log for assessment id: " + assessmentId);
         
         List<AssessmentAuditLogReport> auditLogReportList = veteranAssessmentAuditLogService.getAssessmentAuditLogByAssessmentId(assessmentId);
         
@@ -50,7 +50,7 @@ public class AssessmentAuditLogRestController extends BaseDashboardRestControlle
     @RequestMapping(method = RequestMethod.GET, value = "assessments/test/write")
     public void generateTestWrite() {
     	
-        logger.debug("inserting test record ");
+        logger.trace("inserting test record ");
 
         VeteranAssessmentAuditLog auditLogEntry = new VeteranAssessmentAuditLog();
         auditLogEntry.setPersonFirstName("firstname");
@@ -73,7 +73,7 @@ public class AssessmentAuditLogRestController extends BaseDashboardRestControlle
     @RequestMapping(method = RequestMethod.GET, value = "assessmentAuditLog/assessment/report/pdf/test")
     public ModelAndView generateAuditLogReportTest(HttpServletRequest request, ModelAndView modelAndView) {
 
-        logger.debug("--------------generating assessment audit log test ----------");
+        logger.trace("--------------generating assessment audit log test ----------");
         List<AssessmentAuditLogReport> testResults = getTestReportData();
         
         Map<String, Object> parameterMap = new HashMap<String, Object>();

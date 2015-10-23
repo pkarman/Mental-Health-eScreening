@@ -54,7 +54,7 @@ public class VeteranDetailController implements MessageSourceAware {
      */
     @ModelAttribute
     public VeteranDetailFormBean getVeteranDetailFormBean() {
-        logger.debug("Creating new VeteranDetailFormBean");
+        logger.trace("Creating new VeteranDetailFormBean");
         return new VeteranDetailFormBean();
     }
 
@@ -78,7 +78,7 @@ public class VeteranDetailController implements MessageSourceAware {
             @RequestParam(value = "ibc", required = false, defaultValue= "false") boolean isBatteryCreated,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In setUpPageVeteranDetail");
+        logger.trace("In setUpPageVeteranDetail");
 
         // Get veteran.
         VeteranDto veteranDto = null;
@@ -163,7 +163,7 @@ public class VeteranDetailController implements MessageSourceAware {
             @ModelAttribute VeteranDetailFormBean veteranDetailFormBean,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("vien: {}: ", veteranDetailFormBean.getVeteranIen());
+        logger.trace("vien: {}: ", veteranDetailFormBean.getVeteranIen());
 
         Integer veteranId = createAssessmentDelegate.importVistaRecord(escreenUser,
                 veteranDetailFormBean.getVeteranIen());
@@ -185,7 +185,7 @@ public class VeteranDetailController implements MessageSourceAware {
             @ModelAttribute VeteranDetailFormBean veteranDetailFormBean,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("veteranId: {}", veteranDetailFormBean.getVeteranId());
+        logger.trace("veteranId: {}", veteranDetailFormBean.getVeteranId());
 
         // Redirect to create assessment page with the veteranId parameter.
         model.addAttribute("vid", veteranDetailFormBean.getVeteranId());

@@ -125,7 +125,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 		res = createResponse(241, 2415, false, assessment.getVeteranAssessmentId(), 22);
 		assessment.getSurveyMeasureResponseList().add(res);
 
-		logger.debug("Updating assessment: {}", assessment);
+		logger.trace("Updating assessment: {}", assessment);
 		
 		vetAssessmentRepo.update(assessment);
 		//this is needed to have the rule service pick up these new responses from the DB 
@@ -178,7 +178,7 @@ public class RuleServiceTest extends AssessmentTestBase {
 		res = createResponse(545, 5451, false, assessment.getVeteranAssessmentId(), 22);
         assessment.getSurveyMeasureResponseList().add(res);
 		
-		logger.debug("Updating assessment: {}", assessment);
+		logger.trace("Updating assessment: {}", assessment);
 		
 		vetAssessmentRepo.update(assessment);
 		//this is needed to have the rule service pick up these new responses from the DB 

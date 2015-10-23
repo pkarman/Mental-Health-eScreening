@@ -42,14 +42,14 @@ public class UserManagementController {
 
     @RequestMapping(value = "/userManagement", method = RequestMethod.GET)
     public ModelAndView userManagementDo(ModelAndView modelAndView) {
-        logger.debug("userManagement invoked navigating to user management view.");
+        logger.trace("userManagement invoked navigating to user management view.");
         modelAndView.setViewName("userManagement");
         return modelAndView;
     }
 
     @RequestMapping(value = "/createUser", method = RequestMethod.GET)
     public ModelAndView navigateToCreateUserView(ModelAndView modelAndView) {
-        logger.debug("createUser invoked navigating to create user view.");
+        logger.trace("createUser invoked navigating to create user view.");
         modelAndView.setViewName("createUser");
 
         modelAndView.addObject("cprsVerifiedValue", CPRS_NOT_VERIFIED);
@@ -67,7 +67,7 @@ public class UserManagementController {
             @RequestParam String userStatusSelectParam, @RequestParam String clinicsParam, ModelAndView modelAndView,
             HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("createUser action invoked, creating user with passed in parameters");
+        logger.trace("createUser action invoked, creating user with passed in parameters");
         List<String> errors = validateFormParameters(firstNameParam, middleInitialParam, lastNameParam, userIdParam,
                 passwordParam, emailAddressParam, emailAddress2Param, phoneNumberParam, phoneNumber2Param,
                 true);
@@ -104,7 +104,7 @@ public class UserManagementController {
 
         try {
             User user = userService.create(userToAdd, escreenUser.getUsername());
-            logger.debug("New UserID: " + user.getUserId());
+            logger.trace("New UserID: " + user.getUserId());
         }
         catch (PersistenceException ex) {
             logger.error("Could not create user.", ex);
@@ -143,7 +143,7 @@ public class UserManagementController {
     public ModelAndView navigateToEditUserView(ModelAndView modelAndView, @RequestParam String mode,
             @RequestParam String userId) {
 
-        logger.debug("editUser invoked navigating to edit user view.");
+        logger.trace("editUser invoked navigating to edit user view.");
 
         Integer userIdInt = Integer.parseInt(userId);
         UserDto user = userService.getUserDtoByUserId(userIdInt);
@@ -171,7 +171,7 @@ public class UserManagementController {
             @RequestParam String userStatusSelectParam, @RequestParam String clinicsParam, ModelAndView modelAndView,
             HttpServletRequest request, HttpServletResponse response, @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("editUser action invoked, editing a user with passed in parameters");
+        logger.trace("editUser action invoked, editing a user with passed in parameters");
 
         List<String> errors = validateFormParameters(firstNameParam, middleInitialParam, lastNameParam, userIdParam,
                 passwordParam, emailAddressParam, emailAddress2Param, phoneNumberParam, phoneNumber2Param,

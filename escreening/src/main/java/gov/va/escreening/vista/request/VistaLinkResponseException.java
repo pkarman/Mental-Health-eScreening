@@ -29,7 +29,7 @@ public class VistaLinkResponseException extends VistaLinkRequestException {
         
         if(logType.equals(LogTypes.ERROR)) logger.error(response);
         if(logType.equals(LogTypes.WARNING)) logger.warn(response);
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(response);
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(response);
         if(logType.equals(LogTypes.INFO)) logger.info(response);
     }
 
@@ -44,7 +44,7 @@ public class VistaLinkResponseException extends VistaLinkRequestException {
 
         if(logType.equals(LogTypes.ERROR)) logger.error(response);
         if(logType.equals(LogTypes.WARNING)) logger.warn(response);
-        if(logType.equals(LogTypes.DEBUG)) logger.debug(response);
+        if(logType.equals(LogTypes.DEBUG)) logger.trace(response);
         if(logType.equals(LogTypes.INFO)) logger.info(response);
     }
 }

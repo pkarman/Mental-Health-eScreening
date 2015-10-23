@@ -17,7 +17,7 @@ public class ExportDataController {
 		
 	@RequestMapping(value = "exportData")
 	public ModelAndView exportData(Locale locale, Model model) {
-		logger.debug("In exportData ");
+		logger.trace("In exportData ");
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("exportData");
 		return modelAndView;

@@ -52,7 +52,7 @@ public class AssessmentAdminRestController {
     @RequestMapping(value = "/services/getclinicsForDropdown", method = RequestMethod.GET)
     @ResponseBody
     public List<DropDownObject> getClinicsForDropdown() {
-        logger.debug("In getallclinicnames");
+        logger.trace("In getallclinicnames");
 
         List<Clinic> clinics = clinicService.getClinics();
         List<DropDownObject> dropDownList = new ArrayList<DropDownObject>();
@@ -72,7 +72,7 @@ public class AssessmentAdminRestController {
     // @RequestMapping(value = "/services/clinics/{clinicId}/clinicians", method = RequestMethod.GET)
     // @ResponseBody
     // public List<DropDownObject> getCliniciansByClinic(@PathVariable int clinicId) {
-    // logger.debug("In getCliniciansByClinic");
+    // logger.trace("In getCliniciansByClinic");
     //
     // return userService.getClinicianDropDownObjects(clinicId);
     // }
@@ -91,7 +91,7 @@ public class AssessmentAdminRestController {
     @ResponseBody
     @Deprecated
     public List<VeteranDto> getVeteransByLastNameLastFour(@PathVariable String lastName, @PathVariable String lastfour) {
-        logger.debug("In getVeteransByLastNameLastFour");
+        logger.trace("In getVeteransByLastNameLastFour");
 
         VeteranDto veteran = new VeteranDto();
 
@@ -108,11 +108,11 @@ public class AssessmentAdminRestController {
     @Deprecated
     public List<VeteranAssessmentDto> getAssessments(HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("getAssessments()");
+        logger.trace("getAssessments()");
 
         List<VeteranAssessmentDto> veteranAssessments = veteranAssessmentService.getAssessmentListForProgramIdList(escreenUser.getProgramIdList());
 
-        logger.debug("veteranAssessments.size(): " + veteranAssessments.size());
+        logger.trace("veteranAssessments.size(): " + veteranAssessments.size());
 
         return veteranAssessments;
     }

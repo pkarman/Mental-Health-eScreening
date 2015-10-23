@@ -77,49 +77,49 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         Integer vaId = ctxt.getVeteranAssessmentId();
 
         VeteranAssessment veteranAssessment = checkVeteranAssessment(ctxt);
-        logger.debug("sva2vista:SaveToVistaContext after checkVeteranAssessment:{}", ctxt);
-        logger.debug("sva2vista:VeteranAssessment returned by checkVeteranAssessment:{}", veteranAssessment);
+        logger.trace("sva2vista:SaveToVistaContext after checkVeteranAssessment:{}", ctxt);
+        logger.trace("sva2vista:VeteranAssessment returned by checkVeteranAssessment:{}", veteranAssessment);
         if (ctxt.opFailed(SaveToVistaContext.PendingOperation.veteran)) {
             return;
         }
 
         final VistaLinkClientStrategy vistaLinkClientStrategy = rpcConnectionProvider.createVistaLinkClientStrategy(ctxt.getEscUserId(), "", "OR CPRS GUI CHART");
-        logger.debug("sva2vista:vaid:{}--VistaLinkClientStrategy:{}", vaId, vistaLinkClientStrategy);
+        logger.trace("sva2vista:vaid:{}--VistaLinkClientStrategy:{}", vaId, vistaLinkClientStrategy);
 
         final VistaLinkClient vistaLinkClient = vistaLinkClientStrategy.getClient();
-        logger.debug("sva2vista:vaid:{}--VistaLinkClient:{}", vaId, vistaLinkClient);
+        logger.trace("sva2vista:vaid:{}--VistaLinkClient:{}", vaId, vistaLinkClient);
         Long patientIEN = Long.parseLong(veteranAssessment.getVeteran().getVeteranIen());
-        logger.debug("sva2vista:vaid:{}--patientIEN:{}", vaId, patientIEN);
+        logger.trace("sva2vista:vaid:{}--patientIEN:{}", vaId, patientIEN);
 
         {
             // Get Mental Health Assessments
             saveMentalHealthAssessments(patientIEN, veteranAssessment, vistaLinkClient, ctxt);
-            logger.debug("sva2vista:SaveToVistaContext after saveMentalHealthAssessments:{}", ctxt);
+            logger.trace("sva2vista:SaveToVistaContext after saveMentalHealthAssessments:{}", ctxt);
         }
 
         // Generate CPRS Note based on the responses to the survey
         // questions.
         Long locationIEN = Long.parseLong(veteranAssessment.getClinic().getVistaIen());
-        logger.debug("sva2vista:vaid:{}--locationIEN:{}", vaId, locationIEN);
+        logger.trace("sva2vista:vaid:{}--locationIEN:{}", vaId, locationIEN);
 
         Boolean inpatientStatus = vistaLinkClient.findPatientDemographics(patientIEN).getInpatientStatus();
-        logger.debug("sva2vista:vaid:{}--inpatientStatus:{}", vaId, inpatientStatus);
+        logger.trace("sva2vista:vaid:{}--inpatientStatus:{}", vaId, inpatientStatus);
 
         String visitStrFromVista = findVisitStrFromVista(ctxt.getEscUserId(), patientIEN.toString(), veteranAssessment);
-        logger.debug("sva2vista:vaid:{}--visitStr:{}", vaId, visitStrFromVista);
+        logger.trace("sva2vista:vaid:{}--visitStr:{}", vaId, visitStrFromVista);
         // vista will not return any visitStr if assessments does not have any appointments
         boolean hasAppointments = visitStrFromVista != null;
 
         String visitString = hasAppointments ? visitStrFromVista : createVisitStrLocallyFromAssessment(vistaLinkClient, locationIEN, inpatientStatus, vaId, veteranAssessment);
-        logger.debug("sva2vista:vaid:{}--visitString:{}", vaId, visitString);
+        logger.trace("sva2vista:vaid:{}--visitString:{}", vaId, visitString);
 
         {
             VistaProgressNote progressNote = saveProgressNote(patientIEN, locationIEN, visitString, veteranAssessment, vistaLinkClient, ctxt);
-            logger.debug("sva2vista:vaid:{}--VistaProgressNote:{}", vaId, progressNote);
+            logger.trace("sva2vista:vaid:{}--VistaProgressNote:{}", vaId, progressNote);
 
             if (progressNote != null && progressNote.getIEN() != null) {
                 saveMentalHealthFactors(hasAppointments, locationIEN, visitString, inpatientStatus, progressNote.getIEN(), veteranAssessment, vistaLinkClient, ctxt);
-                logger.debug("sva2vista:vaid:{}--saveMentalHealthFactors:{}", vaId, ctxt);
+                logger.trace("sva2vista:vaid:{}--saveMentalHealthFactors:{}", vaId, ctxt);
                 if (ctxt.opFailed(SaveToVistaContext.PendingOperation.hf)) {
                     return;
                 }
@@ -129,30 +129,30 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         {
             // save TBI Consult request
             saveTbiConsultRequest(veteranAssessment, vistaLinkClient, ctxt);
-            logger.debug("sva2vista:vaid:{}--saveTbiConsultRequest:{}", vaId, ctxt);
+            logger.trace("sva2vista:vaid:{}--saveTbiConsultRequest:{}", vaId, ctxt);
         }
 
         {
             savePainScale(veteranAssessment, veteranAssessment.getUpdateAsFileman(), vistaLinkClient, ctxt);
-            logger.debug("sva2vista:vaid:{}--savePainScale:{}", vaId, ctxt);
+            logger.trace("sva2vista:vaid:{}--savePainScale:{}", vaId, ctxt);
         }
 
         {
             // save this activity in audit log
             VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
-            logger.debug("sva2vista:vaid:{}--VeteranAssessmentAuditLog:{}", vaId, ctxt);
+            logger.trace("sva2vista:vaid:{}--VeteranAssessmentAuditLog:{}", vaId, ctxt);
             veteranAssessmentAuditLogRepository.update(auditLogEntry);
-            logger.debug("sva2vista:vaid:{}--audit entry log saved successfully", vaId);
+            logger.trace("sva2vista:vaid:{}--audit entry log saved successfully", vaId);
         }
         {
             assessmentEngineService.transitionAssessmentStatusTo(veteranAssessment.getVeteranAssessmentId(), AssessmentStatusEnum.FINALIZED);
-            logger.debug("sva2vista:vaid:{}--transitionAssessmentStatusTo FINALIZED", vaId);
+            logger.trace("sva2vista:vaid:{}--transitionAssessmentStatusTo FINALIZED", vaId);
         }
     }
 
     private String createVisitStrLocallyFromAssessment(VistaLinkClient vistaLinkClient, Long locationIEN, Boolean inpatientStatus, Integer vaId, VeteranAssessment veteranAssessment) {
         VistaServiceCategoryEnum encounterServiceCategory = vistaLinkClient.findServiceCategory(VistaServiceCategoryEnum.A, locationIEN, inpatientStatus);
-        logger.debug("sva2vista:vaid:{}--encounterServiceCategory:{}", vaId, encounterServiceCategory);
+        logger.trace("sva2vista:vaid:{}--encounterServiceCategory:{}", vaId, encounterServiceCategory);
 
         String assessmentDateAsFileman = veteranAssessment.getUpdateAsFileman();
 
@@ -165,7 +165,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
     }
 
     private VeteranAssessment checkVeteranAssessment(SaveToVistaContext ctxt) {
-        logger.debug("sva2vista:vaid:{}--checkVeteranAssessment:{}", ctxt);
+        logger.trace("sva2vista:vaid:{}--checkVeteranAssessment:{}", ctxt);
         VeteranAssessment veteranAssessment = null;
         if (!ctxt.getEscUserId().getCprsVerified()) {
             ctxt.addUserError(SaveToVistaContext.PendingOperation.veteran, msg(SaveToVistaContext.MsgKey.usr_err_vet__verification));
@@ -237,7 +237,7 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
                         TemplateType.TBI_CONSULT_REASON, veteranAssessment, ViewType.TEXT);
                 Map<String, Object> vistaResponse = vistaLinkClient.saveTBIConsultOrders(veteranAssessment, quickOrderIen, refTbiServiceName, consultReason,
                         surveyResponsesHelper.prepareSurveyResponsesMap(btbisSurvey.getName(), veteranAssessment.getSurveyMeasureResponseList(), true));
-                logger.debug("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
+                logger.trace("sva2vista:ctxt:{}--TBI Consult Response {}", ctxt, vistaResponse);
                 ctxt.addSuccess(SaveToVistaContext.PendingOperation.tbi, msg(SaveToVistaContext.MsgKey.usr_pass_tbi__saved_success));
             }
         } catch (Exception e) {

@@ -55,7 +55,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @RequestMapping(value = "/exportData/services/exports/search/init", method = RequestMethod.GET)
     @ResponseBody
     public ExportDataFormBean getFormBean(HttpServletRequest request) {
-        logger.debug("In ExportDataRestController::getFormBean");
+        logger.trace("In ExportDataRestController::getFormBean");
         ExportDataFormBean exportDataFormBean = new ExportDataFormBean();
         return exportDataFormBean;
     }
@@ -171,7 +171,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
             HttpServletRequest request, @CurrentUser EscreenUser escreenUser) {
 
         String echo = request.getParameter("sEcho");
-        logger.debug("sEcho: " + echo);
+        logger.trace("sEcho: " + echo);
 
         List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), -1);
         return prepareResponse(results, echo);
@@ -198,7 +198,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
             @PathVariable int noOfDays) {
 
         String echo = request.getParameter("sEcho");
-        logger.debug("sEcho: " + echo);
+        logger.trace("sEcho: " + echo);
 
         List<ExportDataSearchResult> results = exportLogService.getExportLogs(escreenUser.getProgramIdList(), noOfDays);
         return prepareResponse(results, echo);
@@ -208,7 +208,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @ResponseBody
     public List<DropDownObject> getFilterOptions(
             @CurrentUser EscreenUser escreenUser) {
-        logger.debug("getFilterOptions");
+        logger.trace("getFilterOptions");
         List<DropDownObject> dropDownObjectList = exportDataFilterOptionsService.getExportDataFilterOptions();
         return dropDownObjectList;
     }
@@ -218,8 +218,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
     public List<DropDownObject> getClinician(@RequestParam Boolean includeAll,
                                              @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("getClinician");
-        logger.debug("includeAll: " + includeAll);
+        logger.trace("getClinician");
+        logger.trace("includeAll: " + includeAll);
 
         List<Integer> userStatusIdList = new ArrayList<Integer>();
         userStatusIdList.add(1);
@@ -240,8 +240,8 @@ public class ExportDataRestController extends BaseDashboardRestController {
             @RequestParam Boolean includeAll,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("getAssessmentCreators");
-        logger.debug("includeAll: " + includeAll);
+        logger.trace("getAssessmentCreators");
+        logger.trace("includeAll: " + includeAll);
 
         List<Integer> userStatusIdList = new ArrayList<Integer>();
         userStatusIdList.add(1);
@@ -260,7 +260,7 @@ public class ExportDataRestController extends BaseDashboardRestController {
     @ResponseBody
     public List<DropDownObject> getPrograms(@CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("getPrograms");
+        logger.trace("getPrograms");
 
         List<DropDownObject> dropDownObjectList = programService.getProgramDropDownObjects(escreenUser.getProgramIdList());
 

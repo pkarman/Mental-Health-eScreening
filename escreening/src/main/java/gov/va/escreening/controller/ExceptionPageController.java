@@ -31,7 +31,7 @@ public class ExceptionPageController {
 
     @RequestMapping(value = "/notauthorized")
     public String setupNotAuthorizedExceptionForm(Model model) {
-        logger.debug("Show notauthorized page");
+        logger.trace("Show notauthorized page");
 
         return "exceptions/notauthorized";
     }

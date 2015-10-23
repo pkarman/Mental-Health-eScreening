@@ -60,7 +60,7 @@ public class DialogPromptExtractor implements VistaRecordExtractor<DialogPrompt>
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
         Integer size = fields.length;
 
-        logger.debug("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
+        logger.trace("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
 
         if (size < 1) {
             return null;
@@ -149,7 +149,7 @@ public class DialogPromptExtractor implements VistaRecordExtractor<DialogPrompt>
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
         Integer size = fields.length;
 
-        logger.debug("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
+        logger.trace("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
 
         if (size < 1) {
             return null;
@@ -192,7 +192,7 @@ public class DialogPromptExtractor implements VistaRecordExtractor<DialogPrompt>
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
         Integer size = fields.length;
 
-        logger.debug("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
+        logger.trace("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
 
         if (size < 1) {
             return null;
@@ -243,7 +243,7 @@ public class DialogPromptExtractor implements VistaRecordExtractor<DialogPrompt>
         String[] fields = StringUtils.splitPreserveAllTokens(record, '^');
         Integer size = fields.length;
 
-        logger.debug("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
+        logger.trace("dialogPromptTypeCode {}, Size {}: ", fields[0], size);
 
         if (size < 1) {
             return null;

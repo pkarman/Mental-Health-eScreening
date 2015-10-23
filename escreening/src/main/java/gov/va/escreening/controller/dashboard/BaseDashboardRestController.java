@@ -33,12 +33,12 @@ public abstract class BaseDashboardRestController {
 	@ResponseBody
 	public ErrorResponse handleException(EscreeningDataValidationException ex) {
 
-		logger.debug("==>Data Validation Exception");
+		logger.trace("==>Data Validation Exception");
 
 		ErrorResponse errorResponse = ex.getErrorResponse().setStatus(HttpStatus.BAD_REQUEST.value());
 
-		logger.debug(ex.toString());
-		logger.debug(ex.getErrorResponse().toString());
+		logger.trace(ex.toString());
+		logger.trace(ex.getErrorResponse().toString());
 
 		return errorResponse;
 	}

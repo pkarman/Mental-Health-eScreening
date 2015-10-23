@@ -367,12 +367,12 @@ public class VistaRepositoryImpl implements VistaRepository {
                 }
             }
 
-            logger.debug("RPC NAME:[{}]--REQ STRING:[{}]", vReq.getRpcName(), vistaRpcParamList);
+            logger.trace("RPC NAME:[{}]--REQ STRING:[{}]", vReq.getRpcName(), vistaRpcParamList);
             
             RpcResponse vResp = vistaLinkConnection.executeRPC(vReq);
 
             results = vResp.getResults();
-            logger.debug("Vista Response: for {} \n{}", rpcName, results);
+            logger.trace("Vista Response: for {} \n{}", rpcName, results);
             return vistaRecordExtractor.extractData(results);
         } catch (ResourceException|FoundationsException e) {
             logger.error("Vista query exception thrown: ", e);
@@ -492,7 +492,7 @@ public class VistaRepositoryImpl implements VistaRepository {
     public List<DialogComponent> getClinicalReminderDialogs(String division,
                                                             String vpid, String duz, String appProxyName,
                                                             String clinicalReminderIEN) {
-    	logger.debug("getClinicalReminderDialogs(division={}, vpid={}, duz={}, appProxyName={}, clinicalReminderIEN={});\nusing samplePatientIen={}",
+    	logger.trace("getClinicalReminderDialogs(division={}, vpid={}, duz={}, appProxyName={}, clinicalReminderIEN={});\nusing samplePatientIen={}",
     			new Object[]{division, vpid, duz, appProxyName, clinicalReminderIEN, samplePatientIen});
     	
         List<VistaRpcParam> params = new ArrayList<VistaRpcParam>();
