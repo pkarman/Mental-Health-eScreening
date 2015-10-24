@@ -157,13 +157,14 @@ public class AssessmentSummaryController implements MessageSourceAware {
             return "dashboard/assessmentSummary";
         }
 
-        try {
-            veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean);
-            ctxt.addCallResult(new CallResult(false, "Successfully updated assessment.", null));
-        } catch (Exception e) {
-            ctxt.addCallResult(new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage()));
+        if(saveButton !=null) {
+            try {
+                veteranAssessmentService.update(veteranAssessmentId, assessmentSummaryFormBean);
+                ctxt.addCallResult(new CallResult(false, "Successfully updated assessment.", null));
+            } catch (Exception e) {
+                ctxt.addCallResult(new CallResult(true, "An unexpected error occured while saving to the database. Please try again and if the problem persists, contact the technical administrator.", Throwables.getRootCause(e).getMessage()));
+            }
         }
-
 
         // Check if we have any errors before trying to save to VistA
         if (saveToVistaButton != null && !ctxt.hasError()) {

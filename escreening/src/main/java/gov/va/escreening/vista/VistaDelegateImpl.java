@@ -77,6 +77,11 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         Integer vaId = ctxt.getVeteranAssessmentId();
 
         VeteranAssessment veteranAssessment = checkVeteranAssessment(ctxt);
+        if(veteranAssessment.getAssessmentStatus().getAssessmentStatusId() != AssessmentStatusEnum.COMPLETE.getAssessmentStatusId())
+        {
+            logger.warn("Can not save assessment if it is not in COMPLETE state, current state=" + veteranAssessment.getAssessmentStatus().getAssessmentStatusId());
+            return;
+        }
         logger.debug("sva2vista:SaveToVistaContext after checkVeteranAssessment:{}", ctxt);
         logger.debug("sva2vista:VeteranAssessment returned by checkVeteranAssessment:{}", veteranAssessment);
         if (ctxt.opFailed(SaveToVistaContext.PendingOperation.veteran)) {
@@ -140,9 +145,16 @@ public class VistaDelegateImpl implements VistaDelegate, MessageSourceAware {
         {
             // save this activity in audit log
             VeteranAssessmentAuditLog auditLogEntry = VeteranAssessmentAuditLogHelper.createAuditLogEntry(veteranAssessment, AssessmentConstants.ASSESSMENT_EVENT_VISTA_SAVE, veteranAssessment.getAssessmentStatus().getAssessmentStatusId(), AssessmentConstants.PERSON_TYPE_USER);
+            if(ctxt.getEscUserId() != null)
+            {
+                auditLogEntry.setPersonFirstName(ctxt.getEscUserId().getFirstName());
+                auditLogEntry.setPersonLastName(ctxt.getEscUserId().getLastName());
+                auditLogEntry.setPersonId(ctxt.getEscUserId().getUserId());
+            }
             logger.debug("sva2vista:vaid:{}--VeteranAssessmentAuditLog:{}", vaId, ctxt);
             veteranAssessmentAuditLogRepository.update(auditLogEntry);
             logger.debug("sva2vista:vaid:{}--audit entry log saved successfully", vaId);
+
         }
         {
             assessmentEngineService.transitionAssessmentStatusTo(veteranAssessment.getVeteranAssessmentId(), AssessmentStatusEnum.FINALIZED);
