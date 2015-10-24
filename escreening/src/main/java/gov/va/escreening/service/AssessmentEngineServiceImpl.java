@@ -1,6 +1,7 @@
 package gov.va.escreening.service;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_USER;
 import static gov.va.escreening.constants.AssessmentConstants.PERSON_TYPE_VETERAN;
 import gov.va.escreening.constants.AssessmentConstants;
 import gov.va.escreening.constants.RuleConstants;
@@ -741,7 +742,7 @@ public class AssessmentEngineServiceImpl implements AssessmentEngineService {
 				.createAuditLogEntry(veteranAssessment,
 						AssessmentConstants.ASSESSMENT_EVENT_MARKED_FINALIZED,
 						veteranAssessment.getAssessmentStatus()
-								.getAssessmentStatusId(), PERSON_TYPE_VETERAN);
+								.getAssessmentStatusId(), PERSON_TYPE_USER);
 		veteranAssessmentAuditLogRepository.update(auditLogEntry);
 	}
 
