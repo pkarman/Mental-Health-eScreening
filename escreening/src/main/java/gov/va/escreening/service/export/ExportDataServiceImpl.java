@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, MessageSourceAware {
@@ -604,7 +605,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         Map<String, String> tableQuestionResponseCntr = Maps.newHashMap();
 
-        Set<String> usrRespExportNames = usrRespMap.keySet();
+        Set<String> usrRespExportNames = usrRespMap.keySet().stream().filter(p -> p != null).collect(Collectors.toSet());
 
         for (String usrRespExportName : usrRespExportNames) {
             if (usrRespExportName.contains("~")) {
