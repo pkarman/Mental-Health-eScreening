@@ -28,51 +28,38 @@ import javax.annotation.Resource;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service("exportDataService")
 public class ExportDataServiceImpl implements ExportDataService, MessageSourceAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Resource(type = AssessmentVariableRepository.class)
-    private AssessmentVariableRepository avr;
-
-    @Resource(type = DataDictionaryService.class)
-    private DataDictionaryService dds;
-
-    @Resource(type = ExportLogRepository.class)
-    private ExportLogRepository exportLogRepository;
-
-    @Resource(type = ExportTypeRepository.class)
-    private ExportTypeRepository exportTypeRepository;
-
-    @Resource(type = ExportLogAuditRepository.class)
-    private ExportLogAuditRepository exportLogAuditRepository;
-
-    private MessageSource msgSrc;
-
-    @Resource(type = ProgramRepository.class)
-    private ProgramRepository programRepository;
-
-    @Resource(type = SurveyResponsesHelper.class)
-    private SurveyResponsesHelper srh;
-
-    @Resource(type = UserRepository.class)
-    private UserRepository userRepository;
-
-    @Resource(type = VeteranAssessmentService.class)
-    private VeteranAssessmentService veteranAssessmentService;
-
-    @Resource(type = VeteranRepository.class)
-    private VeteranRepository veteranRepository;
-
-    @Resource(type = VariableResolverService.class)
-    private VariableResolverService vrs;
-
-    @Resource(type = DataExportAndDictionaryUtil.class)
-    private DataExportAndDictionaryUtil dedUtil;
-
     @Resource(name = "theDataDictionary")
     DataDictionary dd;
+    @Resource(type = AssessmentVariableRepository.class)
+    private AssessmentVariableRepository avr;
+    @Resource(type = DataDictionaryService.class)
+    private DataDictionaryService dds;
+    @Resource(type = ExportLogRepository.class)
+    private ExportLogRepository exportLogRepository;
+    @Resource(type = ExportTypeRepository.class)
+    private ExportTypeRepository exportTypeRepository;
+    @Resource(type = ExportLogAuditRepository.class)
+    private ExportLogAuditRepository exportLogAuditRepository;
+    private MessageSource msgSrc;
+    @Resource(type = ProgramRepository.class)
+    private ProgramRepository programRepository;
+    @Resource(type = SurveyResponsesHelper.class)
+    private SurveyResponsesHelper srh;
+    @Resource(type = UserRepository.class)
+    private UserRepository userRepository;
+    @Resource(type = VeteranAssessmentService.class)
+    private VeteranAssessmentService veteranAssessmentService;
+    @Resource(type = VeteranRepository.class)
+    private VeteranRepository veteranRepository;
+    @Resource(type = VariableResolverService.class)
+    private VariableResolverService vrs;
+    @Resource(type = DataExportAndDictionaryUtil.class)
+    private DataExportAndDictionaryUtil dedUtil;
 
     /**
      * method to find a response of 1 in multi-select type responses. If user has responded to any question, then all
@@ -108,8 +95,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     }
 
     private List<DataExportCell> buildExportDataPerAssessment(
-                                                              VeteranAssessment assessment, Integer identifiedExportType,
-                                                              Map<String, Map<String, String>> preFetchedData) {
+            VeteranAssessment assessment, Integer identifiedExportType,
+            Map<String, Map<String, String>> preFetchedData) {
 
         Map<String, String> formulaeMap = preFetchedData.get(formulaKey(assessment));
 
@@ -143,6 +130,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
         }
         return exportDataRowCells;
     }
+
     private String surveyNamesKey() {
         return "DATA_DICTIONARY_SURVEY";
     }
@@ -206,9 +194,9 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     }
 
     private List<List<DataExportCell>> createDataExportReport(
-                                                              List<VeteranAssessment> matchingAssessments,
-                                                              Integer identifiedExportType,
-                                                              Map<String, Map<String, String>> preFetchedData) {
+            List<VeteranAssessment> matchingAssessments,
+            Integer identifiedExportType,
+            Map<String, Map<String, String>> preFetchedData) {
 
         List<List<DataExportCell>> dataExportReport = new ArrayList<List<DataExportCell>>();
 
@@ -374,7 +362,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     @Override
     @Transactional
     public AssessmentDataExport getAssessmentDataExport(
-                                                        ExportDataFormBean exportDataFormBean, StopWatch sw) {
+            ExportDataFormBean exportDataFormBean, StopWatch sw) {
 
         if (exportDataFormBean.getHasParameter()) {
             if (sw != null) sw.start("data export");
@@ -453,26 +441,26 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     /**
      * This method
-     * <p/>
+     * <p>
      * <ol>
-     * <p/>
+     * <p>
      * <li>
      * traverses every Assessment and for every Assessment, it traverses every Survey, collects the user Response, and
      * then adjust the Survey Dictionary for Survey. This merges export names (export names can vary for each assessment
      * depending on the table questions). This is necessary to merge and collect distinct columns of each assessment's
      * export names to allows aligning veteran rows. It saves set of merged survey columns with a key of
      * "SURVEY_DICTIONARY_KEY_<surveyName></li>
-     * <p/>
+     * <p>
      * <li>
      * since this method captures the optimized survey dictionary, while doing so, it has to collect user responses for
      * the survey, which is time consuming--so this method also saves those user responses under the key of
      * USR_RESPONSE_KEY_<veteranAssessmentId>_<surveyName></li>
-     * <p/>
+     * <p>
      * <li>and just before returning, it also captures Variable formulae for every assessments under the key of
      * FORMULAE_KEY_<veteranAssessmentId></li>
-     * <p/>
+     * <p>
      * </ol>
-     * <p/>
+     * <p>
      * PS: all the data this method captures for future processing is a transaction data, except the survey dictionary,
      * which is mostly static data
      *
@@ -481,8 +469,8 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
      * @return
      */
     private Map<String, Map<String, String>> prepareData(
-                                                         List<VeteranAssessment> matchingAssessments,
-                                                         Integer identifiedExportType) {
+            List<VeteranAssessment> matchingAssessments,
+            Integer identifiedExportType) {
 
         String exportNameKey = msgSrc.getMessage("data.dict.column.var.name", null, null);
         String answerTypeKey = msgSrc.getMessage("data.dict.column.answer.type.other", null, null);
@@ -586,7 +574,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
     /**
      * method to traverse user responses and look for table questions
-     * <p/>
+     * <p>
      * for every table question, this method will add a row in data dictionary
      *
      * @param usrRespMap
@@ -607,7 +595,7 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
 
         Map<String, String> tableQuestionResponseCntr = Maps.newHashMap();
 
-        Set<String> usrRespExportNames = usrRespMap.keySet();
+        Set<String> usrRespExportNames = usrRespMap.keySet().stream().filter(p -> p != null).collect(Collectors.toSet());
 
         for (String usrRespExportName : usrRespExportNames) {
             if (usrRespExportName.contains("~")) {
