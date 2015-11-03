@@ -21,13 +21,16 @@ public class AssessmentDataExportZipView extends AbstractView {
                                            HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map m = (Map) model.get("model");
-        String zipFileName = (String) m.get("zipFileName");
         response.setContentType("application/zip");
-        response.setHeader("Content-disposition", "attachment; filename=" + zipFileName);
-
-        byte[] bytes = (byte[]) m.get("zippedBytes");
         ServletOutputStream servletOS = response.getOutputStream();
-        servletOS.write(bytes);
+
+        if (m != null) {
+            String zipFileName = (String) m.get("zipFileName");
+            response.setHeader("Content-disposition", "attachment; filename=" + zipFileName);
+
+            byte[] bytes = (byte[]) m.get("zippedBytes");
+            servletOS.write(bytes);
+        }
         servletOS.flush();
         servletOS.close();
     }
