@@ -209,10 +209,12 @@ public class VistaServiceImpl implements VistaService {
             VeteranDto otherVeteranInfo = vistaRepository.getVeteranDetail(division, vpid, duz, appProxyName,
                     veteranIen);
 
-            veteranDto.setCellPhone(otherVeteranInfo.getCellPhone());
-            veteranDto.setPhone(otherVeteranInfo.getPhone());
-            veteranDto.setWorkPhone(otherVeteranInfo.getWorkPhone());
-            veteranDto.setEmail(otherVeteranInfo.getEmail());
+            if (otherVeteranInfo!=null) {
+                veteranDto.setCellPhone(otherVeteranInfo.getCellPhone());
+                veteranDto.setPhone(otherVeteranInfo.getPhone());
+                veteranDto.setWorkPhone(otherVeteranInfo.getWorkPhone());
+                veteranDto.setEmail(otherVeteranInfo.getEmail());
+            }
 
             if (veteranDto.getBirthDate() != null) {
                 DateTime dateTime = new DateTime(veteranDto.getBirthDate());
