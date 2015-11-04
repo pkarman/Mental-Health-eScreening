@@ -59,7 +59,7 @@ public class EscreenUserDetailsService extends JdbcDaoSupport implements UserDet
         }
 
         if (users.size() == 0) {
-            logger.debug("Query returned no results for user '" + username + "'");
+            logger.trace("Query returned no results for user '" + username + "'");
 
             throw new UsernameNotFoundException(String.format("Username %snot found", username));
         }
@@ -73,7 +73,7 @@ public class EscreenUserDetailsService extends JdbcDaoSupport implements UserDet
         List<GrantedAuthority> dbAuths = new ArrayList<GrantedAuthority>(dbAuthsSet);
 
         if (dbAuths.size() == 0) {
-            logger.debug("User '" + username + "' has no authorities and will be treated as 'not found'");
+            logger.trace("User '" + username + "' has no authorities and will be treated as 'not found'");
 
             throw new UsernameNotFoundException(String.format("User %s has no GrantedAuthority", username));
         }

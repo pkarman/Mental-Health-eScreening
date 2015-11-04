@@ -15,14 +15,14 @@ public class ExceptionPageController {
     @RequestMapping(value = "/accountIssue", method = RequestMethod.GET)
     public String setupAccountIssueExceptionForm(Model model) {
 
-        logger.debug("setupAccountIssueForm called");
+        logger.trace("setupAccountIssueForm called");
 
         return "exceptions/accountIssue";
     }
 
     @RequestMapping(value = "/notauthorized")
     public String setupNotAuthorizedExceptionForm(Model model) {
-        logger.debug("Show notauthorized page");
+        logger.trace("Show notauthorized page");
 
         return "exceptions/notauthorized";
     }

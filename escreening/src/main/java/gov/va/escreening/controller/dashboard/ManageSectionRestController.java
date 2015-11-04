@@ -60,7 +60,7 @@ public class ManageSectionRestController extends RestController{
         ErrorResponse errorResponse = new ErrorResponse();
 
         if (surveySectionInfo != null) {
-            logger.debug(surveySectionInfo.toString());
+            logger.trace(surveySectionInfo.toString());
 
             // Data validation.
             if (StringUtils.isBlank(surveySectionInfo.getName())) {
@@ -78,7 +78,7 @@ public class ManageSectionRestController extends RestController{
             // Call service class here.
             Integer surveySectionId = editorsViewDelegate.createSection(surveySectionInfo);
             surveySectionInfo.setSurveySectionId(surveySectionId);
-            logger.debug("surveySectionId: " + surveySectionId);
+            logger.trace("surveySectionId: " + surveySectionId);
         } else {
             errorResponse.setCode(ErrorCodeEnum.DATA_VALIDATION.getValue()).reject("data", "Section Object", "Cannot be null.");
         }

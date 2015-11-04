@@ -50,7 +50,7 @@ public class AssessmentEngineController {
 
 	@RequestMapping(value = "/start", method = RequestMethod.POST)
 	public String setupForm(Model model,  HttpServletResponse response) {
-		logger.debug("In setupForm (get to assessment/start)");
+		logger.trace("In setupForm (get to assessment/start)");
 		
 		//make sure this is not cached by browser
 		response.setDateHeader("Expires", 0);
@@ -85,7 +85,7 @@ public class AssessmentEngineController {
 	@RequestMapping(value = "/end", method = RequestMethod.POST, headers = { "content-type=application/json; charset=utf-8" })
 	@ResponseBody
 	public Map<String,String> getCompletionData(HttpSession session, HttpServletResponse response) throws IllegalSystemStateException {
-		logger.debug("In getCompletionData");
+		logger.trace("In getCompletionData");
 		assessmentDelegate.ensureValidAssessmentContext();
 
 		response.setDateHeader("Expires", 0);
@@ -108,7 +108,7 @@ public class AssessmentEngineController {
 			@RequestBody AssessmentRequest assessmentRequest,
 			HttpSession session) {
 
-		logger.debug("POST:/services/assessments/active");//\nIn processData() \n{}", assessmentRequest);
+		logger.trace("POST:/services/assessments/active");//\nIn processData() \n{}", assessmentRequest);
 
 		assessmentDelegate.ensureValidAssessmentContext();
 
@@ -118,7 +118,7 @@ public class AssessmentEngineController {
 		long startTime = System.nanoTime();
         AssessmentResponse assessmentResponse = assessmentDelegate.processPage(assessmentRequest);
         long endTime = System.nanoTime();
-        logger.debug("processPage time: {}ms", (endTime - startTime)/1000000l);
+        logger.trace("processPage time: {}ms", (endTime - startTime)/1000000l);
         
 		smrLister.clearSmrFromCache();
 
@@ -164,7 +164,7 @@ public class AssessmentEngineController {
 	@ResponseBody
 	public Map<Integer, Boolean> processSurveyPageMeasureVisibility(
 			@RequestBody AssessmentRequest assessmentRequest) {
-		logger.debug("updating survey page visibility");
+		logger.trace("updating survey page visibility");
 
 		assessmentDelegate.ensureValidAssessmentContext();
 		assessmentRequest.setAssessmentId(assessmentDelegate.getVeteranAssessmentId());

@@ -38,7 +38,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public VeteranDto add(VeteranDto veteranDto) {
-        logger.debug("add Veteran called.");
+        logger.trace("add Veteran called.");
         Veteran veteran = convertVeteranDtoToVeteran(veteranDto);
         veteran.setGuid(UUID.randomUUID().toString());
         veteranRepository.create(veteran);
@@ -48,7 +48,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public VeteranDto add(String lastName, String ssnLastFour) {
-        logger.debug("add Veteran by ssn and last name called.");
+        logger.trace("add Veteran by ssn and last name called.");
         Veteran veteran = new Veteran();
         veteran.setLastName(lastName);
         veteran.setSsnLastFour(ssnLastFour);
@@ -60,7 +60,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public List<VeteranDto> findVeterans(VeteranDto veteranDto) {
-        logger.debug("findVeterans called.");
+        logger.trace("findVeterans called.");
 
         Veteran searchVeteran = convertVeteranDtoToVeteran(veteranDto);
         List<Veteran> veterans = veteranRepository.getVeterans(searchVeteran);
@@ -78,7 +78,7 @@ public class VeteranServiceImpl implements VeteranService {
     public SearchResult<VeteranSearchResult> searchVeterans(Integer veteranId, String lastName, String ssnLastFour,
             List<Integer> programIdList, SearchAttributes searchAttributes) {
 
-        logger.debug("searchVeterans called.");
+        logger.trace("searchVeterans called.");
 
         SearchResult<VeteranSearchResult> searchResult = veteranRepository.searchVeterans(veteranId, lastName,
                 ssnLastFour, programIdList, searchAttributes);
@@ -88,7 +88,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public void updateVeteran(VeteranDto veteranDto) {
-        logger.debug("updateVeteran called");
+        logger.trace("updateVeteran called");
 
         Veteran veteran = convertVeteranDtoToVeteran(veteranDto);
         veteranRepository.update(veteran);
@@ -97,7 +97,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public void updateDemographicsData(VeteranDto veteranDto) {
-        logger.debug("updateDemographicsData called");
+        logger.trace("updateDemographicsData called");
 
         // First get the data from the database.
         Veteran veteran = veteranRepository.findOne(veteranDto.getVeteranId());
@@ -118,7 +118,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public VeteranDto getByVeteranId(Integer veteranId) {
-        logger.debug("getByVeteranId called");
+        logger.trace("getByVeteranId called");
         Veteran veteran = veteranRepository.findOne(veteranId);
         VeteranDto veteranDto = convertVeteranToVeteranDto(veteran);
         return veteranDto;
@@ -220,7 +220,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public void updateMappedVistaFields(VeteranDto veteranDto) {
-        logger.debug("updateMappedVistaFields called");
+        logger.trace("updateMappedVistaFields called");
 
         // First get the data from the database.
         Veteran veteran = veteranRepository.findOne(veteranDto.getVeteranId());
@@ -255,7 +255,7 @@ public class VeteranServiceImpl implements VeteranService {
 
     @Override
     public Integer importVistaVeteranRecord(VeteranDto veteranDto) {
-        logger.debug("importVistaVeteranRecord called");
+        logger.trace("importVistaVeteranRecord called");
 
         // First get the data from the database.
         Veteran veteran = new Veteran();

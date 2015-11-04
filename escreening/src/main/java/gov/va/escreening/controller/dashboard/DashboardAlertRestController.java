@@ -33,9 +33,9 @@ public class DashboardAlertRestController {
 	public List<DashboardAlertItem> getDashboardAlerts(
 			@PathVariable int programId, @CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("E:getDashboardAlerts");
+		logger.trace("E:getDashboardAlerts");
 		List<DashboardAlertItem> alerts = escVetAssessmentDashboardAlertSrv.findVeteranAlertByProgram(programId);
-		logger.debug("X:getDashboardAlerts");
+		logger.trace("X:getDashboardAlerts");
 
 		return alerts;
 	}
@@ -45,9 +45,9 @@ public class DashboardAlertRestController {
 	public List<NearingCompletionAlertItem> getNearingCompletionAssessments(
 			@PathVariable int programId, @CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("E:getNearingCompletionsAssessments");
+		logger.trace("E:getNearingCompletionsAssessments");
 		List<NearingCompletionAlertItem> alerts = escVetAssessmentDashboardAlertSrv.findNearingCompletionAssessmentsByProgram(programId);
-		logger.debug("X:getNearingCompletionsAssessments");
+		logger.trace("X:getNearingCompletionsAssessments");
 
 		return alerts;
 	}
@@ -57,9 +57,9 @@ public class DashboardAlertRestController {
 	public List<SlowMovingAlertItem> getSlowMovingAssessments(
 			@PathVariable int programId, @CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("E:getSlowMovingAssessments");
+		logger.trace("E:getSlowMovingAssessments");
 		List<SlowMovingAlertItem> alerts = escVetAssessmentDashboardAlertSrv.findSlowMovingAssessmentsByProgram(programId);
-		logger.debug("X:getSlowMovingAssessments");
+		logger.trace("X:getSlowMovingAssessments");
 
 		return alerts;
 	}

@@ -24,7 +24,7 @@ public class VeteranAssessmentController {
     @RequestMapping(value = "/home", method = RequestMethod.POST)
     public String setupAssessmentHomeForm(Model model, HttpServletResponse response) {
 
-        logger.debug("setupAssessmentHomeForm called");
+        logger.trace("setupAssessmentHomeForm called");
         
         response.setDateHeader("Expires", 0);
         response.setHeader("Cache-Control", "no-store");

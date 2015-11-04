@@ -73,7 +73,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
      */
     @ModelAttribute
     public AssessmentSummaryFormBean getAssessmentSummaryFormBean() {
-        logger.debug("Creating new AssessmentSummaryFormBean");
+        logger.trace("Creating new AssessmentSummaryFormBean");
         return new AssessmentSummaryFormBean();
     }
 
@@ -94,8 +94,8 @@ public class AssessmentSummaryController implements MessageSourceAware {
             @RequestParam(value = "vaid", required = true) Integer veteranAssessmentId,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("Using the assessment summary mapping");
-        logger.debug("veteranAssessmentId: " + veteranAssessmentId);
+        logger.trace("Using the assessment summary mapping");
+        logger.trace("veteranAssessmentId: " + veteranAssessmentId);
 
         VeteranAssessmentInfo veteranAssessmentInfo = veteranAssessmentService.getVeteranAssessmentInfo(veteranAssessmentId);
         model.addAttribute("veteranAssessmentInfo", veteranAssessmentInfo);
@@ -240,7 +240,7 @@ public class AssessmentSummaryController implements MessageSourceAware {
             @ModelAttribute AssessmentSummaryFormBean assessmentSummaryFormBean,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug(assessmentSummaryFormBean.toString());
+        logger.trace(assessmentSummaryFormBean.toString());
 
         return "redirect:/dashboard/assessmentDashboard";
     }

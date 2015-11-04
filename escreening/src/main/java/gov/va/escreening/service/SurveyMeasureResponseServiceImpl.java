@@ -186,7 +186,7 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
         StringBuilder wrappedText = new StringBuilder();
         String[] lines = text.split("\n");
         for (String line : lines) {
-            logger.debug("wrapping line:\n{}", line);
+            logger.trace("wrapping line:\n{}", line);
             Matcher m = prefixSpace.matcher(line);
             String indent = m.find() ? m.group(1) : "";
 
@@ -197,20 +197,20 @@ public class SurveyMeasureResponseServiceImpl implements SurveyMeasureResponseSe
                 wrappedLine = wrappedLine.replaceFirst("^\\s+", "");
 
             String margin = newLine + indent;
-            logger.debug("margin size: {}", margin.length());
+            logger.trace("margin size: {}", margin.length());
 
-            logger.debug("wrapped by itself:\n{}", wrappedLine);
+            logger.trace("wrapped by itself:\n{}", wrappedLine);
 
             //add margin to wrapped lines
             wrappedLine = newLineReplace.matcher(wrappedLine).replaceAll(margin);
 
-            logger.debug("wrapped with replaced for each line margin: \n{}", wrappedLine);
+            logger.trace("wrapped with replaced for each line margin: \n{}", wrappedLine);
 
             wrappedText.append(margin).append(wrappedLine);
         }
 
         String wrapped = wrappedText.toString();
-        //logger.debug("wrapped text:\n{}", wrapped);
+        //logger.trace("wrapped text:\n{}", wrapped);
         return wrapped;
     }
 }

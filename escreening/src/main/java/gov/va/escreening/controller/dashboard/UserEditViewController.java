@@ -98,7 +98,7 @@ public class UserEditViewController {
 	 */
 	@ModelAttribute
 	public UserEditViewFormBean getUserEditViewFormBean() {
-		logger.debug("Creating new UserEditViewFormBean");
+		logger.trace("Creating new UserEditViewFormBean");
 		return new UserEditViewFormBean();
 	}
 
@@ -119,7 +119,7 @@ public class UserEditViewController {
 			@CurrentUser EscreenUser escreenUser) {
 
 		logger.trace("In setUpPageEditView");
-		logger.debug("uid " + userId);
+		logger.trace("uid " + userId);
 
 		if (userId != null && userId > 0) {
 			userEditViewFormBean.setIsCreateMode(false);
@@ -154,7 +154,7 @@ public class UserEditViewController {
 			@Valid @ModelAttribute UserEditViewFormBean userEditViewFormBean,
 			BindingResult result, @CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In processSave");
+		logger.trace("In processSave");
 
 		if (userEditViewFormBean.getUserId() != null && userEditViewFormBean.getUserId() > 0) {
 			userEditViewFormBean.setIsCreateMode(false);
@@ -193,14 +193,14 @@ public class UserEditViewController {
 		CallResult callResult = null;
 		try {
 			if (!userEditViewFormBean.getIsCreateMode()) {
-				logger.debug("Edit mode");
+				logger.trace("Edit mode");
 				userService.updateUser(userEditViewFormBean);
 			} else {
-				logger.debug("Add mode");
+				logger.trace("Add mode");
 
 				Integer userId = userService.createUser(userEditViewFormBean);
 
-				logger.debug("Created new User with userId: " + userId);
+				logger.trace("Created new User with userId: " + userId);
 			}
 		} catch (DataIntegrityViolationException e) {
 			callResult=new CallResult(true, "Another user is already using the Login ID.", Throwables.getRootCause(e).getMessage());
@@ -249,7 +249,7 @@ public class UserEditViewController {
 	@RequestMapping(value = "/userEditView", method = RequestMethod.POST, params = "cancelButton")
 	public String processCancel(Model model) {
 
-		logger.debug("In processCancel");
+		logger.trace("In processCancel");
 
 		return "redirect:/dashboard/userListView";
 	}
@@ -267,7 +267,7 @@ public class UserEditViewController {
 			@RequestBody PasswordResetRequest passwordResetRequest,
 			@CurrentUser EscreenUser escreenUser) {
 
-		logger.debug("In resetPassword");
+		logger.trace("In resetPassword");
 
 		CallResult callResult = null;
 

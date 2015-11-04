@@ -137,7 +137,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 				String text = new TemplateEvaluator(veteranAssessment, viewType)
 					.appendTemplate(t)
 					.generate();
-				logger.debug("Rendered module template:\n{}", text);
+				logger.trace("Rendered module template:\n{}", text);
 				return text;
 			}
 		}
@@ -160,7 +160,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 				String text = new TemplateEvaluator(veteranAssessment, viewType)
 					.appendTemplate(t)
 					.generate();
-				logger.debug("Rendered battery template:\n{}", text);
+				logger.trace("Rendered battery template:\n{}", text);
 				return text;
 			}
 		}
@@ -482,12 +482,12 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	}
 	
 	private String removeTempateSpace(String templateText){
-		//logger.debug("Template text before shrinking:\n{}", templateText);
+		//logger.trace("Template text before shrinking:\n{}", templateText);
 		
 		String noSpace = freemarkerTags.matcher(templateText).replaceAll("$1");//remove space around freemarker tags
 		noSpace = escreeningTags.matcher(noSpace).replaceAll("$1"); 		   //remove space around template tags
 		
-		//logger.debug("Template text after shrinking:\n{}", noSpace);
+		//logger.trace("Template text after shrinking:\n{}", noSpace);
 		
 		return noSpace;
 	}
@@ -582,7 +582,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 		private void endPreviousSection() {
 			if (sectionStarted) {
-				logger.debug("Ending section");
+				logger.trace("Ending section");
 				text.append(SECTION_END.xml());
 				sectionStarted = false;
 			}
@@ -591,7 +591,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		private TemplateEvaluator startSection(SurveySection section) {
 			endPreviousSection();
 
-			logger.debug("Starting section {}", section);
+			logger.trace("Starting section {}", section);
 
 			text.append(SECTION_TITLE_START.xml())
 				.append(section.getName())
@@ -604,7 +604,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 		private TemplateEvaluator appendHeader(Template headerTemplate) throws IllegalSystemStateException {
 			endPreviousSection();
-			logger.debug("Appending header template {}", headerTemplate);
+			logger.trace("Appending header template {}", headerTemplate);
 			text.append(BATTERY_HEADER_START.xml());
 			appendTemplate(headerTemplate);
 			text.append(BATTERY_HEADER_END.xml());
@@ -613,7 +613,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 
 		private TemplateEvaluator appendFooter(Template footerTemplate) throws IllegalSystemStateException {
 			endPreviousSection();
-			logger.debug("Appending footer template {}", footerTemplate);
+			logger.trace("Appending footer template {}", footerTemplate);
 			text.append(BATTERY_FOOTER_START.xml());
 			appendTemplate(footerTemplate);
 			text.append(BATTERY_FOOTER_END.xml());
@@ -623,7 +623,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		private TemplateEvaluator appendModule(Template moduleTemplate) throws IllegalSystemStateException {
 			String templateText = processTemplate(moduleTemplate, veteranAssessment);
 			if(!templateText.trim().isEmpty()){ // only append if there is content
-				logger.debug("Appending module template {}", moduleTemplate);
+				logger.trace("Appending module template {}", moduleTemplate);
 				text.append(MODULE_COMPONENTS_START.xml())
 					.append(templateText)
 					.append(MODULE_COMPONENTS_END.xml());
@@ -638,7 +638,7 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 		 * @throws IllegalSystemStateException
 		 */
 		private TemplateEvaluator appendTemplate(Template moduleTemplate) throws IllegalSystemStateException {
-			logger.debug("Appending template {}", moduleTemplate.getName());
+			logger.trace("Appending template {}", moduleTemplate.getName());
 			text.append(processTemplate(moduleTemplate, veteranAssessment));
 			return this;
 		}
@@ -646,18 +646,18 @@ public class TemplateProcessorServiceImpl implements TemplateProcessorService {
 	    private TemplateEvaluator appendGroupedTemplates(String sectionLabel, String templateGroupText) throws IllegalSystemStateException{
 	        if(!Strings.isNullOrEmpty(templateGroupText)){
                 endPreviousSection();
-                logger.debug("Appending {} section", sectionLabel);
+                logger.trace("Appending {} section", sectionLabel);
                 startSection(new SurveySection(null, sectionLabel, null));
                 text.append(templateGroupText);
                 endPreviousSection();
-                logger.debug("Completed {} section", sectionLabel);
+                logger.trace("Completed {} section", sectionLabel);
 	        }
             return this;
         }
 
 		private String generate() {
 			endPreviousSection();
-			logger.debug("Resolving template tags for viewType {}", viewType);
+			logger.trace("Resolving template tags for viewType {}", viewType);
 			return TemplateTagProcessor.resolveClinicalNoteTags(text.toString(), viewType);
 		}
 	}

@@ -42,7 +42,7 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
     public SearchResult<VeteranSearchResult> searchVeterans(Integer veteranId, String lastName, String ssnLastFour,
             List<Integer> programIdList, SearchAttributes searchAttributes) {
 
-        logger.debug("in searchVeterans()");
+        logger.trace("in searchVeterans()");
 
         SearchResult<VeteranSearchResult> searchResult = new SearchResult<VeteranSearchResult>();
 
@@ -209,7 +209,7 @@ public class VeteranRepositoryImpl extends AbstractHibernateRepository<Veteran> 
 
     @Override
     public List<Veteran> getVeterans(Veteran veteran) {
-        logger.debug("in getVeterans()");
+        logger.trace("in getVeterans()");
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Veteran> criteriaQuery = criteriaBuilder.createQuery(Veteran.class);

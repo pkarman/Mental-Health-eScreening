@@ -153,7 +153,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
     public List<SelectVeteranResultDto> searchVeterans(EscreenUser escreenUser,
                                                        String lastName, String ssnLastFour) {
 
-        logger.debug("searchVeterans");
+        logger.trace("searchVeterans");
 
         List<VeteranDto> dbResultList = veteranService.searchVeterans(lastName,
                 ssnLastFour);
@@ -217,7 +217,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
     public List<SelectVeteranResultDto> searchVistaForVeterans(
             EscreenUser escreenUser, String lastName, String ssnLastFour) {
 
-        logger.debug("searchVistaForVeterans");
+        logger.trace("searchVistaForVeterans");
 
         List<VeteranDto> vistaResultList = new ArrayList<VeteranDto>();
 
@@ -280,7 +280,7 @@ public class CreateAssessmentDelegateImpl implements CreateAssessmentDelegate {
 
                     if (age > (3600 * 1000)) {
                         isStale = true;
-                        logger.debug("Copy is stale. Refreshing from VistA.");
+                        logger.trace("Copy is stale. Refreshing from VistA.");
                     }
                 }
             }

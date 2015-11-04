@@ -60,7 +60,7 @@ public class CreateAssessmentRestController {
     public DataTableResponse<VeteranDto> getVeteransByLastNameLastFour(HttpServletRequest request,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In getVeteransByLastNameLastFour");
+        logger.trace("In getVeteransByLastNameLastFour");
 
         String lastName = request.getParameter("lastName");
         String ssnLastFour = request.getParameter("ssnLastFour");
@@ -92,12 +92,12 @@ public class CreateAssessmentRestController {
     public List<VeteranDto> getVeteransByLastNameLastFour3(@RequestBody VeteranDto veteranDto,
             @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In getVeteransByLastNameLastFour3");
+        logger.trace("In getVeteransByLastNameLastFour3");
 
         String lastName = veteranDto.getLastName();
         String ssnLastFour = veteranDto.getSsnLastFour();
 
-        logger.debug(lastName + " " + ssnLastFour);
+        logger.trace(lastName + " " + ssnLastFour);
 
         List<VeteranDto> veterans;
 

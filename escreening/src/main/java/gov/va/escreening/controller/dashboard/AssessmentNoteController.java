@@ -33,8 +33,8 @@ public class AssessmentNoteController {
     @RequestMapping(value = "/assessmentNote", method = RequestMethod.GET)
     public String setupPage(Model model, @RequestParam(value = "vaid", required = false) Integer veteranAssessmentId) {
 
-        logger.debug("In AssessmentNoteController::setupPage");
-        logger.debug("veteranAssessmentId: " + veteranAssessmentId);
+        logger.trace("In AssessmentNoteController::setupPage");
+        logger.trace("veteranAssessmentId: " + veteranAssessmentId);
         
         try {
         	String generatedNote = templateProcessorService.generateCPRSNote(veteranAssessmentId, ViewType.HTML);

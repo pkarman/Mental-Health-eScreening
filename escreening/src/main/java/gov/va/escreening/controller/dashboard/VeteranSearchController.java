@@ -17,7 +17,7 @@ public class VeteranSearchController {
 
     @RequestMapping(value = "/veteranSearch", method = RequestMethod.GET)
     public String veteranSearch(Locale locale, Model model) {
-        logger.debug("In veteranSearch");
+        logger.trace("In veteranSearch");
 
         return "dashboard/veteranSearch";
     }

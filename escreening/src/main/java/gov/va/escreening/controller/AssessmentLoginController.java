@@ -54,7 +54,7 @@ public class AssessmentLoginController {
 	public String setupForm(
 			@ModelAttribute AssessmentLoginFormBean assessmentLoginFormBean,
 			Model model) {
-		logger.debug("assessmentLogin called GET");
+		logger.trace("assessmentLogin called GET");
 		return "/assessmentLogin";
 	}
 
@@ -65,7 +65,7 @@ public class AssessmentLoginController {
 			HttpServletResponse response,
 			HttpServletRequest request) {
 
-		logger.debug("assessmentLogin called POST");
+		logger.trace("assessmentLogin called POST");
 
 		// Validate class level constraints.
 		new AssessmentLoginFormBeanValidator().validate(assessmentLoginFormBean, result);
@@ -108,10 +108,10 @@ public class AssessmentLoginController {
 			// More than 1 veteran records found. See if we can filter it down to 1
 			if (!assessmentLoginFormBean.getAdditionalFieldRequired()) {
 				assessmentLoginFormBean.setAdditionalFieldRequired(true);
-				logger.debug("Setting additionalFieldRequired to true and prompting for dob and middle name");
+				logger.trace("Setting additionalFieldRequired to true and prompting for dob and middle name");
 				return "/assessmentLogin";
 			} else {
-				logger.debug("More than 1 veteran records found. Redirect user to an exception page and let them work it out with the clerk.");
+				logger.trace("More than 1 veteran records found. Redirect user to an exception page and let them work it out with the clerk.");
 				return "redirect:/accountIssue";
 			}
 		} else {
@@ -172,7 +172,7 @@ public class AssessmentLoginController {
 			return "redirect:/accountIssue";
 		} else {
 			// Initialize and setup the session scoped AssessmentContext.
-			logger.debug("Found available assessment for user");
+			logger.trace("Found available assessment for user");
 			assessmentDelegate.setUpAssessmentContext(veteran, veteranAssessment);
 			
 			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);

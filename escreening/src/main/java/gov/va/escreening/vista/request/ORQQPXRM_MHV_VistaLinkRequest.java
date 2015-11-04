@@ -57,7 +57,7 @@ public class ORQQPXRM_MHV_VistaLinkRequest extends VistaLinkBaseRequest<String> 
         request.clearParams();
         request.setParams(requestParams);
 
-        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
+        if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]", request.getRpcName(), requestParams));}
         RpcResponse response = connection.executeRPC(request);
 
         try {

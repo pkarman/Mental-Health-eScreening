@@ -23,7 +23,7 @@ class SurveySectionRepositoryImpl  extends AbstractHibernateRepository<SurveySec
     }
     
     public List<SurveySection> findForVeteranAssessmentId(int veteranAssessmentId){
-        logger.debug("in findForVeteranAssessmentId()");
+        logger.trace("in findForVeteranAssessmentId()");
 
         String sql = "SELECT distinct ss FROM Survey s JOIN s.surveySection ss "
                 + "WHERE s.surveyId IN (SELECT vas.survey.surveyId FROM VeteranAssessmentSurvey vas where vas.veteranAssessment.veteranAssessmentId=:veteranAssessmentId) "

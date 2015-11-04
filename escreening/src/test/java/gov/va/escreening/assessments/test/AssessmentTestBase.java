@@ -36,7 +36,7 @@ public abstract class AssessmentTestBase {
 		res.setVeteranAssessment(new VeteranAssessment(assessmentId));
 		res.setSurvey(new Survey(surveyId));
 		
-		logger.debug("created SurveyMeasureResponse: {}", res);
+		logger.trace("created SurveyMeasureResponse: {}", res);
 		return res;
 	}
 
@@ -49,7 +49,7 @@ public abstract class AssessmentTestBase {
 		res.setVeteranAssessment(new VeteranAssessment(assessmentId));
 		res.setSurvey(new Survey(surveyId));
 		
-		logger.debug("created SurveyMeasureResponse: {}", res);
+		logger.trace("created SurveyMeasureResponse: {}", res);
 		return res;
 	}
 
@@ -62,7 +62,7 @@ public abstract class AssessmentTestBase {
 		res.setVeteranAssessment(new VeteranAssessment(assessmentId));
 		res.setSurvey(new Survey(surveyId));
 		
-		logger.debug("created SurveyMeasureResponse: {}", res);
+		logger.trace("created SurveyMeasureResponse: {}", res);
 		return res;
 	}
 

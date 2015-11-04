@@ -125,9 +125,9 @@ public class TemplateTagProcessor {
         noteText = StringEscapeUtils.unescapeHtml4(noteText);
         
         //replace NO-BREAK SPACE (U+00A0) with regular space (U+0020)
-        logger.debug("\n\n******** Before space replace *******/n{}", noteText);
+        logger.trace("\n\n******** Before space replace *******/n{}", noteText);
         noteText = noteText.replaceAll("\\u00A0", " ");
-        logger.debug("\n\n******** After space replace *******/n{}", noteText);
+        logger.trace("\n\n******** After space replace *******/n{}", noteText);
         
         //wrap to 80 columns
         StringBuilder wrappedText = new StringBuilder();

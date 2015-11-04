@@ -277,7 +277,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     public List<Map<String, Object>> createGrpChartableDataForAvgScoresForPatientsByClinic(Map<String, Object> requestData) {
         List<Map<String, Object>> chartableDataList = Lists.newArrayList();
 
-        logger.debug("Generating the clinic graph data ");
+        logger.trace("Generating the clinic graph data ");
 
         List cList = (List) requestData.get(ReportsUtil.CLINIC_ID_LIST);
         List sList = (List) requestData.get(ReportsUtil.SURVEY_ID_LIST);
@@ -298,7 +298,7 @@ public class ReportDelegateImpl implements ReportDelegate {
     public List<Map<String, Object>> createChartableDataForIndividualStats(Map<String, Object> requestData) {
         List<Map<String, Object>> chartableDataList = Lists.newArrayList();
 
-        logger.debug("Generating the individual statistics reports");
+        logger.trace("Generating the individual statistics reports");
 
         String lastName = (String) requestData.get(ReportsUtil.LASTNAME);
         String last4SSN = (String) requestData.get(ReportsUtil.SSN_LAST_FOUR);

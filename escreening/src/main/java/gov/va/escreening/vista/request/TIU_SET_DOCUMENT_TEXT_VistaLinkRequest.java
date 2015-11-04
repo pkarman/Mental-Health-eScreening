@@ -95,7 +95,7 @@ public class TIU_SET_DOCUMENT_TEXT_VistaLinkRequest extends VistaLinkBaseRequest
 
         if (logger.isDebugEnabled()){logger.debug(String.format("RPC NAME:[%s]--REQ STRING:[%s]",request.getRpcName(),requestParams));}
         RpcResponse response = connection.executeRPC(request);
-        logger.debug("Set Progress Note Text: " + response.getResults());
+        logger.trace("Set Progress Note Text: " + response.getResults());
 
 
         try {

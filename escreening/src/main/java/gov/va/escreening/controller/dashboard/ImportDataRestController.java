@@ -29,7 +29,7 @@ public class ImportDataRestController {
     @ResponseBody
     public HashMap<String, String> importClinicListFromVista(@CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In importClinicListFromVista");
+        logger.trace("In importClinicListFromVista");
 
         HashMap<String, String> result = new HashMap<String, String>();
         boolean hasError = false;
@@ -61,7 +61,7 @@ public class ImportDataRestController {
     @ResponseBody
     public HashMap<String, String> importClinicalNoteListFromVista(@CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In importClinicalNoteListFromVista");
+        logger.trace("In importClinicalNoteListFromVista");
 
         HashMap<String, String> result = new HashMap<String, String>();
         int count = 0;
@@ -93,7 +93,7 @@ public class ImportDataRestController {
     @ResponseBody
     public HashMap<String, String> importNoteTitleListFromVista(@CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In importNoteTitleListFromVista");
+        logger.trace("In importNoteTitleListFromVista");
 
         HashMap<String, String> result = new HashMap<String, String>();
         int count = 0;
@@ -123,7 +123,7 @@ public class ImportDataRestController {
     @ResponseBody
     public HashMap<String, String> importHealthFactorsFromVista(@CurrentUser EscreenUser escreenUser) {
 
-        logger.debug("In Health Factors Vista");
+        logger.trace("In Health Factors Vista");
 
         HashMap<String, String> result = new HashMap<String, String>();
         int count = 0;

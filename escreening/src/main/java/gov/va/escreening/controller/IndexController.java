@@ -13,7 +13,7 @@ public class IndexController {
     @RequestMapping("/")
     public String setupForm() {
 
-        logger.debug("root page request");
+        logger.trace("root page request");
         
         return "index";
     }
@@ -21,7 +21,7 @@ public class IndexController {
     @RequestMapping("/home")
     public String home() {
 
-        logger.debug("root home requested");
+        logger.trace("root home requested");
         
         return setupForm();
     }

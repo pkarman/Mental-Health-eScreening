@@ -167,7 +167,7 @@ public class RuleServiceImpl implements RuleService {
      * @return returns false if the expression evaluated to false or could not be evaluated
      */
     private boolean evaluate(Rule rule, ResolverParameters params) {
-        //logger.debug("Evaluating rule {}", rule);
+        //logger.trace("Evaluating rule {}", rule);
 
         AssessmentVariable variable = new AssessmentVariable();
         variable.setAssessmentVariableTypeId(new AssessmentVariableType(
@@ -335,7 +335,7 @@ public class RuleServiceImpl implements RuleService {
 
         // TODO: this can be done in parallel (update VisibilityUpdate to be
         // thread safe if we do this)
-        logger.debug("Firing events for true rule: {}", rule.getRuleId());
+        logger.trace("Firing events for true rule: {}", rule.getRuleId());
         for (Event event : rule.getEvents()) {
             switch (event.getEventType().getEventTypeId()) {
 
@@ -351,7 +351,7 @@ public class RuleServiceImpl implements RuleService {
                     logger.error(message);
                     throw new IllegalStateException(message);
                 }
-                //logger.debug("Adding consult {} to assessment {}", consult,
+                //logger.trace("Adding consult {} to assessment {}", consult,
                 //        veteranAssessmentId);
                 consultSet.add(consult);
                 break;
@@ -372,7 +372,7 @@ public class RuleServiceImpl implements RuleService {
                 
                 if (healthFactor.getVistaIen() != null) {
                     healthFactorSet.add(healthFactor);
-                    logger.debug("Added health factor {} to assessment {}",
+                    logger.trace("Added health factor {} to assessment {}",
                             healthFactor, veteranAssessmentId);
                 }
                 else{
@@ -394,7 +394,7 @@ public class RuleServiceImpl implements RuleService {
                     throw new IllegalStateException(message);
                 }
 
-                //logger.debug("Adding dashboard alert {} to assessment {}",
+                //logger.trace("Adding dashboard alert {} to assessment {}",
                 //        alert, veteranAssessmentId);
                 alertSet.add(alert);
                 break;

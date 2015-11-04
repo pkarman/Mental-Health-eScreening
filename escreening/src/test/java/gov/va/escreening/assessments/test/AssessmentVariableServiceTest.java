@@ -260,7 +260,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         AssessmentVarChildren varChild = new AssessmentVarChildren(formula, childFormula);
         formula.getAssessmentVarChildrenList().add(varChild);
         avRepo.update(formula);
-        logger.debug("Added child formula {} to formula {}", childFormula.getAssessmentVariableId(), formula.getAssessmentVariableId());
+        logger.trace("Added child formula {} to formula {}", childFormula.getAssessmentVariableId(), formula.getAssessmentVariableId());
         return childFormula;
     }
     
@@ -278,7 +278,7 @@ public class AssessmentVariableServiceTest extends AssessmentTestBase
         formula.setFormulaTemplate("[" + newDependency.getAssessmentVariableId() + "]");
         formula.getAssessmentVarChildrenList().add(new AssessmentVarChildren(formula, newDependency));
         avRepo.update(formula);
-        logger.debug("Added new dependency {} to formula {}", newDependency.getAssessmentVariableId(), formula.getAssessmentVariableId());
+        logger.trace("Added new dependency {} to formula {}", newDependency.getAssessmentVariableId(), formula.getAssessmentVariableId());
         return newDependency;
     }
     

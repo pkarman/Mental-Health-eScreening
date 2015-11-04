@@ -3,6 +3,7 @@ package gov.va.escreening.service.export;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import gov.va.escreening.domain.ExportTypeEnum;
+import gov.va.escreening.domain.MeasureTypeEnum;
 import gov.va.escreening.dto.dashboard.AssessmentDataExport;
 import gov.va.escreening.dto.dashboard.DataExportCell;
 import gov.va.escreening.dto.dashboard.DataExportFilterOptions;
@@ -111,19 +112,25 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
             Map<String, String> usrRespMap = preFetchedData.get(usrRespKey(assessment, surveyName));
             Map<String, String> surveyDictionary = preFetchedData.get(dictHdrKey(surveyName));
             Map<String, String> answerTypeOther = preFetchedData.get(answerTypeOtherKey(surveyName));
+            Map<String, String> dataTypeMap = dd.findSheet(surveyName).column(msgSrc.getMessage("data.dict.column.ques.multi.select", null, null));
 
             // traverse through each exportName, and try to find the veteran's response for the exportName. In case the
             // user has not responded, leave 999
             Multimap<String, DataExportCell> multiSelectMap = HashMultimap.create();
             for (Entry<String, String> surveyEntry : surveyDictionary.entrySet()) {
                 String surveyExportName = surveyEntry.getValue();
+
+
+                String dataType = dataTypeMap.get(surveyEntry.getKey());
+                boolean multiSelect = Boolean.valueOf(dataType);
+
                 if (!surveyExportName.isEmpty()) {
                     DataExportCell aCell = createExportCell(usrRespMap, formulaeMap, answerTypeOther, surveyExportName, formulaNames, show);
                     if (logger.isTraceEnabled()) {
                         logger.trace(String.format("adding data for data dictionary column %s->%s=%s", surveyName, surveyExportName, aCell));
                     }
                     exportDataRowCells.add(aCell);
-                    saveMultiSelectResponses(multiSelectMap, surveyEntry, aCell);
+                    saveMultiSelectResponses(multiSelect, multiSelectMap, surveyEntry, aCell);
                 }
             }
             change999To0IfNeeded(multiSelectMap);
@@ -551,9 +558,12 @@ public class ExportDataServiceImpl implements ExportDataService, MessageSourceAw
     }
 
     private void saveMultiSelectResponses(
-            Multimap<String, DataExportCell> multiSelectMap,
+            boolean multiSelect, Multimap<String, DataExportCell> multiSelectMap,
             Entry<String, String> entry, DataExportCell oneCell) {
 
+        if (!multiSelect) {
+            return;
+        }
         String key = entry.getKey();
         key = key.substring(0, key.lastIndexOf("_"));
         multiSelectMap.put(key, oneCell);

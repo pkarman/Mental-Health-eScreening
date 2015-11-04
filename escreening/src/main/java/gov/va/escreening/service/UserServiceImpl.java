@@ -265,7 +265,7 @@ public class UserServiceImpl implements UserService {
                 if (!found) {
                     // remove from existing.
                     UserClinic userClinicToDelete = user.getUserClinicList().remove(i);
-                    logger.debug("Deleting userClinic: " + userClinicToDelete.getUserClinicId());
+                    logger.trace("Deleting userClinic: " + userClinicToDelete.getUserClinicId());
                     userClinicRepository.delete(userClinicToDelete);
                     --i;
                 }

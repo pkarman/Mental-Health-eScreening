@@ -17,7 +17,7 @@ public class FormRulesEditorController {
 	
 	@RequestMapping(value = "/formRulesEditor" , method = RequestMethod.GET)
 	public ModelAndView rulesEditorDo(Locale locale, Model model) {
-		logger.debug("In formRulesEditor");
+		logger.trace("In formRulesEditor");
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("formRulesEditor");
 		return modelAndView;

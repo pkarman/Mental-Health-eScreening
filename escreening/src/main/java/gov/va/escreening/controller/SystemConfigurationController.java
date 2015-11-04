@@ -27,7 +27,7 @@ public class SystemConfigurationController {
 
 	@RequestMapping(value = "/systemConfiguration", method = RequestMethod.GET)
 	public ModelAndView login(Locale locale, Model model) {
-		logger.debug("In systemConfiguration");
+		logger.trace("In systemConfiguration");
 		ModelAndView modelAndView = new ModelAndView();
 
 		modelAndView.setViewName("systemConfiguration");
@@ -38,7 +38,7 @@ public class SystemConfigurationController {
 	@ResponseBody
 	public int getSessionTimeout(HttpServletRequest request,
 			@CurrentUser EscreenUser escreenUser) {
-		logger.debug("returning sessionTimeout");
+		logger.trace("returning sessionTimeout");
 		return request.getSession(false).getMaxInactiveInterval();
 	}
 
@@ -46,7 +46,7 @@ public class SystemConfigurationController {
 	@ResponseBody
 	public String requestHrtBeat(HttpServletRequest request,
 			@CurrentUser EscreenUser escreenUser) {
-		logger.debug("returning requestHrtBeat");
+		logger.trace("returning requestHrtBeat");
 		HttpSession session = request.getSession(false);
 		if (session!=null) {
 			return String.format("session id %s returned at %s", session.getId(), ISODateTimeFormat.dateTime().print(new DateTime()));

@@ -49,7 +49,7 @@ public class FormulaColumnsBldr implements AvBuilder<Set<List<String>>> {
         displayableFormula = removeJavaMathFunctions(displayableFormula);
         displayableFormula = removeTernaries(displayableFormula);
 
-        //logger.debug("Formula={}==>DisplayableFormula={}", dbFormula, displayableFormula);
+        //logger.trace("Formula={}==>DisplayableFormula={}", dbFormula, displayableFormula);
         
         return displayableFormula;
     }

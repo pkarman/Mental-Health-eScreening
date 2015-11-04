@@ -139,7 +139,7 @@ public class VistaTestController {
     @RequestMapping(value = "/vista", method = RequestMethod.GET)
     public String setupForm(@ModelAttribute VistaTestFormBean vistaTestFormBean, Model model) {
 
-        logger.debug("vistaTestPage called");
+        logger.trace("vistaTestPage called");
         return "vistaTestPage";
     }
 
@@ -147,7 +147,7 @@ public class VistaTestController {
     public String testProcess(@ModelAttribute VistaTestFormBean vistaTestFormBean, Model model,
                               @CurrentUser EscreenUser escreenUser) {
 
-        logger.debug(vistaTestFormBean.getSelectedRpcId());
+        logger.trace(vistaTestFormBean.getSelectedRpcId());
 
         String selectedRpcId = vistaTestFormBean.getSelectedRpcId();
 
@@ -356,7 +356,7 @@ public class VistaTestController {
             result = retrieveVeteranDemographicTest(Long.parseLong(vistaTestFormBean.getIen().trim()));
         }
 
-        logger.debug("testRpc: " + result);
+        logger.trace("testRpc: " + result);
         model.addAttribute("userMessage", result);
 
         return "vistaTestPage";
@@ -496,7 +496,7 @@ public class VistaTestController {
 
     public String searchVeteranRaw(String searchString) {
 
-        logger.debug("vistaTestPage::rawRpcCall01 called");
+        logger.trace("vistaTestPage::rawRpcCall01 called");
 
         String vpid = null;
         String duz = null;
@@ -513,7 +513,7 @@ public class VistaTestController {
 
     public String getClinicListRaw() {
 
-        logger.debug("vistaTestPage::getClinicListRaw called");
+        logger.trace("vistaTestPage::getClinicListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -534,7 +534,7 @@ public class VistaTestController {
 
     public String getClinicalReminderListRaw(String veteranIen) {
 
-        logger.debug("vistaTestPage::getClinicReminderListRaw called");
+        logger.trace("vistaTestPage::getClinicReminderListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -551,7 +551,7 @@ public class VistaTestController {
 
     public String getAppointmentListRaw(String veteranIen) {
 
-        logger.debug("vistaTestPage::getClinicReminderListRaw called");
+        logger.trace("vistaTestPage::getClinicReminderListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -568,7 +568,7 @@ public class VistaTestController {
 
     public String getVeteranPrintOutRaw(String veteranIen) {
 
-        logger.debug("vistaTestPage::getVeteranPrintOutRaw called");
+        logger.trace("vistaTestPage::getVeteranPrintOutRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -585,7 +585,7 @@ public class VistaTestController {
 
     public String getNoteTitleListRaw() {
 
-        logger.debug("vistaTestPage::getNoteTitleListRaw called");
+        logger.trace("vistaTestPage::getNoteTitleListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -601,7 +601,7 @@ public class VistaTestController {
 
     public String getAppointmentListForClinicRaw() {
 
-        logger.debug("vistaTestPage::getAppointmentListForClinicRaw called");
+        logger.trace("vistaTestPage::getAppointmentListForClinicRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -635,7 +635,7 @@ public class VistaTestController {
 
     public String getClinicalReminderAndCategoryListRaw() {
 
-        logger.debug("vistaTestPage::getClinicalReminderAndCategoryListRaw called");
+        logger.trace("vistaTestPage::getClinicalReminderAndCategoryListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -666,7 +666,7 @@ public class VistaTestController {
 
     public String getClinicalReminderDialogRaw(String clinicalReminderIen, String veteranIen) {
 
-        logger.debug("vistaTestPage::getClinicalReminderDialogRaw called");
+        logger.trace("vistaTestPage::getClinicalReminderDialogRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -685,7 +685,7 @@ public class VistaTestController {
     public String getClinicalReminderDialogElementRaw(String dialogElementIen, String isHistorical,
                                                       String findingType) {
 
-        logger.debug("vistaTestPage::getClinicalReminderDialogElementRaw called");
+        logger.trace("vistaTestPage::getClinicalReminderDialogElementRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -704,7 +704,7 @@ public class VistaTestController {
 
     public String getTextObjectListRaw() {
 
-        logger.debug("vistaTestPage::getTextObjectListRaw called");
+        logger.trace("vistaTestPage::getTextObjectListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -720,7 +720,7 @@ public class VistaTestController {
 
     public String getLocationListRaw() {
 
-        logger.debug("vistaTestPage::getLocationListRaw called");
+        logger.trace("vistaTestPage::getLocationListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -760,7 +760,7 @@ public class VistaTestController {
     public String getClinicalReminderDialogElement(String dialogElementIen, Boolean isHistorical,
                                                    String findingType) {
 
-        logger.debug("vistaTestPage::getClinicalReminderDialogElement called");
+        logger.trace("vistaTestPage::getClinicalReminderDialogElement called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -800,7 +800,7 @@ public class VistaTestController {
     }
 
     public String verifyAccessStep1() {
-        logger.debug("vistaTestPage::verifyAccessStep1 called");
+        logger.trace("vistaTestPage::verifyAccessStep1 called");
 
         String vpid = null;
         String duz = null;
@@ -818,7 +818,7 @@ public class VistaTestController {
     }
 
     public String verifyAccessStep2() {
-        logger.debug("vistaTestPage::verifyAccessStep2 called");
+        logger.trace("vistaTestPage::verifyAccessStep2 called");
 
         String vpid = null;
         String duz = null;
@@ -836,7 +836,7 @@ public class VistaTestController {
     }
 
     public String verifyAccessStep3() {
-        logger.debug("vistaTestPage::verifyAccessStep3 called");
+        logger.trace("vistaTestPage::verifyAccessStep3 called");
 
         String vpid = null;
         String duz = null;
@@ -852,7 +852,7 @@ public class VistaTestController {
 
     public String getNewLocationListRaw() {
 
-        logger.debug("vistaTestPage::getNewLocationListRaw called");
+        logger.trace("vistaTestPage::getNewLocationListRaw called");
 
         String vpid = null;
         String duz = "10000000056";
@@ -873,7 +873,7 @@ public class VistaTestController {
 
     public String getNewLocationList() {
 
-        logger.debug("vistaTestPage::getNewLocationList called");
+        logger.trace("vistaTestPage::getNewLocationList called");
 
         String division = "500";
         String vpid = null;
@@ -1003,7 +1003,7 @@ public class VistaTestController {
 
     public String getAuthorsRaw(String startWithName) {
 
-        logger.debug("vistaTestPage::getAuthorsRaw called");
+        logger.trace("vistaTestPage::getAuthorsRaw called");
 
         String vpid = null;
         String duz = "10000000056";
