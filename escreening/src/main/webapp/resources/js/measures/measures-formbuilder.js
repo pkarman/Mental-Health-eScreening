@@ -767,7 +767,11 @@ function TableBuilder(formBuilder){
 						else {
 							var entryCount = questionContainer.find(".tableQuestionEntry").size();
 							var lastEntryIsClicked = questionContainer.find("div.tableQuestionEntry:last").hasClass("wasClicked");
-							if(entryCount == 0 || lastEntryIsClicked) {
+							if(entryCount >= 5)
+							{
+								openMaxEntryDialog();
+							}
+							else if(entryCount == 0 || lastEntryIsClicked) {
 								createTableForm(id, questionContainer, entryCount, true, entryName, checkVis);
 							}
 							else{
