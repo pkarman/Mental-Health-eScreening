@@ -228,6 +228,35 @@ function openRequiredDialog() {
 	});
 }
 
+function openMaxEntryDialog() {
+	$("#tableQuestionMaxEntry").dialog({
+		width: 400,
+		modal: true,
+		draggable: false,
+		close:function( event, ui ) {
+			$(".ui-dialog").attr('aria-hidden', 'true');
+      $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+      $(".assessment-column-left").attr('aria-hidden', 'false');
+		},
+		buttons: {
+          "Ok": function () {
+        	  $(".ui-dialog").attr('aria-hidden', 'true');
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'false');
+            $(".assessment-column-left").attr('aria-hidden', 'false');
+						$(this).dialog('close');
+          }
+        },
+        open: function (e, ui) {
+            $(this).parent().find(".ui-dialog-buttonpane .ui-button")
+                .addClass("customButtonsDialog");
+						$(".ui-dialog").attr('aria-hidden', 'false');
+            $(".contentAreaGrayRadial").attr('aria-hidden', 'true');
+            $(".assessment-column-left").attr('aria-hidden', 'true');
+            // Delay play sound
+            setTimeout(function() { play('beep'); }, 500);
+        }
+	});
+}
 function openSkipDialog(url, requestJSON, initialPageCallback) {
 	$("#dialogSkip").dialog({
 		width: 500,

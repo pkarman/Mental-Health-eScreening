@@ -152,6 +152,12 @@
                role="alert">
         		Please answer each question before creating a new entry
         	</div>
-        </div>   
+        </div>
+         <div id="tableQuestionMaxEntry" class="hidden" title="Maximum Entries"  aria-hidden="true">
+				<div class="dialogSkipInfo" title="The maximum entries allowed has been met" aria-label="The maximum entries allowed has been met"
+					role="alert">
+					The maximum entries allowed has been met
+				</div>
+         </div>
 	</body>
 </html>
