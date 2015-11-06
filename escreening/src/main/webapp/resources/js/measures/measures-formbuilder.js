@@ -260,6 +260,7 @@ function FormBuilder(surveyValidation, visibilityUpdateFunction){
 			var input = $("<input>")
 				.attr("type", "text")
 				.attr("id", answerId)
+				.attr("style", "width:100%")
 				.prop("readonly", readOnly)
 				.val(userResponse)
 				.appendTo(fieldContainer);
