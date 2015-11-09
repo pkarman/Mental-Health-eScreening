@@ -181,9 +181,18 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 
 		logger.trace("getNumRowsForAssessmentIdMeasure");
 
-		String sql = "SELECT smr FROM SurveyMeasureResponse smr JOIN smr.veteranAssessment va JOIN smr.measure m " + "WHERE va.veteranAssessmentId = :veteranAssessmentId AND " + "m.parent = :parentMeasure " + "GROUP BY smr.tabularRow";
+		String sql = "SELECT smr FROM SurveyMeasureResponse smr " +
+				"JOIN smr.veteranAssessment va " +
+				"JOIN va.assessmentStatus vas " +
+				"JOIN smr.measure m " +
+				"WHERE vas.assessmentStatusId <> 7 " +
+				"AND va.veteranAssessmentId = :veteranAssessmentId " +
+				"AND " + "m.parent = :parentMeasure " +
+				"GROUP BY smr.tabularRow";
 
-		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class).setParameter("veteranAssessmentId", veteranAssessmentId).setParameter("parentMeasure", parentMeasure);
+		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class);
+		query.setParameter("veteranAssessmentId", veteranAssessmentId);
+		query.setParameter("parentMeasure", parentMeasure);
 
 		List<SurveyMeasureResponse> surveyMeasureResponseList = query.getResultList();
 
@@ -194,14 +203,22 @@ public class SurveyMeasureResponseRepositoryImpl extends AbstractHibernateReposi
 
 	@Override
 	public List<SurveyMeasureResponse> findLast48HourAnswersForVet(int veteranId) {
-		String sql = "FROM SurveyMeasureResponse smr where smr.veteranAssessment.veteran.veteranId=:vetId "
-				+ "and smr.dateModified > :date and smr.copiedFromVeteranAssessment = null order by dateModified desc";
-		
+		String sql = "SELECT smr FROM SurveyMeasureResponse smr " +
+				"JOIN smr.veteranAssessment va " +
+				"JOIN va.assessmentStatus vas " +
+				"JOIN va.veteran vet " +
+				"WHERE vas.assessmentStatusId <> 7 " +
+				"AND vet.veteranId=:vetId " +
+				"AND smr.dateModified > :date " +
+				"AND smr.copiedFromVeteranAssessment = null " +
+				"ORDER BY smr.dateModified desc";
+
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.HOUR, -48);
 		
-		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class)
-				.setParameter("vetId", veteranId).setParameter("date", c.getTime());
+		TypedQuery<SurveyMeasureResponse> query = entityManager.createQuery(sql, SurveyMeasureResponse.class);
+		query.setParameter("vetId", veteranId);
+		query.setParameter("date", c.getTime());
 		
 		return query.getResultList();
 	}
