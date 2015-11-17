@@ -11,7 +11,7 @@
 	<head>
 		<title>Measures - Identification</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 		
 		<meta name="apple-mobile-web-app-capable" content="yes">
     <!-- <meta name="viewport" content="user-scalable=no,width=device-width" /> -->
@@ -152,6 +152,12 @@
                role="alert">
         		Please answer each question before creating a new entry
         	</div>
-        </div>   
+        </div>
+         <div id="tableQuestionMaxEntry" class="hidden" title="Maximum Entries"  aria-hidden="true">
+				<div class="dialogSkipInfo" title="The maximum entries allowed has been met" aria-label="The maximum entries allowed has been met"
+					role="alert">
+					The maximum entries allowed has been met
+				</div>
+         </div>
 	</body>
 </html>
