@@ -321,6 +321,8 @@ public class VeteranAssessmentServiceImpl implements VeteranAssessmentService {
 
                 AssessmentSearchResult assessmentSearchResult = new AssessmentSearchResult();
 
+                assessmentSearchResult.setApptDateAndTime(veteranAssessment.getAppointmentDateAndTime());
+
                 // set assessment date string
                 if (veteranAssessment.getDateUpdated() == null)
                     assessmentSearchResult.setAssessmentDate("");

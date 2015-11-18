@@ -31,6 +31,7 @@ app.directive('reportTable', function() {
 			{ "mData": "ssnLastFour","sClass":"numeric"},
 			{ "mData": "programName"},
 			{ "mData": "clinicianName"},
+			{ "mData": "apptDateAndTime"},
 			{ "mData": "duration","sClass":"numeric"},
 			{ "mData": "percentComplete","sClass":"numeric", "mRender": function(data, type, full) { return full.percentComplete + "%"; }},
 			{ "mData": "assessmentStatusName", "mRender": function(data, type, full) { return "<div class='ico_status_"+full.assessmentStatusName+"'>" + full.assessmentStatusName + "</div>" ; }},
