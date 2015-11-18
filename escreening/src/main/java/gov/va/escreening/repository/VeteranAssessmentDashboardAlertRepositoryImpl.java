@@ -34,6 +34,9 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 	@Resource(name = "dateValidationHelper")
 	DateValidationHelper dvh;
 
+	@Resource(name = "assessmentAppointmentRepository")
+	AssessmentAppointmentRepository aaRepos;
+
 	public VeteranAssessmentDashboardAlertRepositoryImpl() {
 		setClazz(VeteranAssessmentDashboardAlert.class);
 	}
@@ -235,15 +238,21 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		}
 
 		query.setFirstResult(searchAttributes.getRowStartIndex()).setMaxResults(searchAttributes.getPageSize());
-		List<VeteranAssessment> resultList = query.getResultList();
+		List<VeteranAssessment> veteranAssessments = query.getResultList();
+
+		bindAssessmentsWithAppointments(veteranAssessments);
 
 		int totalRecsFound = getTotalRecords(programId, programIdList);
 
 		SearchResult<VeteranAssessment> searchResult = new SearchResult<VeteranAssessment>();
 		searchResult.setTotalNumRowsFound(totalRecsFound);
-		searchResult.setResultList(resultList);
+		searchResult.setResultList(veteranAssessments);
 
 		return searchResult;
+	}
+
+	private void bindAssessmentsWithAppointments(List<VeteranAssessment> veteranAssessments) {
+		aaRepos.bindAppointments(veteranAssessments);
 	}
 
 	private int getTotalRecords(Integer programId, List<Integer> programIdList) {
