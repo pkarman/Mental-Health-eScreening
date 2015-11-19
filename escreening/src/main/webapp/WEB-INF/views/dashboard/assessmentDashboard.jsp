@@ -118,6 +118,7 @@
                           <th scope="col">SSN-4</th>
                           <th scope="col">Program</th>
                           <th scope="col">Clinician</th>
+                          <th scope="col">Appt. Date/Time</th>
                           <th scope="col">Duration</th>
                           <th scope="col">Progress</th>
                           <th scope="col">Status</th>

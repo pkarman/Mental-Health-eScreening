@@ -141,6 +141,12 @@ public class VeteranAssessment implements Serializable {
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "veteranAssessment")//, fetch = FetchType.LAZY)
 	private List<VeteranAssessmentSurvey> veteranAssessmentSurveyList;
 
+	@Transient
+	private String appointmentDateAndTime;
+
+    @Transient
+	private long appointmentDateAndTimeAsLong;
+
 	public VeteranAssessment() {
 	}
 
@@ -271,7 +277,7 @@ public class VeteranAssessment implements Serializable {
 	/**
 	 * Used for iterating through the surveys of this assessment. If you need to know if a survey exists in this
 	 * assessment, it is faster to call getSurveyMap() and use that.
-	 * 
+	 *
 	 * @return
 	 */
 	public ImmutableCollection<Survey> getSurveys() {
@@ -392,7 +398,7 @@ public class VeteranAssessment implements Serializable {
 	 * If the current list contains a given survey that VeteranAssessmentSurvey instance will be used; otherwise a new
 	 * one is created.<br/>
 	 * This process is not free so make it count :) <br/>
-	 * 
+	 *
 	 * @param surveys
 	 */
 	public void setSurveys(Set<Survey> surveys) {
@@ -439,6 +445,22 @@ public class VeteranAssessment implements Serializable {
 
 	public List<VeteranAssessmentMeasureVisibility> getMeasureVisibilityList() {
         return measureVisibilityList;
+    }
+
+	public String getAppointmentDateAndTime() {
+		return appointmentDateAndTime;
+	}
+
+	public void setAppointmentDateAndTime(String appointmentDateAndTime) {
+		this.appointmentDateAndTime = appointmentDateAndTime;
+	}
+
+    public long getAppointmentDateAndTimeAsLong() {
+        return appointmentDateAndTimeAsLong;
+    }
+
+    public void setAppointmentDateAndTimeAsLong(long appointmentDateAndTimeAsLong) {
+        this.appointmentDateAndTimeAsLong = appointmentDateAndTimeAsLong;
     }
 
     public void setMeasureVisibilityList(

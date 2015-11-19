@@ -17,6 +17,7 @@ public class AssessmentSearchResult implements Serializable {
     private String clinicianName = "";
     private String createdBy = "";
     private String createDate = "";
+    private String apptDateAndTime = "";
     private String assessmentDate = "";
     private String completeDate = "";
     private Integer veteranId;
@@ -32,6 +33,14 @@ public class AssessmentSearchResult implements Serializable {
 
     public AssessmentSearchResult() {
 
+    }
+
+    public String getApptDateAndTime() {
+        return apptDateAndTime == null ? "Not Applicable" : apptDateAndTime;
+    }
+
+    public void setApptDateAndTime(String apptDateAndTime) {
+        this.apptDateAndTime = apptDateAndTime;
     }
 
     public String getClinicianName() {

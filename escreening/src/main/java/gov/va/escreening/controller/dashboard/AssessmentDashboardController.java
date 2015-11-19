@@ -127,12 +127,15 @@ public class AssessmentDashboardController extends BaseDashboardRestController {
             sortColumn = "clinicianName";
             break;
         case 5:
-            sortColumn = "duration";
+            sortColumn = "apptDateAndTime";
             break;
         case 6:
-            sortColumn = "percentComplete";
+            sortColumn = "duration";
             break;
         case 7:
+            sortColumn = "percentComplete";
+            break;
+        case 8:
             sortColumn = "assessmentStatusName";
             break;
         default:
