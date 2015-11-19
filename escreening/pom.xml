@@ -1122,7 +1122,7 @@
 		<profile>
 			<id>las-prod</id>
 			<build>
-				<finalName>lon</finalName>
+				<finalName>las</finalName>
 			</build>
 			<properties>
 				<jdbc.url>jdbc:mysql://localhost:3306/las-prod</jdbc.url>
