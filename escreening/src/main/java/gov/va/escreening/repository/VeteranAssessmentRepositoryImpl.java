@@ -440,13 +440,13 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
     }
 
     @Override
-    public Integer getAvgNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds) {
+    public float getAvgNumOfAssessmentPerClinicianClinicFor593(String fromDate, String toDate, List<Integer> clinicIds) {
 
         Query q = entityManager.createNativeQuery("SELECT " +
                 "count(*) " +
                 "FROM " +
                 "veteran_assessment va, clinic c, user u " +
-                "WHERE va.assessment_status_id <> 7 AND" +
+                "WHERE va.assessment_status_id <> 7 AND " +
                 "va.clinic_id = c.clinic_id AND " +
                 "va.clinician_id = u.user_id AND " +
                 "va.date_completed BETWEEN :fromDate AND :toDate AND " +
@@ -455,11 +455,12 @@ public class VeteranAssessmentRepositoryImpl extends AbstractHibernateRepository
         setParametersFor593(q, fromDate, toDate, clinicIds);
         final List<BigInteger> resultList = q.getResultList();
 
-        int sum = 0;
+        float sum = 0;
         for (BigInteger assessmentCnt : resultList) {
-            sum += Integer.parseInt(assessmentCnt.toString());
+            sum += Float.parseFloat(assessmentCnt.toString());
         }
-        return resultList.isEmpty() ? 0 : sum / resultList.size();
+        float avgNumOfAssessmentPerClinicianClinicFor593= resultList.isEmpty() ? 0.0f : sum / Float.valueOf(resultList.size());
+        return avgNumOfAssessmentPerClinicianClinicFor593;
     }
 
     @Override
