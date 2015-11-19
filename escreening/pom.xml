@@ -1119,5 +1119,27 @@
 				<log.suffix>lon-test</log.suffix>
 			</properties>
 		</profile>
+		<profile>
+			<id>las-prod</id>
+			<build>
+				<finalName>lon</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost:3306/las-prod</jdbc.url>
+				<jdbc.db>las-prod</jdbc.db>
+				<log.suffix>las-prod</log.suffix>
+			</properties>
+		</profile>
+		<profile>
+			<id>las-test</id>
+			<build>
+				<finalName>las-test</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost:3307/las-test</jdbc.url>
+				<jdbc.db>las-test</jdbc.db>
+				<log.suffix>las-test</log.suffix>
+			</properties>
+		</profile>
 	</profiles>
 </project>
