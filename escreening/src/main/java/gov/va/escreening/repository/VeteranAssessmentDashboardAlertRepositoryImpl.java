@@ -240,7 +240,7 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		query.setFirstResult(searchAttributes.getRowStartIndex()).setMaxResults(searchAttributes.getPageSize());
 		List<VeteranAssessment> veteranAssessments = query.getResultList();
 
-		bindAssessmentsWithAppointments(veteranAssessments);
+		bindAssessmentsWithAppointments(veteranAssessments, searchAttributes.getSortColumn(), searchAttributes.getSortDirection().name());
 
 		int totalRecsFound = getTotalRecords(programId, programIdList);
 
@@ -251,8 +251,8 @@ public class VeteranAssessmentDashboardAlertRepositoryImpl extends AbstractHiber
 		return searchResult;
 	}
 
-	private void bindAssessmentsWithAppointments(List<VeteranAssessment> veteranAssessments) {
-		aaRepos.bindAppointments(veteranAssessments);
+	private void bindAssessmentsWithAppointments(List<VeteranAssessment> veteranAssessments, String orderByColumn, String orderByDirection) {
+		aaRepos.bindAppointments(veteranAssessments, orderByColumn, orderByDirection);
 	}
 
 	private int getTotalRecords(Integer programId, List<Integer> programIdList) {

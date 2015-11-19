@@ -8,5 +8,5 @@ import java.util.List;
 public interface AssessmentAppointmentRepository extends RepositoryInterface<AssessmentAppointment> {
     AssessmentAppointment findByAssessmentId(int assessmentId);
 
-    void bindAppointments(List<VeteranAssessment> veteranAssessments);
+    void bindAppointments(List<VeteranAssessment> veteranAssessments, String orderByColumn, String orderByDirection);
 }

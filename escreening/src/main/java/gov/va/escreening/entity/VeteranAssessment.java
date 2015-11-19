@@ -144,6 +144,9 @@ public class VeteranAssessment implements Serializable {
 	@Transient
 	private String appointmentDateAndTime;
 
+    @Transient
+	private long appointmentDateAndTimeAsLong;
+
 	public VeteranAssessment() {
 	}
 
@@ -451,6 +454,14 @@ public class VeteranAssessment implements Serializable {
 	public void setAppointmentDateAndTime(String appointmentDateAndTime) {
 		this.appointmentDateAndTime = appointmentDateAndTime;
 	}
+
+    public long getAppointmentDateAndTimeAsLong() {
+        return appointmentDateAndTimeAsLong;
+    }
+
+    public void setAppointmentDateAndTimeAsLong(long appointmentDateAndTimeAsLong) {
+        this.appointmentDateAndTimeAsLong = appointmentDateAndTimeAsLong;
+    }
 
     public void setMeasureVisibilityList(
             List<VeteranAssessmentMeasureVisibility> measureVisibilityList) {
