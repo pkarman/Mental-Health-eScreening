@@ -215,6 +215,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			if (surveyList.isEmpty()) {
 				result.setSucceed(false);
 				result.setErrorMsg("No survey selected for the battery");
+				resultList.add(result);
 				continue;
 			}
 			// Add
