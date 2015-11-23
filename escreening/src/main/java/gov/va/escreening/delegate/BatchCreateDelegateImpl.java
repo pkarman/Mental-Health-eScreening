@@ -202,10 +202,11 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		List<BatchBatteryCreateResult> resultList = new ArrayList<BatchBatteryCreateResult>(
 				vets.size());
 		for (VeteranWithClinicalReminderFlag vet : vets) {
-			Set<Integer> surveyList = surveyMap.get(vet.getVeteranId());
-			if (surveyList == null) {
-				surveyList = new HashSet<Integer>();
-			}
+//			Set<Integer> surveyList = surveyMap.get(vet.getVeteranId());
+//			if (surveyList == null) {
+//				surveyList = new HashSet<Integer>();
+//			}
+			Set<Integer> surveyList = new HashSet<Integer>();
 			if (selectedSurvey != null && !selectedSurvey.isEmpty()) {
 				surveyList.addAll(selectedSurvey);
 			}
@@ -214,6 +215,7 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 			if (surveyList.isEmpty()) {
 				result.setSucceed(false);
 				result.setErrorMsg("No survey selected for the battery");
+				continue;
 			}
 			// Add
 			try {
