@@ -305,7 +305,7 @@ public class UserEditViewController {
 
 			if (!StringUtils.equals(passwordResetRequest.getPassword(), passwordResetRequest.getPasswordConfirmed())) {
 				hasError = true;
-				errorMessage += "Passowrd and Confirmed Password must match";
+				errorMessage += "Password and Confirmed Password must match";
 			}
 
 			// If we ahve errors, then just return here.
