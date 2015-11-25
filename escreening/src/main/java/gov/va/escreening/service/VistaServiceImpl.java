@@ -600,7 +600,9 @@ public class VistaServiceImpl implements VistaService {
         for(ClinicalReminder cr : existingDbClinicalReminder.values())
         {
             cr.setVistaIen(null);
-            clinicalReminderRepo.update(cr);
+            clinicalReminderRepo.delete(cr);
+            logger.info("Set the clinical reminder's IEN to null {}", cr);
+           // clinicalReminderRepo.update(cr);
         }
 
         if (refreshCount > 0) {
@@ -680,11 +682,14 @@ public class VistaServiceImpl implements VistaService {
         for (HealthFactor hf : hfList) {
             String crIen = hf.getClinicalReminder().getVistaIen();
 
-            if (!crToHFMap.containsKey(crIen)) {
-                crToHFMap.put(crIen, new HashMap<String, HealthFactor>());
-            }
+            if(crIen !=null) {
 
-            crToHFMap.get(crIen).put(hf.getName(), hf);
+                if (!crToHFMap.containsKey(crIen)) {
+                    crToHFMap.put(crIen, new HashMap<String, HealthFactor>());
+                }
+
+                crToHFMap.get(crIen).put(hf.getName(), hf);
+            }
         }
 
         List<ClinicalReminder> clinicalReminders = clinicalReminderRepo.findAll();
