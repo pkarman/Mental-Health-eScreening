@@ -543,7 +543,7 @@ public class VistaServiceImpl implements VistaService {
 
         for (ClinicalReminder cr : clinicalReminderListDb) {
             existingDbClinicalReminder.put(cr.getName(), cr);
-            existingDbClinicalReminder.put(cr.getVistaIen(), cr);
+            //existingDbClinicalReminder.put(cr.getVistaIen(), cr);
         }
 
         int refreshCount = 0;
@@ -561,7 +561,7 @@ public class VistaServiceImpl implements VistaService {
                 crItr.remove();
 
                 // update IEN if needed
-                ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderName());
+                ClinicalReminder existing = existingDbClinicalReminder.remove(cr.getClinicalReminderName());
                 if (existing.getVistaIen() == null
                         || !existing.getVistaIen().equals(cr.getClinicalReminderIen())
                         || !existing.getPrintName().equals(cr.getPrintName())) {
@@ -576,18 +576,18 @@ public class VistaServiceImpl implements VistaService {
 
         //At this point only CRs that don't match in name are left to add (this assumes that IENs are unique in clinicalReminderList)
         for (VistaClinicalReminderAndCategory cr : clinicalReminderList) {
-            ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderIen());
-            if (existing != null) {
-                if (!existing.getName().equals(cr.getClinicalReminderName()) ||
-                        !existing.getPrintName().equals(cr.getPrintName())) {
-
-                    existing.setName(cr.getClinicalReminderName());
-                    existing.setPrintName(cr.getPrintName());
-                    clinicalReminderRepo.update(existing);
-                    ++refreshCount;
-                    logger.info("Updated Name of an existing clinical reminder with same IEN {}", existing);
-                }
-            } else {
+//            ClinicalReminder existing = existingDbClinicalReminder.get(cr.getClinicalReminderIen());
+//            if (existing != null) {
+//                if (!existing.getName().equals(cr.getClinicalReminderName()) ||
+//                        !existing.getPrintName().equals(cr.getPrintName())) {
+//
+//                    existing.setName(cr.getClinicalReminderName());
+//                    existing.setPrintName(cr.getPrintName());
+//                    clinicalReminderRepo.update(existing);
+//                    ++refreshCount;
+//                    logger.info("Updated Name of an existing clinical reminder with same IEN {}", existing);
+//                }
+//            } else {
                 Integer crId = clinicalReminderService.create(cr.getClinicalReminderName(),
                         cr.getClinicalReminderIen(),
                         cr.getPrintName(),
@@ -595,6 +595,12 @@ public class VistaServiceImpl implements VistaService {
                 ++refreshCount;
                 logger.info("Created a new clinical reminder (with clinical_reminder_id {}): {}", crId, cr);
             }
+
+        //For the rest of the clinical reminders in the DB, set the IEN to null because they do not exist in VISTA
+        for(ClinicalReminder cr : existingDbClinicalReminder.values())
+        {
+            cr.setVistaIen(null);
+            clinicalReminderRepo.update(cr);
         }
 
         if (refreshCount > 0) {

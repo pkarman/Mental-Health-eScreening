@@ -1141,5 +1141,16 @@
 				<log.suffix>las-test</log.suffix>
 			</properties>
 		</profile>
+		<profile>
+			<id>sfc-prod</id>
+			<build>
+				<finalName>sfc</finalName>
+			</build>
+			<properties>
+				<jdbc.url>jdbc:mysql://localhost:3306/sfcmhe</jdbc.url>
+				<jdbc.db>sfcmhe</jdbc.db>
+				<log.suffix>sfc</log.suffix>
+			</properties>
+		</profile>
 	</profiles>
 </project>
