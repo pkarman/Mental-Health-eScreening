@@ -48,6 +48,17 @@ public class ClinicalReminder implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "clinicalReminder")
     private List<ClinicalReminderSurvey> clinicalReminderSurveyList;
 
+    public List<HealthFactor> getHealthFactors() {
+        return healthFactors;
+    }
+
+    public void setHealthFactors(List<HealthFactor> healthFactors) {
+        this.healthFactors = healthFactors;
+    }
+
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "clinicalReminder")
+    private List<HealthFactor> healthFactors;
+
     public ClinicalReminder() {
     }
 
