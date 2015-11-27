@@ -1,22 +1,10 @@
 package gov.va.escreening.service;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import gov.va.escreening.domain.VeteranDto;
-import gov.va.escreening.entity.Clinic;
-import gov.va.escreening.entity.ClinicalReminder;
-import gov.va.escreening.entity.HealthFactor;
-import gov.va.escreening.entity.NoteTitle;
-import gov.va.escreening.entity.Survey;
+import gov.va.escreening.entity.*;
 import gov.va.escreening.exception.VistaVerificationAlreadyMappedException;
-import gov.va.escreening.repository.ClinicRepository;
-import gov.va.escreening.repository.ClinicalReminderRepository;
-import gov.va.escreening.repository.HealthFactorRepository;
-import gov.va.escreening.repository.NoteTitleRepository;
-import gov.va.escreening.repository.SurveyRepository;
-import gov.va.escreening.repository.VistaRepository;
+import gov.va.escreening.repository.*;
 import gov.va.escreening.vista.VistaLinkClientException;
 import gov.va.escreening.vista.VistaRpcParam;
 import gov.va.escreening.vista.VistaServiceContext;
@@ -80,6 +68,9 @@ public class VistaServiceImpl implements VistaService {
 
     @Autowired
     private SurveyRepository surveyRepo;
+
+    @Autowired
+    private ClinicalReminderSurveyRepository crSurveyRepo;
 
     /**
      * The primary station number of the VistA Server. If this system ever support more than one VistA Server at a time,
@@ -596,19 +587,28 @@ public class VistaServiceImpl implements VistaService {
                 logger.info("Created a new clinical reminder (with clinical_reminder_id {}): {}", crId, cr);
             }
 
-        //For the rest of the clinical reminders in the DB, set the IEN to null because they do not exist in VISTA
-        for(ClinicalReminder cr : existingDbClinicalReminder.values())
-        {
-            cr.setVistaIen(null);
-            clinicalReminderRepo.delete(cr);
-            logger.info("Set the clinical reminder's IEN to null {}", cr);
-           // clinicalReminderRepo.update(cr);
-        }
-
         if (refreshCount > 0) {
             clinicalReminderRepo.commit();
         }
 
+        if(!existingDbClinicalReminder.isEmpty()) {
+            List<ClinicalReminderSurvey> crSurveyList = crSurveyRepo.findAll();
+            HashSet<Integer> crList = Sets.newHashSet();
+            for(ClinicalReminderSurvey crs : crSurveyList)
+            {
+                crList.add(crs.getClinicalReminder().getClinicalReminderId());
+            }
+            //For the rest of the clinical reminders in the DB, set the IEN to null because they do not exist in VISTA
+            for (ClinicalReminder cr : existingDbClinicalReminder.values()) {
+
+                if (crList.contains(cr.getClinicalReminderId())) {
+                    cr.setVistaIen(null);
+                    logger.info("Set the clinical reminder's IEN to null {}", cr);
+                } else {
+                    clinicalReminderRepo.delete(cr);
+                }
+            }
+        }
         refreshMHAIens(division, vpid, duz, appProxyName);
 
         return refreshCount;
