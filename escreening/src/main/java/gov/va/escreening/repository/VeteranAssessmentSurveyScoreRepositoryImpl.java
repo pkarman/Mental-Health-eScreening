@@ -228,7 +228,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                     "WHERE score.screen_number IS NOT NULL AND survey.name = :surveyName " +
                     "AND score.av_name NOT IN (:splittableAvs) " +
                     "AND score.date_completed BETWEEN :fromDate AND :toDate " +
-                    "AND score.clinic_id IN (:clinicIds) " +
+                    (!clinicIds.isEmpty()?"AND score.clinic_id IN (:clinicIds) ":"") +
                     "GROUP BY survey.name, score.screen_number " +
                     "ORDER BY survey.name, score.screen_number");
 
@@ -251,7 +251,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                         "WHERE score.screen_number IS NOT NULL AND survey.name = :surveyName " +
                         "AND score.av_name = :splittableAv " +
                         "AND score.date_completed BETWEEN :fromDate AND :toDate " +
-                        "AND score.clinic_id IN (:clinicIds) " +
+                        (!clinicIds.isEmpty()?"AND score.clinic_id IN (:clinicIds) ":"" )+
                         "GROUP BY survey.name, score.screen_number " +
                         "ORDER BY survey.name, score.screen_number");
 
@@ -298,13 +298,13 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
     private void processRegularModules(List<Report599DTO> dtos, List<String> regularModules, String fromDate, String toDate, List<Integer> clinicIds) {
         Query q = entityManager.createNativeQuery("SELECT survey.name, score.screen_number, count(*) " +
-                "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
-                "ON score.survey_id = survey.survey_id " +
-                "WHERE score.screen_number IS NOT NULL AND survey.name IN (:surveyNames) " +
-                "AND score.date_completed BETWEEN :fromDate AND :toDate " +
-                "AND score.clinic_id IN (:clinicIds) " +
+                        "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
+                        "ON score.survey_id = survey.survey_id " +
+                        "WHERE score.screen_number IS NOT NULL AND survey.name IN (:surveyNames) " +
+                        "AND score.date_completed BETWEEN :fromDate AND :toDate " +
+                (!clinicIds.isEmpty() ? "AND score.clinic_id IN (:clinicIds) " : "") +
                 "GROUP BY survey.name, score.screen_number " +
-                "ORDER BY survey.name, score.screen_number");
+                        "ORDER BY survey.name, score.screen_number");
 
         setParameters(q, fromDate, toDate, clinicIds);
         q.setParameter("surveyNames", regularModules);
@@ -400,7 +400,9 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
 
     private void setParameters(Query query, String fromDate, String toDate, List<Integer> clinicIds) {
-        query.setParameter("clinicIds", clinicIds);
+        if (!clinicIds.isEmpty()) {
+            query.setParameter("clinicIds", clinicIds);
+        }
         query.setParameter("fromDate", getDateFromString(fromDate + " 00:00:00"));
         query.setParameter("toDate", getDateFromString(toDate + " 23:59:59"));
     }
