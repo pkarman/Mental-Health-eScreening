@@ -62,11 +62,13 @@ public interface AssessmentVariableService {
 
 	/**
 	 * Retrieves all assessment variables associated with the given measure and its child measures if applicable. Does not include answer AVs.
-	 * @param measureId 
+	 * @param measureId
 	 * @return Map from AV ID to the AV object
 	 */
 	Map<Integer, AssessmentVariable> getAssessmentVarsForMeasure(Integer measureId);
-	
+
+    List<AssessmentVariable> getAssessmentVarsListForMeasure(Integer measureId);
+
 	/**
 	 * @param measureAnswerId measure answer to pull AV for. This method gives back a single 
 	 * AV which is because the relationship should be one-to-one. This will be updated soon so 

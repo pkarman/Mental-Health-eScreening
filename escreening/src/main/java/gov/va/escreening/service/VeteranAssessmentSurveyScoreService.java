@@ -20,7 +20,7 @@ public interface VeteranAssessmentSurveyScoreService {
      */
     void recordAllReportableScores(VeteranAssessment veteranAssessment);
 
-    List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment);
+    List<VeteranAssessmentSurveyScore> processSelectedReportablePositiveScreens(VeteranAssessment veteranAssessment);
 
     Map<String, Object> getSurveyDataForIndividualStatisticsGraph(Integer surveyId, String avName, Integer veteranId, String fromDate, String toDate);
     

@@ -3,8 +3,6 @@ package gov.va.escreening.service;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import gov.va.escreening.delegate.ReportFunctionCommon;
 import gov.va.escreening.delegate.ScoreMap;
 import gov.va.escreening.dto.report.*;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -74,7 +71,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     @Transactional
     public void recordAllReportableScores(VeteranAssessment veteranAssessment) {
         final List<VeteranAssessmentSurveyScore> selectedReportableScores = processSelectedReportableScores(veteranAssessment);
-        final List<VeteranAssessmentSurveyScore> selectedReportableScreens = processSelectedReportableScreens(veteranAssessment);
+        final List<VeteranAssessmentSurveyScore> selectedReportableScreens = processSelectedReportablePositiveScreens(veteranAssessment);
 
         final List<VeteranAssessmentSurveyScore> vassLst = Lists.newArrayList();
         vassLst.addAll(selectedReportableScores);
@@ -86,7 +83,7 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
     }
 
     @Override
-    public List<VeteranAssessmentSurveyScore> processSelectedReportableScreens(VeteranAssessment veteranAssessment) {
+    public List<VeteranAssessmentSurveyScore> processSelectedReportablePositiveScreens(VeteranAssessment veteranAssessment) {
         List<VeteranAssessmentSurveyScore> vassLst = Lists.newArrayList();
         final Map<String, List<Map>> avMap = this.screenMap.getAvMap();
         for (Survey s : veteranAssessment.getSurveys()) {
@@ -108,7 +105,8 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         List<VeteranAssessmentSurveyScore> missScoresLst = Lists.newArrayList();
         boolean positiveScore = false;
         for (Map normalAvMap : ordinaryAvMaps) {
-            Collection<AssessmentVariable> ordinaryAvs = avSrv.findByDisplayNames(Arrays.asList(reportsHelper.getAvName(normalAvMap)));
+            Collection<AssessmentVariable> ordinaryAvs = findAvsForScreening(normalAvMap);
+
             final Iterable<AssessmentVariableDto> ordinaryAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), ordinaryAvs);
             int vassLstSize = vassLst.size();
             for (AssessmentVariableDto avDto : ordinaryAvDtos) {
@@ -149,10 +147,16 @@ public class VeteranAssessmentSurveyScoreServiceImpl implements VeteranAssessmen
         }
     }
 
+    private Collection<AssessmentVariable> findAvsForScreening(Map avMap) {
+        Double measureId = (Double) avMap.get("measure_id");
+        Collection<AssessmentVariable> avsForScreening = measureId != null ? avSrv.getAssessmentVarsListForMeasure(measureId.intValue()) : avSrv.findByDisplayNames(Arrays.asList(reportsHelper.getAvName(avMap)));
+        return avsForScreening;
+    }
+
 
     private void processScreensForSplittables(List<Map> splittable, Survey survey, VeteranAssessment veteranAssessment, List<VeteranAssessmentSurveyScore> vassLst) {
         for (Map splittableAvMap : splittable) {
-            Collection<AssessmentVariable> splittableAvs = avSrv.findByDisplayNames(Arrays.asList(reportsHelper.getAvName(splittableAvMap)));
+            Collection<AssessmentVariable> splittableAvs = findAvsForScreening(splittableAvMap);
             // use assessment variables and veteran Assessment Id
             final Iterable<AssessmentVariableDto> splittableAvDtos = vrSrv.resolveVariablesFor(veteranAssessment.getVeteranAssessmentId(), splittableAvs);
             int vassLstSize = vassLst.size();

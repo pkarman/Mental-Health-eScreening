@@ -194,4 +194,9 @@ public class ReportFunctionCommon {
         svgObjAsStr = svgObjAsStr.replace("<svg height=\"300\" width=\"450\" id=\"chart\">", "<svg id=\"chart\" width=\"450\" height=\"300\">");
         return svgObjAsStr;
     }
+
+    public Integer getMeasureId(Map avMap) {
+        return Integer.valueOf(avMap.get("var").toString());
+
+    }
 }
