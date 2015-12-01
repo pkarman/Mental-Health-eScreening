@@ -170,7 +170,7 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
         // (2) modules with assessment variables which needs to be splitted (splittable). use a Query with group by splittable
         Map<String, List<Map>> splittableModules = partitionSplittableModules();
         processSplittableModules(dtos, splittableModules, fromDate, toDate, clinicIds);
-        // (3) modules with assessment variables which needs to be splitted (non-splittable). Use a Query with no splittable assessment variables
+        // (3) modules with assessment variables which does not need to be splitted (non-splittable). Use a Query with no splittable assessment variables
         processNonSplittablesFromSplittableModules(dtos, splittableModules, fromDate, toDate, clinicIds);
 
 

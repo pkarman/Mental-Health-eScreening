@@ -377,6 +377,42 @@ public class AssessmentVariableSrviceImpl implements AssessmentVariableService {
 
 	@Override
 	@Transactional(readOnly = true)
+	public List<AssessmentVariable> getAssessmentVarsListForMeasure(Integer measureId) {
+
+		Measure m = null;
+		if(measureId != null){
+			m = measureRepo.findOne(measureId);
+		}
+		if(m == null){
+			ErrorBuilder.throwing(EntityNotFoundException.class)
+			.toAdmin("An invalid or null measure ID was given: " + measureId)
+			.toUser("An invalid ID for a question was sent to the server. Please contact support.")
+			.throwIt();
+		}
+
+		List<AssessmentVariable> avs = Lists.newArrayList();
+		AssessmentVariable av = m.getAssessmentVariable();
+		avs.add(av);
+		getAssessmentVarsForMeasureAnswers(avs, m);
+
+		//get AVs for children
+		for(Measure child : m.getChildren()){
+			av = child.getAssessmentVariable();
+			avs.add(av);
+			getAssessmentVarsForMeasureAnswers(avs, child);
+		}
+
+		return avs;
+	}
+
+	private void getAssessmentVarsForMeasureAnswers(List<AssessmentVariable> avs, Measure m) {
+		for (MeasureAnswer ma:m.getMeasureAnswerList()){
+			avs.add(ma.getAssessmentVariableList().iterator().next());
+		}
+	}
+
+	@Override
+	@Transactional(readOnly = true)
 	public AssessmentVariable getAssessmentVarsForAnswer(Integer measureAnswerId){
 		MeasureAnswer ma = null;
 		if(measureAnswerId != null){
