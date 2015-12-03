@@ -202,23 +202,24 @@ public class BatchCreateDelegateImpl implements BatchBatteryCreateDelegate {
 		List<BatchBatteryCreateResult> resultList = new ArrayList<BatchBatteryCreateResult>(
 				vets.size());
 		for (VeteranWithClinicalReminderFlag vet : vets) {
-//			Set<Integer> surveyList = surveyMap.get(vet.getVeteranId());
-//			if (surveyList == null) {
-//				surveyList = new HashSet<Integer>();
-//			}
-			Set<Integer> surveyList = new HashSet<Integer>();
+			Set<Integer> surveyList = surveyMap.get(vet.getVeteranId());
+			if (surveyList == null) {
+				surveyList = new HashSet<Integer>();
+			}
 			if (selectedSurvey != null && !selectedSurvey.isEmpty()) {
 				surveyList.addAll(selectedSurvey);
 			}
-			BatchBatteryCreateResult result = new BatchBatteryCreateResult();
-			result.setVet(vet);
 			if (surveyList.isEmpty()) {
+				BatchBatteryCreateResult result = new BatchBatteryCreateResult();
+				result.setVet(vet);
 				result.setSucceed(false);
 				result.setErrorMsg("No survey selected for the battery");
 				resultList.add(result);
-				continue;
+				return resultList;
 			}
 			// Add
+			BatchBatteryCreateResult result = new BatchBatteryCreateResult();
+			result.setVet(vet);
 			try {
 				String apptDate = vet.getApptDate();
 				String apptTime = vet.getApptTime();
