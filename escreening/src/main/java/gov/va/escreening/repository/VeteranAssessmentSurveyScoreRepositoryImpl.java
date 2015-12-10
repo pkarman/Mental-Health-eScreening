@@ -1,9 +1,11 @@
 package gov.va.escreening.repository;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.$Gson$Preconditions;
 import gov.va.escreening.dto.report.Report599DTO;
 import gov.va.escreening.dto.report.ScoreDateDTO;
 import gov.va.escreening.entity.VeteranAssessmentSurveyScore;
@@ -245,20 +247,12 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
 
         for (String moduleName : splittableModules.keySet()) {
             for (Map m : splittableModules.get(moduleName)) {
-                Query q = entityManager.createNativeQuery("SELECT survey.name, score.screen_number, count(*) " +
-                        "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
-                        "ON score.survey_id = survey.survey_id " +
-                        "WHERE score.screen_number IS NOT NULL AND survey.name = :surveyName " +
-                        "AND score.av_name = :splittableAv " +
-                        "AND score.date_completed BETWEEN :fromDate AND :toDate " +
-                        (!clinicIds.isEmpty()?"AND score.clinic_id IN (:clinicIds) ":"" )+
-                        "GROUP BY survey.name, score.screen_number " +
-                        "ORDER BY survey.name, score.screen_number");
+                List<Object[]> rows = getQForSplittableModules(moduleName, m, dtos, splittableModules, fromDate, toDate, clinicIds, "dep1_interest");
+                if (rows == null || rows.isEmpty()) {
+                    rows=getQForSplittableModules(moduleName, m, dtos, splittableModules, fromDate, toDate, clinicIds, m.get("var"));
+                }
 
-                setParameters(q, fromDate, toDate, clinicIds);
-                q.setParameter("surveyName", moduleName);
-                q.setParameter("splittableAv", m.get("var"));
-                List<Object[]> rows = q.getResultList();
+                Preconditions.checkState(rows!=null && !rows.isEmpty());
 
                 for (Object[] r : rows) {
                     r[0] = m.get("alias").toString();
@@ -267,6 +261,23 @@ public class VeteranAssessmentSurveyScoreRepositoryImpl extends AbstractHibernat
                 primeDTosFromRawRows(dtos, rows);
             }
         }
+    }
+
+    private List<Object[]> getQForSplittableModules(String moduleName, Map m, List<Report599DTO> dtos, Map<String, List<Map>> splittableModules, String fromDate, String toDate, List<Integer> clinicIds, Object splittableAv) {
+        Query q = entityManager.createNativeQuery("SELECT survey.name, score.screen_number, count(*) " +
+                "FROM veteran_assessment_survey_score score INNER JOIN survey survey " +
+                "ON score.survey_id = survey.survey_id " +
+                "WHERE score.screen_number IS NOT NULL AND survey.name = :surveyName " +
+                "AND score.av_name = :splittableAv " +
+                "AND score.date_completed BETWEEN :fromDate AND :toDate " +
+                (!clinicIds.isEmpty() ? "AND score.clinic_id IN (:clinicIds) " : "") +
+                "GROUP BY survey.name, score.screen_number " +
+                "ORDER BY survey.name, score.screen_number");
+
+        setParameters(q, fromDate, toDate, clinicIds);
+        q.setParameter("surveyName", moduleName);
+        q.setParameter("splittableAv", splittableAv);
+        return q.getResultList();
     }
 
     private List<String> getAvs(List<Map> splittableModules) {
