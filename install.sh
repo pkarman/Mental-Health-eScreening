@@ -5,7 +5,7 @@ set -x
 
 export ROOTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-git clone https://github.com/shabiel/vistalink-tester-for-linux.git
+git clone https://github.com/pkarman/vistalink-tester-for-linux.git
 
 cd vistalink-tester-for-linux/samples-J2SE
 
