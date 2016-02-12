@@ -17,7 +17,7 @@ mvn install:install-file -DgroupId=gov.va.med.vistalink -DartifactId=vljSecurity
 
 cd $ROOTDIR
 
-mysql < escreening/src/main/sql/initialization/dev_env_run_once.sql
+mysql -u root < escreening/src/main/sql/initialization/dev_env_run_once.sql
 
 cd $ROOTDIR/escreening
 
